@@ -9,15 +9,13 @@ class Stock extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'item_id',
-        'quantity',
-    ];
+    protected $fillable = ['quantity', 'item_id'];
+    
+    // Set the primary key to item_id instead of id
+    protected $primaryKey = 'item_id';
+    
+    // Specify that the primary key is not auto-incrementing
+    public $incrementing = false;
 
     /**
      * Get the item that owns the stock.
@@ -26,7 +24,7 @@ class Stock extends Model
     {
         return $this->belongsTo(Item::class);
     }
-
+    
     /**
      * Check if the item is in stock.
      */

@@ -17,7 +17,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Title</th>
-                        <th>Genre</th>
+                        <th>Genres</th>
                         <th>Author</th>
                         <th>Price</th>
                         <th>Stock</th>
@@ -43,7 +43,7 @@
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
-                { data: 'genre.name', name: 'genre.name' },
+                { data: 'genres_list', name: 'genres_list' },
                 { data: 'author', name: 'author' },
                 { 
                     data: 'price', 
@@ -53,8 +53,8 @@
                     }
                 },
                 { 
-                    data: 'stock.quantity', 
-                    name: 'stock.quantity',
+                    data: 'stock_quantity', 
+                    name: 'stock_quantity',
                     render: function(data) {
                         if (data === null) return 'N/A';
                         return data < 5 ? 

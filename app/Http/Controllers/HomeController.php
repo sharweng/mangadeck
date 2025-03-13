@@ -13,13 +13,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $latestItems = Item::with(['genre', 'stock', 'reviews'])
+        $latestItems = Item::with(['genres', 'stock', 'reviews'])
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
-        
+
         $genres = Genre::all();
-        
+
         return view('home', compact('latestItems', 'genres'));
     }
 

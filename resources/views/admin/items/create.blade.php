@@ -23,16 +23,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="genre_id" class="form-label">Genre</label>
-                        <select name="genre_id" id="genre_id" class="form-control @error('genre_id') is-invalid @enderror" required>
-                            <option value="">-- Select Genre --</option>
+                        <label for="genres" class="form-label">Genres</label>
+                        <select name="genre_ids[]" id="genres" class="form-control @error('genre_ids') is-invalid @enderror" multiple required>
                             @foreach($genres as $genre)
-                                <option value="{{ $genre->id }}" {{ old('genre_id') == $genre->id ? 'selected' : '' }}>
+                                <option value="{{ $genre->id }}" {{ in_array($genre->id, old('genre_ids', [])) ? 'selected' : '' }}>
                                     {{ $genre->name }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('genre_id')
+                        <small class="form-text text-muted">Hold Ctrl (or Cmd on Mac) to select multiple genres</small>
+                        @error('genre_ids')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -95,24 +95,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-
-                    <div class="mb-3">
-                        <label for="isbn" class="form-label">ISBN</label>
-                        <input type="text" name="isbn" id="isbn" value="{{ old('isbn') }}" 
-                               class="form-control @error('isbn') is-invalid @enderror">
-                        @error('isbn')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="pages" class="form-label">Pages</label>
-                        <input type="number" name="pages" id="pages" value="{{ old('pages') }}" 
-                               class="form-control @error('pages') is-invalid @enderror" min="1">
-                        @error('pages')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
@@ -131,7 +113,7 @@
 
             <div class="d-flex justify-content-between mt-4">
                 <a href="{{ route('admin.items.index') }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Create Manga</button>
+                <button type="submit" class="btn btn-primary">Add Manga</button>
             </div>
         </form>
     </div>
@@ -150,4 +132,3 @@
     });
 </script>
 @endsection
-

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 11, 2025 at 02:55 PM
+-- Generation Time: Mar 13, 2025 at 02:06 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,9 +39,9 @@ CREATE TABLE `bad_words` (
 --
 
 INSERT INTO `bad_words` (`id`, `word`, `created_at`, `updated_at`) VALUES
-(1, 'badword1', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(2, 'badword2', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(3, 'badword3', '2025-03-11 05:55:21', '2025-03-11 05:55:21');
+(1, 'badword1', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(2, 'badword2', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(3, 'badword3', '2025-03-12 17:03:40', '2025-03-12 17:03:40');
 
 -- --------------------------------------------------------
 
@@ -96,16 +96,16 @@ CREATE TABLE `genres` (
 --
 
 INSERT INTO `genres` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Shonen', 'Manga aimed at teenage boys', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(2, 'Shojo', 'Manga aimed at teenage girls', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(3, 'Seinen', 'Manga aimed at adult men', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(4, 'Josei', 'Manga aimed at adult women', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(5, 'Isekai', 'Stories about characters transported to another world', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(6, 'Mecha', 'Stories featuring robots and mechanical technology', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(7, 'Fantasy', 'Stories with magical or supernatural elements', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(8, 'Horror', 'Stories designed to frighten or scare', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(9, 'Romance', 'Stories focused on romantic relationships', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(10, 'Sports', 'Stories centered around athletics and competition', '2025-03-11 05:55:21', '2025-03-11 05:55:21');
+(1, 'Shonen', 'Manga aimed at teenage boys', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(2, 'Shojo', 'Manga aimed at teenage girls', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(3, 'Seinen', 'Manga aimed at adult men', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(4, 'Josei', 'Manga aimed at adult women', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(5, 'Isekai', 'Stories about characters transported to another world', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(6, 'Mecha', 'Stories featuring robots and mechanical technology', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(7, 'Fantasy', 'Stories with magical or supernatural elements', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(8, 'Horror', 'Stories designed to frighten or scare', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(9, 'Romance', 'Stories focused on romantic relationships', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(10, 'Sports', 'Stories centered around athletics and competition', '2025-03-12 17:03:40', '2025-03-12 17:03:40');
 
 -- --------------------------------------------------------
 
@@ -121,10 +121,8 @@ CREATE TABLE `items` (
   `img_path` varchar(255) DEFAULT NULL,
   `genre_id` bigint(20) UNSIGNED NOT NULL,
   `author` varchar(255) DEFAULT NULL,
-  `pages` int(11) DEFAULT NULL,
   `publisher` varchar(255) DEFAULT NULL,
   `publication_date` date DEFAULT NULL,
-  `isbn` varchar(20) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -146,21 +144,21 @@ CREATE TABLE `migrations` (
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
-(1, '0001_01_01_000000_create_users_table', 1),
-(2, '2014_10_12_100000_create_password_reset_tokens_table', 1),
-(3, '2014_10_12_100000_create_password_resets_table', 1),
-(4, '2019_08_19_000000_create_failed_jobs_table', 1),
-(5, '2019_12_14_000001_create_personal_access_tokens_table', 1),
-(6, '2025_03_11_094828_create_genres_table', 1),
-(7, '2025_03_11_094833_create_statuses_table', 1),
-(8, '2025_03_11_094839_create_customers_table', 1),
-(9, '2025_03_11_094852_create_items_table', 1),
-(10, '2025_03_11_094903_create_stocks_table', 1),
-(11, '2025_03_11_094911_create_orderinfos_table', 1),
-(12, '2025_03_11_094933_create_orderlines_table', 1),
-(13, '2025_03_11_094941_create_reviews_table', 1),
-(14, '2025_03_11_094957_create_bad_words_table', 1),
-(15, '2025_03_11_102341_create_sessions_table', 1);
+(16, '0001_01_01_000000_create_users_table', 1),
+(17, '2014_10_12_100000_create_password_reset_tokens_table', 1),
+(18, '2014_10_12_100000_create_password_resets_table', 1),
+(19, '2019_08_19_000000_create_failed_jobs_table', 1),
+(20, '2019_12_14_000001_create_personal_access_tokens_table', 1),
+(21, '2025_03_11_094828_create_genres_table', 1),
+(22, '2025_03_11_094833_create_statuses_table', 1),
+(23, '2025_03_11_094839_create_customers_table', 1),
+(24, '2025_03_11_094852_create_items_table', 1),
+(25, '2025_03_11_094903_create_stocks_table', 1),
+(26, '2025_03_11_094911_create_orderinfos_table', 1),
+(27, '2025_03_11_094933_create_orderlines_table', 1),
+(28, '2025_03_11_094941_create_reviews_table', 1),
+(29, '2025_03_11_094957_create_bad_words_table', 1),
+(30, '2025_03_11_102341_create_sessions_table', 1);
 
 -- --------------------------------------------------------
 
@@ -289,11 +287,11 @@ CREATE TABLE `statuses` (
 --
 
 INSERT INTO `statuses` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Pending', 'Order has been placed but not processed', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(2, 'Processing', 'Order is being processed', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(3, 'Shipped', 'Order has been shipped', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(4, 'Delivered', 'Order has been delivered', '2025-03-11 05:55:21', '2025-03-11 05:55:21'),
-(5, 'Cancelled', 'Order has been cancelled', '2025-03-11 05:55:21', '2025-03-11 05:55:21');
+(1, 'Pending', 'Order has been placed but not processed', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(2, 'Processing', 'Order is being processed', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(3, 'Shipped', 'Order has been shipped', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(4, 'Delivered', 'Order has been delivered', '2025-03-12 17:03:40', '2025-03-12 17:03:40'),
+(5, 'Cancelled', 'Order has been cancelled', '2025-03-12 17:03:40', '2025-03-12 17:03:40');
 
 -- --------------------------------------------------------
 
@@ -332,7 +330,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin User', 'admin@example.com', NULL, '$2y$12$rydIw3LT0D3mspYtFnS6/.0UHlDIPUnYrHPFoVF6AGTg1xooZ.Hjm', 'admin', 'activated', NULL, '2025-03-11 05:55:21', '2025-03-11 05:55:21');
+(1, 'Admin User', 'admin@example.com', NULL, '$2y$12$Na6DiEn2yShKz8b6Rss9Xu8Gp.L10eWjom44oRxGNZC4SQOjTlnmS', 'admin', 'activated', NULL, '2025-03-12 17:03:40', '2025-03-12 17:03:40');
 
 --
 -- Indexes for dumped tables
@@ -485,7 +483,7 @@ ALTER TABLE `items`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `orderinfos`

@@ -8,6 +8,22 @@
         <h6 class="m-0 font-weight-bold text-primary">Edit Manga: {{ $item->title }}</h6>
     </div>
     <div class="card-body">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        
         <form action="{{ route('admin.items.update', $item) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -24,16 +40,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="genre_id" class="form-label">Genre</label>
-                        <select name="genre_id" id="genre_id" class="form-control @error('genre_id') is-invalid @enderror" required>
-                            <option value="">-- Select Genre --</option>
+                        <label for="genres" class="form-label">Genres</label>
+                        <select name="genre_ids[]" id="genres" class="form-control @error('genre_ids') is-invalid @enderror" multiple required>
                             @foreach($genres as $genre)
-                                <option value="{{ $genre->id }}" {{ old('genre_id', $item->genre_id) == $genre->id ? 'selected' : '' }}>
+                                <option value="{{ $genre->id }}" {{ in_array($genre->id, old('genre_ids', $item->genres->pluck('id')->toArray())) ? 'selected' : '' }}>
                                     {{ $genre->name }}
                                 </option>
                             @endforeach
                         </select>
-                        @error('genre_id')
+                        <small class="form-text text-muted">Hold Ctrl (or Cmd on Mac) to select multiple genres</small>
+                        @error('genre_ids')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -73,7 +89,7 @@
                     <div class="mb-3">
                         <label for="author" class="form-label">Author</label>
                         <input type="text" name="author" id="author" value="{{ old('author', $item->author) }}" 
-                               class="form-control @error('author') is-invalid @enderror" required>
+                               class="form-control @error('author') is-invalid @enderror">
                         @error('author')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -94,24 +110,6 @@
                                value="{{ old('publication_date', $item->publication_date ? $item->publication_date->format('Y-m-d') : '') }}" 
                                class="form-control @error('publication_date') is-invalid @enderror">
                         @error('publication_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="isbn" class="form-label">ISBN</label>
-                        <input type="text" name="isbn" id="isbn" value="{{ old('isbn', $item->isbn) }}" 
-                               class="form-control @error('isbn') is-invalid @enderror">
-                        @error('isbn')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="pages" class="form-label">Pages</label>
-                        <input type="number" name="pages" id="pages" value="{{ old('pages', $item->pages) }}" 
-                               class="form-control @error('pages') is-invalid @enderror" min="1">
-                        @error('pages')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -154,11 +152,18 @@
 <script>
     // Image preview
     document.getElementById('image').addEventListener('change', function(e) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            document.getElementById('image-preview').src = event.target.result;
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('image-preview').src = event.target.result;
+            }
+            reader.readAsDataURL(e.target.files[0]);
         }
-        reader.readAsDataURL(e.target.files[0]);
+    });
+    
+    // Debug form submission
+    document.querySelector('form').addEventListener('submit', function(e) {
+        console.log('Form submitted');
     });
 </script>
 @endsection

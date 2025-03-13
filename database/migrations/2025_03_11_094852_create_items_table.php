@@ -19,10 +19,8 @@ return new class extends Migration
             $table->string('img_path')->nullable();
             $table->foreignId('genre_id')->constrained('genres');
             $table->string('author')->nullable();
-            $table->integer('pages')->nullable();
             $table->string('publisher')->nullable();
             $table->date('publication_date')->nullable();
-            $table->string('isbn', 20)->nullable();
             $table->timestamps();
         });
     }
@@ -35,4 +33,3 @@ return new class extends Migration
         Schema::dropIfExists('items');
     }
 };
-

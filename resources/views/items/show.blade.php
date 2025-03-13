@@ -8,7 +8,9 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
             <li class="breadcrumb-item"><a href="{{ route('items.index') }}">Manga</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('genres.show', $item->genre) }}">{{ $item->genre->name }}</a></li>
+            @if($item->genres->isNotEmpty())
+                <li class="breadcrumb-item"><a href="{{ route('genres.show', $item->genres->first()) }}">{{ $item->genres->first()->name }}</a></li>
+            @endif
             <li class="breadcrumb-item active" aria-current="page">{{ $item->title }}</li>
         </ol>
     </nav>
@@ -24,6 +26,12 @@
                 <!-- Manga Details -->
                 <div class="col-md-8">
                     <h1 class="mb-3">{{ $item->title }}</h1>
+                    
+                    <div class="mb-2">
+                        @foreach($item->genres as $genre)
+                            <a href="{{ route('genres.show', $genre) }}" class="badge bg-primary text-decoration-none">{{ $genre->name }}</a>
+                        @endforeach
+                    </div>
                     
                     <div class="mb-3">
                         @if($item->average_rating > 0)
@@ -59,7 +67,6 @@
                             <h5>Details</h5>
                             <ul class="list-unstyled">
                                 <li><strong>Author:</strong> {{ $item->author ?? 'Unknown' }}</li>
-                                <li><strong>Genre:</strong> {{ $item->genre->name }}</li>
                                 <li><strong>Publisher:</strong> {{ $item->publisher ?? 'Unknown' }}</li>
                                 <li><strong>Publication Date:</strong> {{ $item->publication_date ? $item->publication_date->format('M d, Y') : 'Unknown' }}</li>
                             </ul>
@@ -67,8 +74,6 @@
                         <div class="col-md-6">
                             <h5>Specifications</h5>
                             <ul class="list-unstyled">
-                                <li><strong>ISBN:</strong> {{ $item->isbn ?? 'N/A' }}</li>
-                                <li><strong>Pages:</strong> {{ $item->pages ?? 'Unknown' }}</li>
                                 <li><strong>Stock:</strong> {{ $item->stock ? $item->stock->quantity : 0 }} copies</li>
                             </ul>
                         </div>
@@ -187,7 +192,11 @@
                                 <img src="{{ $relatedItem->img_path ? asset('storage/'.$relatedItem->img_path) : asset('images/no-image.jpg') }}" class="card-img-top" alt="{{ $relatedItem->title }}">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $relatedItem->title }}</h5>
-                                    <p class="card-text text-muted">{{ $relatedItem->genre->name }}</p>
+                                    <div class="mb-2">
+                                        @foreach($relatedItem->genres as $genre)
+                                            <span class="badge bg-secondary">{{ $genre->name }}</span>
+                                        @endforeach
+                                    </div>
                                     <div class="text-warning mb-1">
                                         @for($i = 1; $i <= 5; $i++)
                                             @if($i <= round($relatedItem->average_rating))
@@ -211,113 +220,3 @@
     @endif
 </div>
 @endsection
-
-Now let's create the cart views:
-
-```tsx file="resources/views/cart/index.blade.php"
-@extends('layouts.app')
-
-@section('title', 'Shopping Cart')
-
-@section('content')
-<div class="container">
-    <h1 class="mb-4">Shopping Cart</h1>
-
-    @if(count($items) > 0)
-        <div class="card mb-4">
-            <div class="card-body">
-                <form action="{{ route('cart.update') }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Subtotal</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($items as $item)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="{{ $item->img_path ? asset('storage/'.$item->img_path) : asset('images/no-image.jpg') }}" alt="{{ $item->title }}" class="img-thumbnail me-3" style="width: 60px;">
-                                                <div>
-                                                    <h5 class="mb-0">{{ $item->title }}</h5>
-                                                    <small class="text-muted">{{ $item->genre->name }}</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>${{ number_format($item->price, 2) }}</td>
-                                        <td>
-                                            <input type="number" class="form-control" style="width: 80px;" name="quantities[{{ $item->id }}]" value="{{ $item->cart_quantity }}" min="1" max="{{ $item->stock ? $item->stock->quantity : 10 }}">
-                                        </td>
-                                        <td>${{ number_format($item->subtotal, 2) }}</td>
-                                        <td>
-                                            <form action="{{ route('cart.remove', $item) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="d-flex justify-content-between mt-3">
-                        <div>
-                            <button type="submit" class="btn btn-outline-secondary">Update Cart</button>
-                            <a href="{{ route('items.index') }}" class="btn btn-outline-primary ms-2">Continue Shopping</a>
-                        </div>
-                        <form action="{{ route('cart.clear') }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger">Clear Cart</button>
-                        </form>
-                    </div>
-                </form>
-            </div>
-            <div class="card-footer">
-                <div class="row">
-                    <div class="col-md-6 offset-md-6">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <th>Subtotal</th>
-                                    <td class="text-end">${{ number_format($total, 2) }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Shipping</th>
-                                    <td class="text-end">Calculated at checkout</td>
-                                </tr>
-                                <tr>
-                                    <th class="h5">Total (estimated)</th>
-                                    <td class="text-end h5">${{ number_format($total, 2) }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <a href="{{ route('cart.checkout') }}" class="btn btn-primary btn-lg w-100">Proceed to Checkout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @else
-        <div class="card">
-            <div class="card-body text-center py-5">
-                <i class="fas fa-shopping-cart fa-4x mb-3 text-muted"></i>
-                <h3>Your cart is empty</h3>
-                <p>Looks like you haven't added any manga to your cart yet.</p>
-                <a href="{{ route('items.index') }}" class="btn btn-primary">Start Shopping</a>
-            </div>
-        </div>
-    @endif
-</div>
-@endsection
-

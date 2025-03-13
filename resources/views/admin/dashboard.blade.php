@@ -110,7 +110,7 @@
                             </div>
                             <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
                         </div>
-                        <p class="mb-1"><a href="{{ route('items.show', $review->item) }}">{{ $review->item->title }}</a></p>
+                        <p class="mb-1"><a href="{{ route('admin.items.show', $review->item) }}">{{ $review->item->title }}</a></p>
                         <p class="mb-0 text-muted">{{ Str::limit($review->comment, 100) }}</p>
                     </div>
                 @empty

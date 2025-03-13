@@ -8,7 +8,7 @@
     <div class="bg-dark text-white p-5 mb-5 rounded">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h1 class="display-4">Welcome to Manga Shop</h1>
+                <h1 class="display-4">Welcome to MangaDeck</h1>
                 <p class="lead">Discover the best manga titles from Japan and around the world.</p>
                 <a href="{{ route('items.index') }}" class="btn btn-primary btn-lg">Explore Our Collection</a>
             </div>
@@ -31,7 +31,11 @@
                         <img src="{{ $item->img_path ? asset('storage/'.$item->img_path) : asset('images/no-image.jpg') }}" class="card-img-top" alt="{{ $item->title }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $item->title }}</h5>
-                            <p class="card-text text-muted">{{ $item->genre->name }}</p>
+                            <div class="mb-2">
+                                @foreach($item->genres as $genre)
+                                    <span class="badge bg-secondary">{{ $genre->name }}</span>
+                                @endforeach
+                            </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold">${{ number_format($item->price, 2) }}</span>
                                 <div>
@@ -117,4 +121,3 @@
     </div>
 </div>
 @endsection
-

@@ -9,56 +9,46 @@ class Item extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'title',
         'description',
         'price',
-        'img_path',
-        'genre_id',
         'author',
         'pages',
         'publisher',
         'publication_date',
         'isbn',
+        'img_path',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'publication_date' => 'date',
         'price' => 'decimal:2',
     ];
 
     /**
-     * Get the genre that owns the item.
+     * The genres that belong to the item.
      */
-    public function genre()
+    public function genres()
     {
-        return $this->belongsTo(Genre::class);
+        return $this->belongsToMany(Genre::class, 'genre_item');
     }
 
     /**
-     * Get the stock for the item.
+     * Get the primary genre of the item.
+     * Since genre_id column is removed, we'll use the first genre from the many-to-many relationship.
+     */
+    public function genre()
+    {
+        return $this->belongsToMany(Genre::class, 'genre_item')->limit(1);
+    }
+
+    /**
+     * Get the stock associated with the item.
      */
     public function stock()
     {
         return $this->hasOne(Stock::class);
-    }
-
-    /**
-     * Get the order lines for the item.
-     */
-    public function orderLines()
-    {
-        return $this->hasMany(OrderLine::class);
     }
 
     /**
@@ -68,21 +58,13 @@ class Item extends Model
     {
         return $this->hasMany(Review::class);
     }
-
+    
     /**
      * Check if the item is in stock.
      */
     public function isInStock()
     {
         return $this->stock && $this->stock->quantity > 0;
-    }
-
-    /**
-     * Get the average rating for the item.
-     */
-    public function getAverageRatingAttribute()
-    {
-        return $this->reviews()->where('is_approved', true)->avg('rating') ?? 0;
     }
 }
 

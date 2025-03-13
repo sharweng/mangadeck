@@ -48,18 +48,16 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <h5>ISBN</h5>
-                                <p>{{ $item->isbn ?? 'N/A' }}</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-8">
                 <h2>{{ $item->title }}</h2>
-                <p class="text-muted">{{ $item->genre->name }}</p>
+                <div class="mb-2">
+                    @foreach($item->genres as $genre)
+                        <span class="badge bg-primary">{{ $genre->name }}</span>
+                    @endforeach
+                </div>
                 
                 <div class="mb-3">
                     <h5>Description</h5>
@@ -77,15 +75,9 @@
                     </div>
                 </div>
                 
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <h5>Publication Date</h5>
-                        <p>{{ $item->publication_date ? $item->publication_date->format('F d, Y') : 'N/A' }}</p>
-                    </div>
-                    <div class="col-md-6">
-                        <h5>Pages</h5>
-                        <p>{{ $item->pages ?? 'N/A' }}</p>
-                    </div>
+                <div class="mb-3">
+                    <h5>Publication Date</h5>
+                    <p>{{ $item->publication_date ? $item->publication_date->format('F d, Y') : 'N/A' }}</p>
                 </div>
                 
                 <div class="mb-3">
@@ -170,4 +162,3 @@
     </div>
 </div>
 @endsection
-
