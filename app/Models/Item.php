@@ -4,21 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'title',
         'description',
         'price',
         'author',
-        'pages',
         'publisher',
         'publication_date',
-        'isbn',
-        'img_path',
     ];
 
     protected $casts = [
@@ -66,5 +64,37 @@ class Item extends Model
     {
         return $this->stock && $this->stock->quantity > 0;
     }
-}
 
+    /**
+     * Get all images for this item.
+     */
+    public function images()
+    {
+        return $this->hasMany(ItemImage::class)->orderBy('sort_order');
+    }
+
+    /**
+     * Get the primary image for this item.
+     */
+    public function primaryImage()
+    {
+        return $this->hasOne(ItemImage::class)->where('is_primary', true);
+    }
+
+    /**
+     * Get the primary image path or a default image if none exists.
+     */
+    public function getImagePathAttribute()
+    {
+        $primaryImage = $this->primaryImage;
+        return $primaryImage ? $primaryImage->image_path : 'default_manga.jpg';
+    }
+
+    /**
+     * Get the order lines for the item.
+     */
+    public function orderLines()
+    {
+        return $this->hasMany(OrderLine::class);
+    }
+}

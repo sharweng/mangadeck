@@ -21,6 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'role_id',
         'status',
     ];
 
@@ -45,6 +46,14 @@ class User extends Authenticatable
     ];
 
     /**
+     * Get the role associated with the user.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
      * Get the customer associated with the user.
      */
     public function customer()
@@ -65,7 +74,7 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || ($this->role_id && $this->role_id === 1);
     }
 
     /**
@@ -73,7 +82,7 @@ class User extends Authenticatable
      */
     public function isStaff()
     {
-        return $this->role === 'staff';
+        return $this->role === 'staff' || ($this->role_id && $this->role_id === 2);
     }
 
     /**
@@ -81,7 +90,7 @@ class User extends Authenticatable
      */
     public function isCustomer()
     {
-        return $this->role === 'customer';
+        return $this->role === 'customer' || ($this->role_id && $this->role_id === 3);
     }
 
     /**
@@ -92,4 +101,3 @@ class User extends Authenticatable
         return $this->status === 'activated';
     }
 }
-

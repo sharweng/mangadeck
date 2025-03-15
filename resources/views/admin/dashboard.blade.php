@@ -184,13 +184,19 @@
             <div class="card-body">
                 @forelse($lowStockItems as $item)
                     <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                        <img src="{{ $item->img_path ? asset('storage/'.$item->img_path) : asset('images/no-image.jpg') }}" alt="{{ $item->title }}" class="img-thumbnail me-3" style="width: 50px;">
+                        <img src="{{ $item->getImagePathAttribute() ? asset('storage/'.$item->getImagePathAttribute()) : asset('images/no-image.jpg') }}" alt="{{ $item->title }}" class="img-thumbnail me-3" style="width: 50px;">
                         <div class="w-100">
                             <div class="d-flex justify-content-between">
                                 <h6 class="mb-0">{{ $item->title }}</h6>
                                 <span class="badge bg-danger">{{ $item->stock->quantity }} left</span>
                             </div>
-                            <small class="text-muted">{{ $item->genre->name }}</small>
+                            <small class="text-muted">
+                                @if($item->genres->isNotEmpty())
+                                    {{ $item->genres->first()->name }}
+                                @else
+                                    No genre
+                                @endif
+                            </small>
                         </div>
                     </div>
                 @empty
@@ -251,4 +257,3 @@
     });
 </script>
 @endsection
-

@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Genre;
 use App\Models\Review;
 use App\Models\Stock;
+use App\Models\ItemImage;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
@@ -22,7 +23,7 @@ class ItemController extends Controller
         $selectedGenre = $request->input('genre');
         $search = $request->input('search');
         
-        $query = Item::with(['genres', 'stock', 'reviews']);
+        $query = Item::with(['genres', 'stock', 'reviews', 'images']);
         
         if ($selectedGenre) {
             $query->whereHas('genres', function($q) use ($selectedGenre) {
@@ -77,7 +78,8 @@ class ItemController extends Controller
             'author' => 'nullable|string|max:255',
             'publisher' => 'nullable|string|max:255',
             'publication_date' => 'nullable|date',
-            'image' => 'nullable|image|max:2048',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:2048',
             'quantity' => 'required|integer|min:0',
         ]);
         
@@ -85,16 +87,10 @@ class ItemController extends Controller
         \DB::beginTransaction();
         
         try {
-            $imagePath = null;
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('items', 'public');
-            }
-            
             $item = Item::create([
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'price' => $validated['price'],
-                'img_path' => $imagePath,
                 'author' => $validated['author'],
                 'publisher' => $validated['publisher'],
                 'publication_date' => $validated['publication_date'],
@@ -107,6 +103,25 @@ class ItemController extends Controller
             $item->stock()->create([
                 'quantity' => $validated['quantity'],
             ]);
+            
+            // Handle multiple images
+            if ($request->hasFile('images')) {
+                $isPrimary = true; // First image is primary
+                $sortOrder = 1;
+                
+                foreach ($request->file('images') as $image) {
+                    $imagePath = $image->store('items', 'public');
+                    
+                    $item->images()->create([
+                        'image_path' => $imagePath,
+                        'is_primary' => $isPrimary,
+                        'sort_order' => $sortOrder,
+                    ]);
+                    
+                    $isPrimary = false; // Only first image is primary
+                    $sortOrder++;
+                }
+            }
             
             \DB::commit();
             
@@ -129,7 +144,7 @@ class ItemController extends Controller
      */
     public function show(Request $request, Item $item)
     {
-        $item->load(['genres', 'stock', 'reviews' => function($query) {
+        $item->load(['genres', 'stock', 'images', 'reviews' => function($query) {
             $query->where('is_approved', true)->with('user');
         }]);
         
@@ -157,7 +172,7 @@ class ItemController extends Controller
         $this->authorize('update', $item);
         
         $genres = Genre::all();
-        $item->load(['genres', 'stock']);
+        $item->load(['genres', 'stock', 'images']);
         
         return view('admin.items.edit', compact('item', 'genres'));
     }
@@ -178,7 +193,11 @@ class ItemController extends Controller
             'author' => 'nullable|string|max:255',
             'publisher' => 'nullable|string|max:255',
             'publication_date' => 'nullable|date',
-            'image' => 'nullable|image|max:2048',
+            'new_images' => 'nullable|array',
+            'new_images.*' => 'image|max:2048',
+            'delete_image_ids' => 'nullable|array',
+            'delete_image_ids.*' => 'exists:item_images,id',
+            'primary_image_id' => 'nullable|exists:item_images,id',
             'quantity' => 'required|integer|min:0',
         ]);
         
@@ -186,20 +205,10 @@ class ItemController extends Controller
         \DB::beginTransaction();
         
         try {
-            $imagePath = null;
-            if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                // Delete old image if it exists
-                if ($item->img_path) {
-                    Storage::disk('public')->delete($item->img_path);
-                }
-                $imagePath = $request->file('image')->store('items', 'public');
-            }
-            
             $item->update([
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'price' => $validated['price'],
-                'img_path' => $imagePath ?? $item->img_path,
                 'author' => $validated['author'],
                 'publisher' => $validated['publisher'],
                 'publication_date' => $validated['publication_date'],
@@ -220,6 +229,59 @@ class ItemController extends Controller
                     'item_id' => $item->id,
                     'quantity' => $validated['quantity']
                 ]);
+            }
+            
+            // Handle image deletions
+            if (!empty($validated['delete_image_ids'])) {
+                $imagesToDelete = ItemImage::whereIn('id', $validated['delete_image_ids'])
+                    ->where('item_id', $item->id)
+                    ->get();
+                
+                foreach ($imagesToDelete as $image) {
+                    // Delete the file from storage
+                    if ($image->image_path) {
+                        Storage::disk('public')->delete($image->image_path);
+                    }
+                    $image->delete();
+                }
+            }
+            
+            // Set primary image
+            if (!empty($validated['primary_image_id'])) {
+                // First, set all images as non-primary
+                ItemImage::where('item_id', $item->id)
+                    ->update(['is_primary' => false]);
+                
+                // Then set the selected image as primary
+                ItemImage::where('id', $validated['primary_image_id'])
+                    ->where('item_id', $item->id)
+                    ->update(['is_primary' => true]);
+            }
+            
+            // Handle new images
+            if ($request->hasFile('new_images')) {
+                // Get the highest sort order
+                $maxSortOrder = ItemImage::where('item_id', $item->id)
+                    ->max('sort_order') ?? 0;
+                
+                $sortOrder = $maxSortOrder + 1;
+                
+                // If no images exist and no primary image is set, make the first new image primary
+                $makeFirstPrimary = ItemImage::where('item_id', $item->id)
+                    ->where('is_primary', true)
+                    ->count() === 0;
+                
+                foreach ($request->file('new_images') as $index => $image) {
+                    $imagePath = $image->store('items', 'public');
+                    
+                    $item->images()->create([
+                        'image_path' => $imagePath,
+                        'is_primary' => ($index === 0 && $makeFirstPrimary),
+                        'sort_order' => $sortOrder,
+                    ]);
+                    
+                    $sortOrder++;
+                }
             }
             
             \DB::commit();
@@ -245,8 +307,11 @@ class ItemController extends Controller
     {
         $this->authorize('delete', $item);
         
-        if ($item->img_path) {
-            Storage::disk('public')->delete($item->img_path);
+        // Delete all associated images from storage
+        foreach ($item->images as $image) {
+            if ($image->image_path) {
+                Storage::disk('public')->delete($image->image_path);
+            }
         }
         
         $item->delete();
@@ -256,11 +321,37 @@ class ItemController extends Controller
     }
 
     /**
+     * Restore a soft-deleted item.
+     */
+    public function restore($id)
+    {
+        $this->authorize('restore', Item::class);
+        
+        $item = Item::withTrashed()->findOrFail($id);
+        $item->restore();
+        
+        return redirect()->route('admin.items.index')
+            ->with('success', 'Manga restored successfully.');
+    }
+
+    /**
+     * Display a listing of trashed items.
+     */
+    public function trashed()
+    {
+        $this->authorize('viewTrashed', Item::class);
+        
+        $trashedItems = Item::onlyTrashed()->with(['genres', 'stock'])->paginate(12);
+        
+        return view('admin.items.trashed', compact('trashedItems'));
+    }
+
+    /**
      * Get items data for DataTables.
      */
     public function getData()
     {
-        $items = Item::with(['genres', 'stock']);
+        $items = Item::with(['genres', 'stock', 'images']);
         
         return DataTables::of($items)
             ->addColumn('stock_quantity', function($item) {
@@ -269,11 +360,96 @@ class ItemController extends Controller
             ->addColumn('genres_list', function($item) {
                 return $item->genres->pluck('name')->implode(', ');
             })
+            ->addColumn('image', function($item) {
+                $primaryImage = $item->primaryImage;
+                if ($primaryImage) {
+                    return '<img src="' . Storage::url($primaryImage->image_path) . '" alt="' . $item->title . '" class="img-thumbnail" width="50">';
+                }
+                return '<span class="text-muted">No image</span>';
+            })
             ->addColumn('actions', function($item) {
                 return view('admin.items.actions', compact('item'))->render();
             })
-            ->rawColumns(['actions'])
+            ->rawColumns(['actions', 'image'])
             ->make(true);
     }
-}
 
+    /**
+     * Upload multiple images for an item.
+     */
+    public function uploadImages(Request $request, Item $item)
+    {
+        $this->authorize('update', $item);
+        
+        $request->validate([
+            'images' => 'required|array',
+            'images.*' => 'image|max:2048',
+        ]);
+        
+        $maxSortOrder = ItemImage::where('item_id', $item->id)
+            ->max('sort_order') ?? 0;
+        
+        $sortOrder = $maxSortOrder + 1;
+        $uploadedCount = 0;
+        
+        foreach ($request->file('images') as $image) {
+            $imagePath = $image->store('items', 'public');
+            
+            $item->images()->create([
+                'image_path' => $imagePath,
+                'is_primary' => false, // Don't change primary image when bulk uploading
+                'sort_order' => $sortOrder,
+            ]);
+            
+            $sortOrder++;
+            $uploadedCount++;
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => $uploadedCount . ' images uploaded successfully',
+        ]);
+    }
+
+    /**
+     * Update image order and primary status.
+     */
+    public function updateImages(Request $request, Item $item)
+    {
+        $this->authorize('update', $item);
+        
+        $request->validate([
+            'images' => 'required|array',
+            'images.*.id' => 'required|exists:item_images,id',
+            'images.*.sort_order' => 'required|integer|min:1',
+            'images.*.is_primary' => 'required|boolean',
+        ]);
+        
+        \DB::beginTransaction();
+        
+        try {
+            foreach ($request->images as $imageData) {
+                ItemImage::where('id', $imageData['id'])
+                    ->where('item_id', $item->id)
+                    ->update([
+                        'sort_order' => $imageData['sort_order'],
+                        'is_primary' => $imageData['is_primary'],
+                    ]);
+            }
+            
+            \DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Images updated successfully',
+            ]);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating images: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+}
