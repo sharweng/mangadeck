@@ -17,33 +17,61 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-4">
-                <img src="{{ $item->img_path ? asset('storage/'.$item->img_path) : asset('images/no-image.jpg') }}" 
-                     alt="{{ $item->title }}" class="img-fluid rounded">
+            <div class="col-md-3">
+                <div class="manga-image-container mb-3 d-flex justify-content-center">
+                    @if($item->primaryImage)
+                        <img id="main-image" src="/storage/{{ $item->primaryImage->image_path }}" 
+                             alt="{{ $item->title }}" class="img-fluid rounded shadow manga-cover">
+                    @else
+                        <img id="main-image" src="{{ asset('images/no-image.jpg') }}" 
+                             alt="{{ $item->title }}" class="img-fluid rounded shadow manga-cover">
+                    @endif
+                </div>
                 
-                <div class="card mt-4">
-                    <div class="card-header">
+                <!-- Display all images as scrollable thumbnails -->
+                @if($item->images->count() > 0)
+                    <div class="mt-3">
+                        <div class="thumbnails-scroll-container">
+                            <div class="manga-thumbnails d-flex">
+                                @foreach($item->images as $image)
+                                    <div class="thumbnail-item {{ $image->is_primary ? 'primary-thumbnail' : '' }}">
+                                        <img src="/storage/{{ $image->image_path }}" 
+                                             class="img-thumbnail thumbnail-image" 
+                                             data-path="/storage/{{ $image->image_path }}"
+                                             alt="Image {{ $loop->iteration }}">
+                                        @if($image->is_primary)
+                                            <span class="badge bg-primary position-absolute">Primary</span>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                
+                <div class="card mt-3">
+                    <div class="card-header py-2">
                         <h6 class="m-0 font-weight-bold">Stock Information</h6>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body py-2">
                         <div class="row">
                             <div class="col-6">
-                                <h5>Price</h5>
-                                <p>${{ number_format($item->price, 2) }}</p>
+                                <h5 class="mb-1">Price</h5>
+                                <p class="fs-4 text-primary mb-1">${{ number_format($item->price, 2) }}</p>
                             </div>
                             <div class="col-6">
-                                <h5>Stock</h5>
-                                <p>
+                                <h5 class="mb-1">Stock</h5>
+                                <p class="mb-1">
                                     @if($item->stock)
                                         @if($item->stock->quantity > 10)
-                                            <span class="text-success">{{ $item->stock->quantity }} in stock</span>
+                                            <span class="text-success fs-5"><i class="fas fa-check-circle me-1"></i>{{ $item->stock->quantity }} in stock</span>
                                         @elseif($item->stock->quantity > 0)
-                                            <span class="text-warning">{{ $item->stock->quantity }} in stock (Low)</span>
+                                            <span class="text-warning fs-5"><i class="fas fa-exclamation-circle me-1"></i>{{ $item->stock->quantity }} in stock (Low)</span>
                                         @else
-                                            <span class="text-danger">Out of stock</span>
+                                            <span class="text-danger fs-5"><i class="fas fa-times-circle me-1"></i>Out of stock</span>
                                         @endif
                                     @else
-                                        <span class="text-secondary">Not tracked</span>
+                                        <span class="text-secondary fs-5"><i class="fas fa-question-circle me-1"></i>Not tracked</span>
                                     @endif
                                 </p>
                             </div>
@@ -51,43 +79,64 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
-                <h2>{{ $item->title }}</h2>
-                <div class="mb-2">
-                    @foreach($item->genres as $genre)
-                        <span class="badge bg-primary">{{ $genre->name }}</span>
-                    @endforeach
-                </div>
-                
-                <div class="mb-3">
-                    <h5>Description</h5>
-                    <p>{{ $item->description }}</p>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <h5>Author</h5>
-                        <p>{{ $item->author }}</p>
+            <div class="col-md-9">
+                <div class="card h-100">
+                    <div class="card-header py-2">
+                        <h6 class="m-0 font-weight-bold">Manga Information</h6>
                     </div>
-                    <div class="col-md-6">
-                        <h5>Publisher</h5>
-                        <p>{{ $item->publisher ?? 'N/A' }}</p>
+                    <div class="card-body">
+                        <h4 class="mb-2">{{ $item->title }}</h4>
+                        <div class="mb-2">
+                            @foreach($item->genres as $genre)
+                                <span class="badge bg-primary fs-6 me-1 mb-1">{{ $genre->name }}</span>
+                            @endforeach
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6 class="border-bottom pb-1">Description</h6>
+                                <p>{{ Str::limit($item->description, 150) }}</p>
+                                <button class="btn btn-sm btn-link p-0" type="button" data-bs-toggle="collapse" data-bs-target="#fullDescription">
+                                    Read more
+                                </button>
+                                <div class="collapse" id="fullDescription">
+                                    <p>{{ $item->description }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="border-bottom pb-1">Authors</h6>
+                                <ul class="list-unstyled mb-2">
+                                    @forelse($item->authors as $author)
+                                        <li>
+                                            <strong>{{ $author->name }}</strong>
+                                            @if($author->pivot && $author->pivot->role)
+                                                <span class="text-muted">({{ $author->pivot->role }})</span>
+                                            @endif
+                                        </li>
+                                    @empty
+                                        <li>No authors listed</li>
+                                    @endforelse
+                                </ul>
+                                
+                                <h6 class="border-bottom pb-1 mt-3">Publisher</h6>
+                                <p class="mb-2">{{ $item->publisher ? $item->publisher->name : 'N/A' }}</p>
+                                
+                                <h6 class="border-bottom pb-1">Publication Date</h6>
+                                <p class="mb-2">{{ $item->publication_date ? $item->publication_date->format('F d, Y') : 'N/A' }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="border-bottom pb-1">Created At</h6>
+                                <p class="mb-2">{{ $item->created_at->format('F d, Y') }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="border-bottom pb-1">Last Updated</h6>
+                                <p class="mb-2">{{ $item->updated_at->format('F d, Y') }}</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="mb-3">
-                    <h5>Publication Date</h5>
-                    <p>{{ $item->publication_date ? $item->publication_date->format('F d, Y') : 'N/A' }}</p>
-                </div>
-                
-                <div class="mb-3">
-                    <h5>Created At</h5>
-                    <p>{{ $item->created_at->format('F d, Y') }}</p>
-                </div>
-                
-                <div class="mb-3">
-                    <h5>Last Updated</h5>
-                    <p>{{ $item->updated_at->format('F d, Y') }}</p>
                 </div>
             </div>
         </div>
@@ -124,7 +173,7 @@
                                         @endfor
                                     </div>
                                 </td>
-                                <td>{{ $review->comment }}</td>
+                                <td>{{ Str::limit($review->comment, 100) }}</td>
                                 <td>{{ $review->created_at->format('M d, Y') }}</td>
                                 <td>
                                     <span class="badge bg-{{ $review->is_approved ? 'success' : 'warning' }}">
@@ -161,4 +210,110 @@
         @endif
     </div>
 </div>
+@endsection
+
+@section('styles')
+<style>
+    .manga-cover {
+        height: auto;
+        max-height: 300px;
+        object-fit: contain;
+        border: 1px solid #ddd;
+        transition: transform 0.3s ease;
+    }
+    
+    .manga-cover:hover {
+        transform: scale(1.02);
+    }
+    
+    /* Scrollable thumbnails container */
+    .thumbnails-scroll-container {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 10px; /* Add padding to show scrollbar */
+    }
+    
+    .manga-thumbnails {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        min-width: min-content;
+    }
+    
+    .thumbnail-item {
+        position: relative;
+        flex: 0 0 auto;
+        width: 70px;
+        height: 70px;
+        border-radius: 0.25rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .thumbnail-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .thumbnail-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0.25rem;
+    }
+    
+    .primary-thumbnail {
+        border: 2px solid #4e73df;
+    }
+    
+    .primary-thumbnail .badge {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        font-size: 0.6rem;
+    }
+    
+    /* Custom scrollbar for thumbnails */
+    .thumbnails-scroll-container::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .thumbnails-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    .thumbnails-scroll-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+    }
+    
+    .thumbnails-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #a1a1a1;
+    }
+</style>
+@endsection
+
+@section('scripts')
+<script>
+    // Image thumbnail click functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const thumbnails = document.querySelectorAll('.thumbnail-image');
+        const mainImage = document.getElementById('main-image');
+        
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                // Update main image
+                mainImage.src = this.getAttribute('data-path');
+                
+                // Update active thumbnail
+                document.querySelectorAll('.thumbnail-item').forEach(item => {
+                    item.classList.remove('primary-thumbnail');
+                });
+                this.parentElement.classList.add('primary-thumbnail');
+            });
+        });
+    });
+</script>
 @endsection

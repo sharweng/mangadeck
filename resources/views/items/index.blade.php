@@ -35,7 +35,11 @@
         @forelse($items as $item)
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
-                    <img src="{{ $item->img_path ? asset('storage/'.$item->img_path) : asset('images/no-image.jpg') }}" class="card-img-top" alt="{{ $item->title }}">
+                    @if($item->primaryImage)
+                        <img src="/storage/{{ $item->primaryImage->image_path }}" class="card-img-top" alt="{{ $item->title }}">
+                    @else
+                        <img src="{{ asset('images/no-image.jpg') }}" class="card-img-top" alt="{{ $item->title }}">
+                    @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $item->title }}</h5>
                         <div class="mb-2">

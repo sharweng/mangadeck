@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 15, 2025 at 03:02 AM
+-- Generation Time: Mar 15, 2025 at 07:00 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,6 +24,74 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `authors`
+--
+
+CREATE TABLE `authors` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `biography` text DEFAULT NULL,
+  `birth_date` date DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `authors`
+--
+
+INSERT INTO `authors` (`id`, `name`, `biography`, `birth_date`, `country`, `created_at`, `updated_at`) VALUES
+(1, 'Eiichiro Oda', 'Creator of One Piece, one of the best-selling manga series of all time.', '1975-01-01', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(2, 'Masashi Kishimoto', 'Creator of Naruto, a globally popular ninja-themed manga series.', '1974-11-08', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(3, 'Tite Kubo', 'Creator of Bleach, a supernatural action manga about Soul Reapers.', '1977-06-26', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(4, 'Akira Toriyama', 'Creator of Dragon Ball, one of the most influential manga series worldwide.', '1955-04-05', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(5, 'Hajime Isayama', 'Creator of Attack on Titan, a dark fantasy manga about humanity\'s struggle against titans.', '1986-08-29', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(6, 'Kohei Horikoshi', 'Creator of My Hero Academia, a superhero manga set in a world where most people have superpowers.', '1986-11-20', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(7, 'Koyoharu Gotouge', 'Creator of Demon Slayer, a dark fantasy manga about a young boy who becomes a demon slayer.', '1989-05-05', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(8, 'Gege Akutami', 'Creator of Jujutsu Kaisen, a supernatural horror manga about a high school student who joins a secret organization of sorcerers.', '1992-02-28', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(9, 'Sui Ishida', 'Creator of Tokyo Ghoul, a dark fantasy manga about a college student who becomes half-ghoul after a transplant.', '1986-12-28', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(10, 'Tsugumi Ohba', 'Writer of Death Note, a psychological thriller manga about a high school student who discovers a supernatural notebook.', '1969-02-17', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(11, 'Takeshi Obata', 'Illustrator of Death Note and Bakuman, known for his detailed art style.', '1969-02-11', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(12, 'Hiromu Arakawa', 'Creator of Fullmetal Alchemist, a fantasy adventure manga about two brothers seeking the philosopher\'s stone.', '1973-05-08', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(13, 'Yoshihiro Togashi', 'Creator of Hunter x Hunter and Yu Yu Hakusho, known for complex storytelling.', '1966-04-27', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(14, 'Naoko Takeuchi', 'Creator of Sailor Moon, a magical girl manga that became a global phenomenon.', '1967-03-15', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(15, 'Natsuki Takaya', 'Creator of Fruits Basket, a romantic comedy manga with supernatural elements.', '1973-07-07', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(16, 'Ai Yazawa', 'Creator of Nana, a josei manga about two women with the same name pursuing their dreams.', '1967-03-07', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(17, 'Bisco Hatori', 'Creator of Ouran High School Host Club, a romantic comedy manga set in a high school host club.', '1975-08-30', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(18, 'Kentaro Miura', 'Creator of Berserk, a dark fantasy manga known for its intricate artwork and mature themes.', '1966-07-11', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(19, 'Takehiko Inoue', 'Creator of Slam Dunk and Vagabond, known for his realistic art style.', '1967-01-12', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(20, 'Makoto Yukimura', 'Creator of Vinland Saga, a historical manga set in the Viking Age.', '1976-05-08', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(21, 'Naoki Urasawa', 'Creator of Monster and 20th Century Boys, known for his psychological thrillers.', '1960-01-02', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(22, 'Tatsuya Endo', 'Creator of Spy x Family, a comedy-action manga about a spy who builds a fake family.', '1980-07-23', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(23, 'Tatsuki Fujimoto', 'Creator of Chainsaw Man, a dark fantasy manga about a young man who can transform into a chainsaw devil.', '1992-10-10', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(24, 'Haruichi Furudate', 'Creator of Haikyu!!, a sports manga about a high school volleyball team.', '1983-03-07', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(25, 'Naoshi Arakawa', 'Creator of Your Lie in April, a drama manga about a pianist who loses his ability to hear the piano.', '1984-12-05', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(26, 'Yoshitoki Oima', 'Creator of A Silent Voice, a drama manga about a boy who bullies a deaf girl.', '1989-03-15', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(27, 'Kaiu Shirai', 'Writer of The Promised Neverland, a thriller manga about orphans who discover the dark truth about their orphanage.', '1988-01-01', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(28, 'Posuka Demizu', 'Illustrator of The Promised Neverland, known for her detailed and atmospheric art.', '1988-12-28', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(29, 'Akihito Tsukushi', 'Creator of Made in Abyss, a fantasy adventure manga about a girl who descends into a mysterious abyss.', '1978-03-04', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(30, 'Tappei Nagatsuki', 'Writer of Re:Zero, an isekai light novel and manga series about a young man transported to another world.', '1987-03-11', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(31, 'Reki Kawahara', 'Creator of Sword Art Online, a science fiction light novel and manga series about virtual reality MMORPGs.', '1974-08-17', 'Japan', '2025-03-14 21:55:46', '2025-03-14 21:55:46');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `author_item`
+--
+
+CREATE TABLE `author_item` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `author_id` bigint(20) UNSIGNED NOT NULL,
+  `item_id` bigint(20) UNSIGNED NOT NULL,
+  `role` varchar(255) DEFAULT NULL COMMENT 'Writer, Illustrator, etc.',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `bad_words`
 --
 
@@ -33,15 +101,6 @@ CREATE TABLE `bad_words` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `bad_words`
---
-
-INSERT INTO `bad_words` (`id`, `word`, `created_at`, `updated_at`) VALUES
-(1, 'badword1', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(2, 'badword2', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(3, 'badword3', '2025-03-14 16:37:57', '2025-03-14 16:37:57');
 
 -- --------------------------------------------------------
 
@@ -66,11 +125,11 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `title`, `lname`, `fname`, `addressline`, `phone`, `user_id`, `created_at`, `updated_at`) VALUES
-(16, 'Ms', 'Doe', 'John', '33267 Larry Plains Suite 756, Lake Tomasa, WY 64435', '+1 (415) 806-3772', 25, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(17, 'Mr', 'Smith', 'Jane', '6485 Mayer Shoals, Watsicabury, MN 47451', '443.323.6800', 26, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(18, 'Dr', 'Johnson', 'Bob', '4186 Allison Shoals Apt. 587, Bergnaummouth, LA 99328-7440', '253-948-5487', 27, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(19, 'Dr', 'Brown', 'Alice', '663 Eichmann Wall, New Deborah, ME 96856-8860', '(272) 238-0263', 28, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(20, 'Mrs', 'User', 'Inactive', '64277 Doyle Forges, West Mercedes, WA 78901', '1-814-645-6098', 29, '2025-03-14 17:23:59', '2025-03-14 17:23:59');
+(1, 'Dr', 'Doe', 'John', '68391 McKenzie Drive Suite 877, New Jackieside, TN 21856-8442', '315.497.5884', 4, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(2, 'Mr', 'Smith', 'Jane', '44566 Klein Creek, West Allen, NE 55711-6200', '463.392.7607', 5, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(3, 'Mr', 'Johnson', 'Bob', '988 Celestino Square, West Evert, ID 66602', '909-739-6595', 6, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(4, 'Dr', 'Brown', 'Alice', '32600 Stone Underpass, West Winifredberg, OH 81816', '458.994.0112', 7, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(5, 'Prof', 'User', 'Inactive', '13202 Sarina Union, Cartermouth, CO 06515', '531-586-1962', 8, '2025-03-14 21:55:46', '2025-03-14 21:55:46');
 
 -- --------------------------------------------------------
 
@@ -107,16 +166,18 @@ CREATE TABLE `genres` (
 --
 
 INSERT INTO `genres` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Shonen', 'Manga aimed at teenage boys', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(2, 'Shojo', 'Manga aimed at teenage girls', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(3, 'Seinen', 'Manga aimed at adult men', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(4, 'Josei', 'Manga aimed at adult women', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(5, 'Isekai', 'Stories about characters transported to another world', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(6, 'Mecha', 'Stories featuring robots and mechanical technology', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(7, 'Fantasy', 'Stories with magical or supernatural elements', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(8, 'Horror', 'Stories designed to frighten or scare', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(9, 'Romance', 'Stories focused on romantic relationships', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(10, 'Sports', 'Stories centered around athletics and competition', '2025-03-14 16:37:57', '2025-03-14 16:37:57');
+(1, 'Shonen', 'Manga aimed at teenage boys, typically featuring action, adventure, and coming-of-age themes.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(2, 'Shojo', 'Manga aimed at teenage girls, often focusing on romance, relationships, and personal growth.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(3, 'Seinen', 'Manga aimed at adult men, featuring more mature themes, complex characters, and realistic scenarios.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(4, 'Josei', 'Manga aimed at adult women, exploring mature relationships, career challenges, and daily life.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(5, 'Isekai', 'Stories about characters transported to or reborn in another world, often with fantasy elements.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(6, 'Mecha', 'Stories featuring robots, mechanical technology, and often exploring the relationship between humans and machines.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(7, 'Fantasy', 'Stories with magical or supernatural elements, often set in fictional worlds with unique rules and systems.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(8, 'Horror', 'Stories designed to frighten or scare readers, featuring supernatural threats, psychological terror, or gore.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(9, 'Romance', 'Stories focused on romantic relationships and emotional connections between characters.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(10, 'Sports', 'Stories centered around athletics and competition, often featuring character growth through sports.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(11, 'Slice of Life', 'Stories depicting everyday experiences and focusing on the mundane aspects of characters\' lives.', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(12, 'Mystery', 'Stories involving the solution of a mystery, often featuring detectives, crimes, or puzzles.', '2025-03-14 21:55:46', '2025-03-14 21:55:46');
 
 -- --------------------------------------------------------
 
@@ -137,56 +198,63 @@ CREATE TABLE `genre_item` (
 --
 
 INSERT INTO `genre_item` (`id`, `genre_id`, `item_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(2, 6, 1, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(3, 9, 1, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(4, 2, 2, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(5, 2, 3, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(6, 3, 4, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(7, 4, 4, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(8, 6, 4, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(9, 3, 5, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(10, 5, 6, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(11, 2, 7, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(12, 9, 8, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(13, 6, 9, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(14, 8, 9, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(15, 9, 9, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(16, 2, 10, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(17, 10, 10, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(18, 6, 11, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(19, 7, 12, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(20, 10, 12, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(21, 2, 13, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(22, 8, 13, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(23, 5, 14, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(24, 5, 15, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(25, 3, 16, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(26, 9, 17, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(27, 8, 18, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(28, 5, 19, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(29, 7, 19, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(30, 10, 19, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(31, 9, 20, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(32, 10, 20, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(33, 5, 21, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(34, 7, 21, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(35, 7, 22, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(36, 8, 22, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(37, 7, 23, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(38, 4, 24, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(39, 2, 25, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(40, 4, 25, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(41, 10, 25, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(42, 2, 26, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(43, 10, 26, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(44, 1, 27, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(45, 5, 27, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(46, 8, 28, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(47, 1, 29, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(48, 6, 30, '2025-03-14 17:23:17', '2025-03-14 17:23:17'),
-(49, 1, 31, NULL, NULL),
-(50, 3, 31, NULL, NULL);
+(1, 5, 1, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(2, 6, 1, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(3, 6, 2, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(4, 1, 3, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(5, 1, 4, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(6, 4, 4, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(7, 10, 4, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(8, 6, 5, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(9, 12, 5, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(10, 1, 6, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(11, 3, 6, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(12, 11, 6, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(13, 7, 7, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(14, 9, 7, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(15, 3, 8, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(16, 4, 8, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(17, 10, 8, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(18, 2, 9, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(19, 3, 9, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(20, 7, 9, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(21, 12, 10, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(22, 5, 11, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(23, 7, 11, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(24, 11, 11, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(25, 11, 12, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(26, 2, 13, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(27, 5, 14, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(28, 8, 14, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(29, 12, 14, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(30, 8, 15, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(31, 2, 16, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(32, 3, 16, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(33, 7, 16, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(34, 1, 17, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(35, 8, 17, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(36, 10, 17, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(37, 7, 18, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(38, 1, 19, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(39, 9, 19, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(40, 5, 20, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(41, 4, 21, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(42, 7, 21, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(43, 12, 21, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(44, 11, 22, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(45, 12, 22, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(46, 2, 23, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(47, 3, 24, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(48, 10, 25, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(49, 4, 26, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(50, 5, 26, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(51, 11, 26, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(52, 4, 27, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(53, 11, 27, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(54, 1, 28, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(55, 8, 29, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(56, 7, 30, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(57, 10, 30, '2025-03-14 21:55:46', '2025-03-14 21:55:46');
 
 -- --------------------------------------------------------
 
@@ -198,9 +266,8 @@ CREATE TABLE `items` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` text NOT NULL,
+  `publisher_id` bigint(20) UNSIGNED DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
-  `author` varchar(255) DEFAULT NULL,
-  `publisher` varchar(255) DEFAULT NULL,
   `publication_date` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -211,38 +278,37 @@ CREATE TABLE `items` (
 -- Dumping data for table `items`
 --
 
-INSERT INTO `items` (`id`, `title`, `description`, `price`, `author`, `publisher`, `publication_date`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'One Piece Volume 1: Romance Dawn', 'Dolor officiis sapiente est et aut molestiae ratione consequatur. Vero tempora sed qui quas itaque labore. Optio voluptatem omnis iste quasi. Non quo sed ea quis beatae.\n\nCommodi voluptas quia accusantium tempore eligendi et. Doloribus ad accusamus qui ab. Esse veritatis illum nobis corrupti labore.\n\nVoluptatibus sint sunt maiores laboriosam molestiae accusamus quidem consectetur. Minus fugit aut deleniti ab dolore sit eum. Inventore eaque et molestiae autem.', 21.23, 'Eiichiro Oda', 'Viz Media', '2022-03-10', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(2, 'Naruto Volume 1: Uzumaki Naruto', 'Vel cum autem consequuntur fuga odit eveniet. Maxime et sequi maiores reiciendis aperiam cumque et. Aut cum pariatur fugit nihil laborum nisi.\n\nVoluptatibus sint pariatur ipsa. Ex et qui voluptas esse. Et officiis nostrum sint non ut dolor ea.\n\nVelit sed corrupti minima debitis occaecati tenetur. Ratione dolores at non est voluptate ex facilis. Sit odio numquam id possimus voluptas quae. Labore nam cum excepturi provident harum.', 22.38, 'Masashi Kishimoto', 'Kodansha Comics', '2015-11-02', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(3, 'Bleach Volume 1: The Death and the Strawberry', 'Iusto id deserunt et eius. Molestias quo et laborum consectetur rerum quia.\n\nRerum animi tempore impedit ut magnam. Repellendus minus nobis tempore et molestias numquam non assumenda. Quisquam pariatur hic vitae corporis quia sed omnis.\n\nDignissimos odit provident enim id id quia esse. Aut veritatis eos impedit iure assumenda modi iste.', 13.97, 'Tite Kubo', 'Yen Press', '2023-07-12', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(4, 'Dragon Ball Volume 1: The Monkey King', 'Libero hic voluptates accusantium quis. In reiciendis et atque dolores qui quo et. Deserunt qui omnis repellat doloribus.\n\nSapiente ea accusamus nostrum culpa vero. Labore quis nostrum eos facere rerum. Numquam expedita cupiditate illum cumque porro. Ut recusandae harum nobis necessitatibus qui dolorem.\n\nMaxime rerum eos molestiae doloribus. Maiores rerum ratione porro magni. Distinctio sint quaerat qui voluptatem quis et itaque.', 11.26, 'Akira Toriyama', 'Seven Seas Entertainment', '2023-02-18', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(5, 'Attack on Titan Volume 1', 'Quos eos corrupti quae. Assumenda qui aliquam eveniet qui iste consectetur velit saepe. Qui eius explicabo perferendis nesciunt. Cum dolores nam vero sit praesentium voluptates.\n\nEt minus ipsum eveniet sed illo fugiat. Libero incidunt et eligendi id. Illum nam maxime eos harum cum facilis iure similique. Enim voluptas numquam voluptas qui eaque.\n\nFugit voluptas maiores itaque et beatae voluptatem est. Pariatur tempora minus nihil rem dolores laboriosam dignissimos. Sed sed enim aut quidem dolorem. Sit aperiam voluptates quae.', 20.58, 'Hajime Isayama', 'Dark Horse Comics', '2024-11-10', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(6, 'My Hero Academia Volume 1: Izuku Midoriya: Origin', 'Magnam provident et repellat velit explicabo repellat quae. Quo et mollitia qui suscipit dolor eos commodi perferendis. Non eligendi non fuga ut iste. Enim asperiores dignissimos qui ut aliquam est mollitia. Sed quidem dolorem vero aut ad ducimus laudantium dolor.\n\nSuscipit ut voluptates sed est. At magnam nostrum laudantium laboriosam mollitia vel.\n\nFugit similique veritatis ab sint. Vel eum ut aliquid. Fuga totam autem ducimus. Rem assumenda et molestiae aliquid voluptatem minus sint.', 17.36, 'Kohei Horikoshi', 'Vertical Comics', '2016-04-28', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(7, 'Demon Slayer Volume 1: Cruelty', 'Quisquam qui ipsum facere voluptate ut suscipit amet qui. Sed sint fugit ex. Fuga odit recusandae et asperiores placeat. Est non omnis alias cupiditate.\n\nEos sit dolorem labore provident nesciunt. Tempore qui facere veritatis sit. Ipsam voluptatem perspiciatis qui in possimus sed et. Aut ut id ut qui omnis distinctio.\n\nExcepturi omnis expedita ipsa qui. Sed ab veniam blanditiis ea quae impedit ea. Illo aperiam error ipsum aut. Molestiae fugiat necessitatibus maxime provident asperiores facere.', 17.79, 'Koyoharu Gotouge', 'Square Enix Manga', '2015-03-23', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(8, 'Jujutsu Kaisen Volume 1', 'Aliquam quaerat occaecati consectetur enim inventore quibusdam omnis. Voluptatem eos eligendi saepe et culpa.\n\nAb voluptatem sapiente commodi autem. Et qui ipsum exercitationem sit expedita deserunt. Odio recusandae odit odit voluptas debitis dignissimos. Saepe illum consequatur corrupti reprehenderit enim quos dolor.\n\nQuia eius iusto et culpa voluptas ullam. Eum dolorem consequatur libero minima. Eum consequuntur dicta perspiciatis dignissimos voluptatem ut.', 17.58, 'Gege Akutami', 'Tokyopop', '2021-08-10', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(9, 'Tokyo Ghoul Volume 1', 'Soluta necessitatibus illum eligendi qui. Fugiat doloribus dolor est quidem ut ab. Consequatur quam error sed et ut. Placeat provident molestias sit culpa doloremque corrupti saepe.\n\nLaboriosam voluptatibus quia autem magnam. Minima sequi dolores voluptate qui. Non ex velit rerum corrupti. Ut corrupti deleniti error et magnam consequuntur voluptatem occaecati.\n\nDolore maiores omnis inventore. Est sed quaerat vitae earum enim aut. Consequatur et laudantium itaque animi consectetur quibusdam perspiciatis.', 17.67, 'Sui Ishida', 'Shueisha', '2021-01-15', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(10, 'Death Note Volume 1: Boredom', 'Unde eaque architecto illum facilis rerum. Nemo aut ut natus non ea est optio. Maiores qui blanditiis rerum veniam accusamus vitae inventore. Quidem temporibus magnam iure.\n\nMinima velit cum corporis commodi maxime quidem. Culpa laboriosam perferendis tempore omnis aut quis qui. Sint quo omnis ex minus et.\n\nOfficia placeat fugiat modi ullam ut consequatur ut. Nostrum eos maiores dolor. Autem rerum qui autem laudantium ut quo.', 16.00, 'Tsugumi Ohba', 'Kadokawa', '2025-02-15', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(11, 'Fullmetal Alchemist Volume 1', 'Ex vel eos tempora ut est sed. Sed est rerum sunt eum aut. Et ut aut quisquam omnis vero.\n\nQui quasi perferendis suscipit ut commodi exercitationem esse. Illum doloribus laborum dolorem. Error rem est sapiente laudantium. Dolores neque aliquam voluptas qui reiciendis neque.\n\nUt omnis voluptate dolorem aut debitis ea maiores. Et autem voluptates ullam et excepturi at modi. Dolor quos eveniet ea qui atque eos consequatur. Aut sint ut fugiat ducimus.', 25.89, 'Hiromu Arakawa', 'Viz Media', '2021-03-06', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(12, 'Hunter x Hunter Volume 1', 'Velit eos possimus corrupti voluptas dolorem optio. Et molestiae nam aliquam laborum magni natus. Velit qui non at similique illum recusandae. Perferendis et cupiditate aut aut dolor. Doloremque qui modi et suscipit.\n\nUt dicta omnis qui officiis doloremque accusamus id. Vero quis qui similique ducimus dolor alias. Fugiat ut dolorem quos excepturi fugiat omnis.\n\nIllo consequuntur ab fuga est eligendi minima consequatur. Dolore dignissimos deserunt sit tempore vero repudiandae deserunt.', 13.55, 'Yoshihiro Togashi', 'Kodansha Comics', '2024-04-03', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(13, 'Sailor Moon Volume 1', 'Explicabo sint illo velit optio magni aut at. Aspernatur et fugit velit suscipit quas commodi. Impedit sequi unde illum quasi dolor et dolores.\n\nSequi laudantium voluptatem beatae non excepturi. Aut voluptas qui tenetur architecto. Dolorum hic ea illo occaecati.\n\nUt voluptatem vel non at aliquid ea enim. Voluptatibus possimus debitis quidem alias provident similique commodi sunt. Voluptas illo perspiciatis corrupti aut deleniti dolor. Consequatur quidem non omnis molestias neque dolor officia. Sit atque officiis voluptatem facilis suscipit earum.', 21.28, 'Naoko Takeuchi', 'Yen Press', '2023-12-27', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(14, 'Fruits Basket Volume 1', 'Nihil sunt possimus architecto tenetur cupiditate officia. Perferendis reiciendis non non et libero aut itaque et. Rerum distinctio provident facere nulla officiis labore in.\n\nAutem voluptas consequuntur fugit debitis itaque odit id. Labore quia sed enim eos et repellat. Eligendi reprehenderit in aperiam rerum. Reprehenderit corrupti dolorum ad.\n\nA cupiditate neque atque id sint repellat. Corporis culpa totam et ut. Molestiae molestiae eaque quidem deleniti.', 10.71, 'Natsuki Takaya', 'Seven Seas Entertainment', '2021-11-02', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(15, 'Nana Volume 1', 'Hic ut dolores quod et harum. Vel enim ea dolores qui rerum.\n\nLaudantium illo deleniti architecto sunt iste asperiores. Consequatur nam ut dolor modi maxime. Esse et nam ut velit maxime. Aut blanditiis voluptatem vel reprehenderit commodi.\n\nQuasi quod numquam sunt expedita. Sunt quis aspernatur blanditiis consequuntur id.', 12.88, 'Ai Yazawa', 'Dark Horse Comics', '2022-12-18', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(16, 'Ouran High School Host Club Volume 1', 'Eos eius minima consequatur neque et sunt dolores. Et voluptatem et beatae rerum tenetur unde. Velit sint omnis optio exercitationem cupiditate voluptatum.\n\nFuga neque ea sequi perferendis. Velit vel maxime ea dolorem unde. Voluptatem dolore est id dolore et sint iste.\n\nTemporibus impedit repellendus maiores alias accusamus ullam nobis. Laborum doloribus nesciunt nobis qui. Voluptas voluptas omnis laudantium illum velit. Magni eveniet earum corrupti atque.', 15.67, 'Bisco Hatori', 'Vertical Comics', '2023-08-26', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(17, 'Berserk Volume 1: The Black Swordsman', 'Qui et ab earum maxime ratione nam velit. Optio aut pariatur beatae aut omnis necessitatibus. Quaerat impedit qui inventore ut quis id.\n\nHarum enim quas aut accusantium. Sit qui excepturi consequatur aliquid aut. Nihil fuga voluptatem odit sint et vitae aut. Sit assumenda id saepe facilis.\n\nEx repudiandae aut officia est ipsum. Voluptatibus inventore totam recusandae sed placeat beatae. Sed molestiae aut iure. Minus quae consequuntur eum commodi iure ut est.', 26.72, 'Kentaro Miura', 'Square Enix Manga', '2020-05-27', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(18, 'Vagabond Volume 1', 'Amet qui eos rem dignissimos esse. Voluptatum omnis id ut esse sint vel aut. Dicta voluptatem qui sit et.\n\nExpedita occaecati dolores optio rem. Pariatur nulla a esse rem non.\n\nVelit doloribus et nisi. Ipsa est fugiat et quas. Nostrum vero corporis ipsa eius.', 20.04, 'Takehiko Inoue', 'Tokyopop', '2022-08-04', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(19, 'Vinland Saga Volume 1', 'Enim voluptatem suscipit molestiae doloribus. Ut minus sit commodi qui voluptatem recusandae eum.\n\nOfficiis enim quis molestiae maiores ea. Laboriosam eos unde aliquam animi. Harum excepturi similique aliquam aperiam dolores.\n\nQui id qui quas quod est eum. Deserunt rerum omnis laboriosam et. Itaque non molestiae itaque illum.', 19.94, 'Makoto Yukimura', 'Shueisha', '2023-04-10', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(20, 'Monster Volume 1', 'Distinctio et quas consequatur facilis consequatur. Impedit ut autem aperiam possimus. Rerum porro autem consequatur atque similique explicabo. Quibusdam earum corporis aliquid.\n\nAmet quam ex reprehenderit. Omnis corrupti qui quisquam tenetur. Possimus distinctio quia alias et.\n\nAmet sit reiciendis doloremque voluptatum quis et. Eos quia est atque voluptatem. Itaque suscipit et magnam vel perferendis eum et.', 21.59, 'Naoki Urasawa', 'Kadokawa', '2018-10-11', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(21, 'Spy x Family Volume 1', 'Molestiae nobis ab magnam possimus. Maiores numquam aut nulla minima. Est qui est rem doloremque omnis itaque rem. Repellat commodi ut esse ut.\n\nRepellat sapiente ut amet ut voluptatibus eum. Omnis recusandae minima fugiat aut aspernatur iste nam. Enim minima beatae enim nihil. Cupiditate ut sunt dolorum consectetur.\n\nPraesentium vel molestiae atque beatae sit error adipisci. Non aut ut qui eum. Perspiciatis quisquam ut ex unde temporibus neque. Consectetur nostrum sit voluptas iste id.', 28.71, 'Tatsuya Endo', 'Viz Media', '2020-10-07', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(22, 'Chainsaw Man Volume 1', 'Reiciendis veniam ab amet est placeat labore. Sit quos ex sit dolores earum eum et. Libero nam ea totam necessitatibus molestias voluptatem qui. Nam voluptates atque odit dolore reiciendis et animi. Ea ex sunt ipsum reprehenderit aut.\n\nLibero ea cumque quos aspernatur velit sed. Quasi quia aspernatur dignissimos sint quas ipsa. Commodi nemo sint modi totam blanditiis. Asperiores dolor suscipit delectus totam.\n\nEos mollitia amet et. Corporis similique totam iusto consequuntur doloremque dolorum autem. Quas explicabo in sequi quis voluptatem. Possimus non aut odit quo quaerat in.', 12.28, 'Tatsuki Fujimoto', 'Kodansha Comics', '2023-04-27', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(23, 'Haikyu!! Volume 1', 'Illum error assumenda facilis velit quidem. Amet aut nihil voluptatum. Commodi quod enim quod ut quia perferendis.\n\nIpsam nihil et perspiciatis odio. Temporibus pariatur asperiores nobis omnis voluptatibus et. Magnam deleniti molestias voluptatem dicta.\n\nVoluptatum reprehenderit nesciunt nihil nihil deserunt. Occaecati corrupti nobis libero voluptatem. Beatae amet quasi voluptates iste.', 15.05, 'Haruichi Furudate', 'Yen Press', '2024-03-18', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(24, 'Slam Dunk Volume 1', 'Et aut facere accusantium mollitia maiores modi minima. Nemo voluptas aut labore id quis. Ut harum rem nihil repudiandae rem porro aut. Provident quo libero laboriosam ea illum.\n\nRerum assumenda fugiat autem velit vel aut. Exercitationem sed ut perspiciatis.\n\nLibero rerum libero commodi necessitatibus hic omnis possimus optio. Et earum quidem consequatur aut molestiae voluptatem. Laboriosam autem enim repellendus ex nam maxime non. Adipisci consequatur et omnis sed magni vel pariatur omnis.', 11.36, 'Takehiko Inoue', 'Seven Seas Entertainment', '2023-11-17', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(25, 'Your Lie in April Volume 1', 'Et repellat debitis quia enim necessitatibus natus tempora. Omnis eos illo aut sequi fugiat. Quaerat ad porro blanditiis et. Laboriosam ipsam sint nam exercitationem non similique.\n\nEligendi vitae dolor nisi id dolor. Excepturi nulla qui praesentium odit deleniti. Voluptatem commodi et qui in. Animi eius numquam dolores blanditiis.\n\nAut sit rem quia ea dignissimos. Qui impedit earum similique consequuntur occaecati iste laudantium. Odit a rem et amet. Cupiditate perspiciatis expedita non dolore.', 16.58, 'Naoshi Arakawa', 'Dark Horse Comics', '2018-06-29', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(26, 'A Silent Voice Volume 1', 'Nulla laborum aliquam ratione voluptatem aut quia ea. Culpa deserunt repellendus laborum vel. Et sed vel qui modi laborum magnam dolores. Quidem sit non explicabo atque.\n\nProvident voluptatem aperiam quaerat. Dignissimos autem expedita doloribus culpa porro dolore. Numquam aspernatur sit repellat non.\n\nEst laboriosam molestiae molestiae illum dolores. Iste molestias asperiores voluptatum unde sed. Quasi ab necessitatibus fuga blanditiis fuga inventore voluptate enim. In consequuntur porro incidunt ut.', 25.13, 'Yoshitoki Oima', 'Vertical Comics', '2023-04-05', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(27, 'The Promised Neverland Volume 1', 'Optio esse illo debitis repellendus placeat non et. Cum maxime omnis ut deserunt. Id quia reprehenderit vitae deleniti esse consequuntur excepturi iure. Corporis architecto sapiente ullam voluptates sint et.\n\nSuscipit ut nihil nemo sed vitae inventore. Animi occaecati enim nesciunt error distinctio ut. Rerum eius est illum consectetur recusandae earum vel. Doloribus est quia delectus ut quas aliquid enim non.\n\nAccusantium ea occaecati quis a. Architecto eveniet est est autem velit id eligendi. Vitae vitae et quo laborum consequatur. Est earum distinctio dolores maiores quisquam est quo quae.', 10.99, 'Kaiu Shirai', 'Square Enix Manga', '2017-07-07', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(28, 'Made in Abyss Volume 1', 'Vel magni voluptas deserunt voluptates at. Rerum ullam non doloremque est provident doloribus aliquam. Ex voluptate quidem aut maiores neque necessitatibus amet.\n\nNesciunt libero distinctio eos libero alias at earum quam. Voluptas ut qui deserunt nesciunt ipsam dolorum veritatis. Consectetur labore et eos voluptas. Vero est ut dignissimos occaecati.\n\nProvident eos veritatis occaecati fugiat. Quia nisi explicabo omnis adipisci quibusdam delectus ea. Saepe mollitia perspiciatis veritatis doloribus id recusandae excepturi quaerat. Aliquam harum iste aliquam ut quos consequatur doloribus est.', 26.89, 'Akihito Tsukushi', 'Tokyopop', '2017-08-24', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(29, 'Re:Zero Volume 1', 'Dicta odio earum ducimus sed sit impedit autem. Voluptas alias qui aut cum animi praesentium molestias. Debitis eveniet consectetur dolores ipsam officia inventore.\n\nEt harum deserunt magnam quo dolores. Quod quod dicta at sit aut quis.\n\nRatione labore et dolorem. Pariatur in error ut. Sed blanditiis ab ut modi. Libero est accusantium magnam debitis ea ut nostrum quo.', 10.23, 'Tappei Nagatsuki', 'Shueisha', '2018-04-18', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(30, 'Sword Art Online Volume 1', 'Quae voluptatibus quia ea dolores iste. Minima esse illo aspernatur iste id. Sit architecto ut ut. Quo vero doloribus qui recusandae officia.\n\nVel dolorem tenetur deleniti. Eos earum eum quibusdam.\n\nAut sed suscipit sequi harum odio qui. Blanditiis ut consequatur et quo. Sit suscipit reiciendis similique sequi quod et dignissimos. Et ipsum quam totam doloremque eos modi unde.', 28.05, 'Reki Kawahara', 'Kadokawa', '2024-05-05', '2025-03-14 17:23:17', '2025-03-14 17:23:17', NULL),
-(31, 'Kagurabachi Best Manga', 'As a young boy, Chihiro trains every day under his father to become a swordsmith. Although different in temperament, the two spend peaceful days laughing and working together. But one day, tragedy strikes… Now Chihiro burns with hatred and sets out to exact revenge.Test', 12.00, 'Takeru Hokazono', 'Sqaure ENixz', '2025-03-04', '2025-03-14 17:53:03', '2025-03-14 17:54:03', '2025-03-14 17:54:03');
+INSERT INTO `items` (`id`, `title`, `description`, `publisher_id`, `price`, `publication_date`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'One Piece Volume 1: Romance Dawn', 'Et incidunt et similique. Atque illo similique assumenda illum harum deleniti minima amet. Nisi molestiae non esse cupiditate. Nobis quis deleniti velit quo consectetur beatae voluptatem ad.\n\nDolore cupiditate placeat maxime ut qui eum. Aut veritatis tempora dolor et non. Sed et debitis labore rerum ut voluptatibus consequatur. Quidem facilis corporis quos dolorem corporis dolores aut expedita.\n\nDoloremque laborum a dolores exercitationem exercitationem nobis. Alias saepe qui quo. Sit ad a quidem.', NULL, 22.95, '2017-07-03', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(2, 'Naruto Volume 1: Uzumaki Naruto', 'Qui non corrupti corrupti repellat cumque. Recusandae nostrum libero ex. Soluta quos voluptatem rerum odio nam hic.\n\nDeleniti dolor delectus quibusdam a similique numquam. Cum tempore dolores itaque. Perferendis doloribus commodi ut eaque accusamus quos velit.\n\nAliquid nisi porro dolorem magnam corporis sint id qui. Est rerum eum ratione autem eum odio ullam. Maxime qui magni ut voluptas.', NULL, 11.13, '2018-04-22', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(3, 'Bleach Volume 1: The Death and the Strawberry', 'Qui voluptatum quam autem autem eveniet nemo deserunt. Quae tenetur doloremque amet qui non molestias repellendus in. Consequatur rerum deleniti quia sed.\n\nNulla dolores voluptatibus voluptas excepturi ea dolorem dolor. Delectus id eum voluptas numquam distinctio maxime. Reprehenderit quo ipsum neque recusandae esse. Blanditiis necessitatibus doloribus illo doloribus.\n\nNon officia quis non eaque nulla dolorem inventore. Nostrum soluta id ducimus. Consequatur magni sint eius repudiandae. Quia est quae quasi eaque est.', NULL, 12.04, '2022-08-25', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(4, 'Dragon Ball Volume 1: The Monkey King', 'Alias ut accusantium quasi velit sint. Dolorum sunt voluptas sint quae. Recusandae saepe voluptates ipsam vel. Ut deserunt quae voluptas earum.\n\nPorro quis ex quia. Commodi odit aut consequatur voluptatem quibusdam hic. Mollitia numquam est inventore voluptates odio.\n\nRatione cum excepturi et optio perferendis fugit quia. Molestiae inventore necessitatibus et vel accusamus rerum non expedita. Et quia id vero aut. Id doloremque voluptatem eveniet accusantium beatae aliquam quod. Et perspiciatis dolorem sunt est autem repellendus quia.', NULL, 17.98, '2018-03-20', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(5, 'Attack on Titan Volume 1', 'Sit non est eos quae. Possimus quos vel aut omnis non. Sed doloribus quia modi voluptatum sed et consequatur. Quis aut voluptatibus amet nisi in dicta saepe.\n\nSint aspernatur rerum omnis fuga distinctio dolorem. Ex sunt dignissimos illo. Est dolore vitae hic. Et consequuntur possimus sint odio quas nihil dolorum ipsam.\n\nNihil ducimus ut similique dolores quasi ab corporis. Similique officiis quis animi quae. Quam ex quibusdam accusamus consequatur et et exercitationem.', NULL, 11.58, '2020-01-10', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(6, 'My Hero Academia Volume 1: Izuku Midoriya: Origin', 'Sint nesciunt tenetur et. Culpa explicabo iste nisi cumque officia aut similique placeat. Voluptates perspiciatis optio voluptatem qui dicta est ut. Perspiciatis veniam aliquam corrupti voluptas beatae sed unde odit.\n\nEt culpa neque rerum dolores necessitatibus placeat qui. Libero et rem incidunt nihil. Ipsum vel ex nesciunt et quia et sunt consequatur. Animi sed aut unde eius aut dolorem qui. Optio sint ducimus earum perspiciatis.\n\nSunt sit culpa qui ab et odit. Minima similique non ex rerum aut. Eum aut dolor enim laborum repellat. Et et excepturi excepturi aliquid repudiandae vero inventore minima.', NULL, 16.01, '2020-09-06', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(7, 'Demon Slayer Volume 1: Cruelty', 'Iste aut quidem nemo et sed quis accusamus. Ullam dolores non quas voluptatem fugit sunt. Reiciendis alias possimus dolor repellendus perspiciatis perspiciatis.\n\nTenetur est adipisci et. Quis et sit dolorum rerum velit. Eligendi ut ipsa dolorum.\n\nNon adipisci perspiciatis accusantium facilis. Ut eum dolorem quo error nemo. Laboriosam libero vero modi id voluptatem officiis.', NULL, 26.93, '2019-04-30', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(8, 'Jujutsu Kaisen Volume 1', 'Adipisci vel non eum quia cupiditate consequatur impedit. Nulla quia inventore culpa accusantium voluptatem odit sunt. Officiis in deserunt nostrum eos molestiae.\n\nSunt non dignissimos et et aut maxime ea. Ut minus est et neque.\n\nDolorem ut voluptas perferendis neque. Et est rerum et aut vel qui modi quam. Est consectetur molestiae aliquam quis.', NULL, 14.15, '2016-02-10', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(9, 'Tokyo Ghoul Volume 1', 'Maxime et et esse itaque aperiam pariatur repellendus. Voluptas dolore velit culpa sunt at ratione. Itaque fuga nostrum hic quia quam qui cupiditate.\n\nEst dolorem repellat quidem voluptas distinctio non voluptates molestiae. Hic fugiat qui quia rerum. Nobis magnam debitis sapiente voluptatem sit voluptatem. Et amet quidem amet impedit placeat et eius. Ducimus non perspiciatis nulla.\n\nQuos et sit reiciendis mollitia illum ut corrupti. Quasi dicta voluptas eum ut non iure. Quasi quasi aut et.', NULL, 11.57, '2024-08-24', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(10, 'Death Note Volume 1: Boredom', 'Voluptas dolorem omnis amet numquam ducimus. Et molestiae magni aut voluptatem. Deleniti dolorum magnam amet fuga. Facere dolor earum est. Dignissimos quibusdam voluptate harum corrupti.\n\nNeque aut odio similique suscipit ut. Occaecati omnis voluptatem quidem voluptatem est. Accusamus enim ducimus facilis voluptas incidunt sapiente deserunt.\n\nAt quidem voluptatem qui fuga doloremque quam dicta. Ea molestiae odio dolor voluptatibus magnam aut pariatur. Earum ut ut occaecati quia nihil modi. Delectus laborum qui quam quo.', NULL, 28.29, '2020-11-08', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(11, 'Fullmetal Alchemist Volume 1', 'Pariatur ducimus esse quo vitae officia. Beatae ab atque corrupti cumque praesentium. Vel sed similique vero possimus.\n\nDignissimos vitae vitae aut quaerat est. Et omnis dolorem error nesciunt hic quod mollitia. Dolor quo eius quidem et nam. Molestias non explicabo velit et quos quod.\n\nVoluptas voluptatem quibusdam cupiditate quis eius optio. Qui voluptatem molestiae sapiente non blanditiis qui similique autem. Vel et saepe minima reiciendis nesciunt.', NULL, 15.07, '2023-03-07', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(12, 'Hunter x Hunter Volume 1', 'Repudiandae itaque molestiae quae reiciendis sint laudantium tenetur fuga. Minus explicabo deserunt et molestias excepturi voluptate. Quia ducimus et consequuntur pariatur autem.\n\nDeserunt qui vel et dignissimos facilis qui in. Enim eos officia sed error reprehenderit velit quisquam. Molestias cupiditate consequatur earum voluptas ipsam et et sunt.\n\nAut iure illum voluptates asperiores et nostrum. Facere officiis voluptatibus aperiam quis. Aliquam in maiores maiores harum dignissimos.', NULL, 23.70, '2019-10-02', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(13, 'Sailor Moon Volume 1', 'Nobis ducimus dolor molestiae odit et. Ullam eum blanditiis voluptas quia quia. Et aut aut beatae nostrum. Sint atque porro delectus.\n\nNam voluptas ea sequi praesentium voluptatem. Ab ad asperiores qui eligendi quos asperiores corporis. Ea incidunt autem quia. Fuga consequuntur accusamus sunt ducimus facere.\n\nDolor suscipit culpa ipsa voluptatem et. Quaerat vitae illo ratione est ipsum animi rerum. Ut in error unde similique eveniet dolorem. Culpa laborum illum sed quidem autem quod nihil.', NULL, 19.03, '2018-08-17', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(14, 'Fruits Basket Volume 1', 'Ut natus in laborum. Non aut vel occaecati mollitia nulla voluptatibus consectetur. A aut aut quis sapiente ipsam et hic. Amet eaque necessitatibus quo sunt.\n\nEx et esse amet id. Facere repudiandae expedita voluptatem ut. Veniam iusto labore sint autem aut.\n\nEnim id deserunt alias non tempora non. Accusamus fuga unde velit corrupti ex iusto labore quam. Quis et ducimus enim fuga. Et cum vel a aut quo a maiores.', NULL, 28.35, '2018-06-19', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(15, 'Nana Volume 1', 'Aut et sit et pariatur ullam beatae. In veniam hic consequatur facere veritatis commodi saepe non. Nostrum ut quia saepe sit et optio.\n\nIure incidunt ut facere accusantium pariatur quia possimus dolorem. Quas harum dolorem suscipit qui. Rerum modi accusamus illo ipsa blanditiis omnis quae.\n\nQui minima modi neque voluptas cumque sunt possimus. Distinctio soluta velit cupiditate. Laboriosam nihil nesciunt perspiciatis impedit hic. Quia nihil aut est necessitatibus.', NULL, 16.53, '2021-11-04', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(16, 'Ouran High School Host Club Volume 1', 'Laborum repudiandae provident similique qui ullam facilis aut. Dolores at natus sed dolores perspiciatis odio praesentium inventore. Vitae necessitatibus nemo nam placeat corrupti minus qui. Est ex dolorem nulla praesentium libero nihil sit.\n\nEum magnam nemo nostrum. Ut tenetur corrupti perferendis est ut. Quaerat eius est est et dolorem ipsam. Facere non et ut sit omnis.\n\nVoluptatibus possimus libero facilis inventore reiciendis. Sit saepe tempore repellat architecto quo accusantium aut. Ipsum est natus voluptatum quia. Fugiat maiores ut expedita id fugit.', NULL, 25.01, '2017-04-08', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(17, 'Berserk Volume 1: The Black Swordsman', 'Dolore mollitia iste aut consequuntur non omnis illo. Non at veritatis ipsum quis dignissimos est. Explicabo iusto voluptatem earum excepturi.\n\nVoluptates libero architecto id consequatur in ad. Blanditiis nulla consequuntur inventore et. Sequi facilis suscipit perferendis sapiente ab quisquam odio.\n\nEt vel quo occaecati asperiores ut inventore suscipit. Accusamus iusto necessitatibus nam sunt molestias nesciunt. Quia voluptates ut nemo. Quidem in est aut inventore adipisci aliquam quis. Soluta eum totam explicabo atque iusto et non distinctio.', NULL, 29.01, '2016-10-29', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(18, 'Vagabond Volume 1', 'Ut dolor qui eos animi est animi libero fugiat. Enim ipsum tempore nihil fugiat. Quae sed aut nostrum eius qui et dolor. Et perferendis repellat accusantium nam dolores reiciendis.\n\nQuam ipsum est numquam. Animi sed nostrum distinctio quos enim. Modi et mollitia molestiae. Est quia dolorem iure corrupti voluptatibus similique qui. Id nemo aliquam excepturi.\n\nAccusantium et pariatur dolorum blanditiis iure tenetur. In dolorem quia dolorem enim vero veniam. Ipsam doloribus recusandae corporis nihil natus velit sapiente. Voluptatem sed ea nihil optio nemo.', NULL, 16.57, '2017-10-15', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(19, 'Vinland Saga Volume 1', 'Aut libero ipsa fuga est. Illo vel temporibus ut et sint debitis. Ad et maxime quas hic. A fuga facere reprehenderit. Voluptate aut animi architecto magnam incidunt qui.\n\nNemo expedita ipsum harum reprehenderit qui sed eos cum. Officia repudiandae in quo rerum sit.\n\nNesciunt labore quo enim et veniam ipsa est. Molestiae beatae voluptas et qui. Ut pariatur sint pariatur harum voluptatem consectetur quaerat dolorem.', NULL, 26.35, '2018-03-17', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(20, 'Monster Volume 1', 'Illum exercitationem voluptas aut ut harum blanditiis non. Debitis doloribus quae sapiente quod quia quia suscipit aliquid. Dolores excepturi rerum cupiditate officiis eveniet inventore iste magnam.\n\nVoluptas aliquid consequuntur omnis voluptatem possimus perferendis eveniet eaque. Est quis est iure possimus numquam voluptatibus voluptate. Officia nobis aut aspernatur culpa laboriosam illo. Consequuntur quibusdam deserunt minus animi.\n\nConsequatur totam ab perspiciatis atque mollitia enim. Quod expedita deserunt quae natus. Voluptatum earum culpa temporibus. Magni necessitatibus aperiam beatae id dolores atque.', NULL, 12.03, '2017-08-02', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(21, 'Spy x Family Volume 1', 'Voluptatem ea alias explicabo. Sit dolores eveniet consectetur maxime. Accusamus facilis fugiat totam amet dolores non officia. Itaque temporibus fuga ducimus quis recusandae qui fugiat quia.\n\nNihil inventore enim laudantium. Quam esse a optio voluptate distinctio aliquam nisi et. Vel eius ut voluptatem animi enim. Et repellat quidem maiores.\n\nVoluptas ratione recusandae nihil non laboriosam. Tenetur sit porro beatae quisquam ex sapiente corporis. Distinctio beatae et eos possimus nam. Iure consequatur neque sunt modi quia doloribus.', NULL, 22.01, '2024-08-31', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(22, 'Chainsaw Man Volume 1', 'Accusamus molestiae non amet repellat et fugiat reprehenderit. Perspiciatis ea placeat quos. Sed nisi eaque fuga voluptatem.\n\nEt molestias sit officia. Assumenda est architecto fugit ut repellat sit. Sint et rem tenetur qui.\n\nAt sed unde molestiae ad ipsum. Ratione cum a et fuga odio aperiam. Ullam deserunt earum velit quam expedita sint quibusdam. Reprehenderit doloremque et nam perspiciatis.', NULL, 21.78, '2024-02-18', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(23, 'Haikyu!! Volume 1', 'Autem asperiores ipsa ipsam voluptas. Voluptate est quia pariatur velit velit magnam non. Porro est dolor sunt aut.\n\nDeleniti hic assumenda alias sint ea sint. Qui consectetur accusantium numquam consequuntur eos molestiae illum. Vero qui et nisi est ratione.\n\nRem ab consequatur provident amet maxime omnis error. Cupiditate placeat maiores quam et et tempora. Sed excepturi officiis perferendis omnis.', NULL, 17.21, '2022-07-31', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(24, 'Slam Dunk Volume 1', 'Vel commodi incidunt recusandae dolorem esse. Ea et dicta natus. Dolorem alias et adipisci magnam autem.\n\nDelectus voluptas animi accusantium voluptas. Dicta et et blanditiis autem dignissimos. Nihil recusandae fugiat ipsa. Qui dignissimos reprehenderit eos libero et.\n\nAut repellat illum a nulla. Aut doloribus accusamus ab voluptatem ut error. Veniam omnis porro error ut qui tenetur eum. Eius consectetur odit et doloremque.', NULL, 25.12, '2023-11-04', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(25, 'Your Lie in April Volume 1', 'Omnis neque distinctio ea natus quo laboriosam eius. In veritatis ab modi omnis mollitia rerum suscipit. Quo eos laudantium cupiditate. Distinctio ratione aut eos possimus qui et suscipit.\n\nCumque quaerat nihil sit nihil ut. Tempora ipsam voluptatem tempora occaecati asperiores. Iusto est culpa expedita reiciendis.\n\nIpsa ratione fugiat itaque magni dolorem voluptas. Sed aut voluptatem libero quaerat tenetur sit aliquam corrupti. Quibusdam voluptatum beatae numquam sint ut quibusdam. Sunt repudiandae tenetur suscipit doloremque numquam et nesciunt voluptate.', NULL, 17.83, '2019-04-30', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(26, 'A Silent Voice Volume 1', 'Qui beatae aut quis ipsum non magni officia natus. Qui excepturi repellendus odit sequi et. Voluptas dolores ratione sunt sequi commodi tempora error veniam.\n\nConsectetur qui perspiciatis ipsum ipsum similique est ut. Aut in at qui facere amet. Et minima unde voluptatibus et libero et praesentium. Natus a nemo officia et consequuntur voluptatem quas.\n\nVeritatis totam et aliquid quibusdam. Ut quo eligendi nihil quo est. Accusantium et fuga placeat dicta enim in non et. Inventore quia et est.', NULL, 13.96, '2016-03-22', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(27, 'The Promised Neverland Volume 1', 'Sed ipsum debitis sit odio ut. Numquam aliquid eligendi qui sunt et. Non nisi est ut.\n\nId optio non est libero rerum dolorum. Necessitatibus laudantium maxime non voluptates illo eligendi dolorum incidunt. Eligendi beatae non qui quasi repudiandae officia recusandae.\n\nQuisquam illo molestiae dignissimos sunt amet atque. Necessitatibus atque enim voluptatibus et modi numquam earum. Officia hic error delectus odit quia. Cupiditate amet animi ut officia. Iusto in nemo impedit.', NULL, 27.15, '2022-02-22', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(28, 'Made in Abyss Volume 1', 'Non dolor distinctio voluptas similique ea. Aliquid tempore commodi temporibus aliquam tempore exercitationem. Dignissimos similique aliquid quidem facilis sint id ullam.\n\nEarum soluta voluptatum eos ut nostrum. Et non qui corporis quae dolorum ut. Voluptate iusto quo quam eaque id quia. Consectetur exercitationem magnam aut facilis hic.\n\nEt vel sint voluptatibus sed ex ipsam. Neque velit doloribus itaque. Reprehenderit et hic ut velit perspiciatis necessitatibus corporis. Sed fuga et quae laboriosam sed magni similique.', NULL, 18.18, '2015-05-01', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(29, 'Re:Zero Volume 1', 'Magnam ea necessitatibus at. Laboriosam provident omnis nostrum nulla voluptatum. Voluptatem recusandae nam accusamus delectus aut voluptatibus.\n\nQuo molestiae non culpa quis blanditiis illo neque. Similique ullam error recusandae esse. Quis voluptatibus explicabo sit tempora molestiae illo. Aut sapiente porro et dignissimos vel rem.\n\nEligendi voluptates odit culpa qui. Quos minus est necessitatibus dolore voluptatem libero. Laudantium repellendus qui sunt corrupti libero. Delectus enim enim laborum qui.', NULL, 22.10, '2021-08-07', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL),
+(30, 'Sword Art Online Volume 1', 'Ratione veritatis qui est eos quos. Corrupti autem unde eum nostrum numquam. Autem deserunt omnis omnis occaecati accusantium et.\n\nCulpa omnis provident tempora voluptates quo distinctio. Est ut inventore corporis nostrum ut beatae. Aliquid exercitationem qui eos voluptatem. Molestias illum et doloribus enim praesentium voluptatem aspernatur.\n\nSed ut laboriosam in rerum non itaque exercitationem placeat. Sed debitis beatae at nobis corrupti ducimus ut dolores. Sit inventore voluptatum error. Eos error occaecati fugit in mollitia quos.', NULL, 17.84, '2023-08-23', '2025-03-14 21:55:46', '2025-03-14 21:55:46', NULL);
 
 -- --------------------------------------------------------
 
@@ -293,9 +359,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (14, '2025_03_11_094957_create_bad_words_table', 1),
 (15, '2025_03_11_102341_create_sessions_table', 1),
 (16, '2025_03_13_011937_create_genre_item_table', 1),
-(17, '2025_03_15_005510_create_roles_table', 2),
-(18, '2025_03_15_005534_create_item_images_table', 2),
-(19, '2025_03_15_005649_add_soft_deletes_to_items_table', 2);
+(17, '2025_03_15_005510_create_roles_table', 1),
+(18, '2025_03_15_005534_create_item_images_table', 1),
+(19, '2025_03_15_005649_add_soft_deletes_to_items_table', 1),
+(20, '2025_03_15_054538_create_publishers_table', 1),
+(21, '2025_03_15_054549_create_authors_table', 1),
+(22, '2025_03_15_054559_create_author_item_table', 1),
+(23, '2025_03_15_054729_add_publisher_id_to_items_table', 1),
+(24, '2025_03_15_054755_remove_publisher_and_author_columns_from_items_table', 1);
 
 -- --------------------------------------------------------
 
@@ -376,6 +447,38 @@ CREATE TABLE `personal_access_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `publishers`
+--
+
+CREATE TABLE `publishers` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `publishers`
+--
+
+INSERT INTO `publishers` (`id`, `name`, `description`, `country`, `website`, `created_at`, `updated_at`) VALUES
+(1, 'Viz Media', 'One of the largest publishers of manga in the United States.', 'United States', 'https://www.viz.com', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(2, 'Kodansha Comics', 'The English-language publishing arm of Kodansha, one of Japan\'s largest publishers.', 'Japan', 'https://kodansha.us', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(3, 'Yen Press', 'A publishing company specializing in manga and graphic novels.', 'United States', 'https://yenpress.com', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(4, 'Seven Seas Entertainment', 'An American publishing company that specializes in manga and light novels.', 'United States', 'https://sevenseasentertainment.com', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(5, 'Dark Horse Comics', 'An American comic book and manga publisher.', 'United States', 'https://www.darkhorse.com', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(6, 'Vertical Comics', 'A publisher focused on quality manga and Japanese literature.', 'United States', 'https://vertical-inc.com', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(7, 'Square Enix Manga', 'The manga publishing division of Square Enix.', 'Japan', 'https://www.square-enix.com', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(8, 'Tokyopop', 'A distributor, licensor, and publisher of manga and anime.', 'United States', 'https://www.tokyopop.com', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(9, 'Shueisha', 'One of the largest publishing companies in Japan.', 'Japan', 'https://www.shueisha.co.jp', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(10, 'Kadokawa', 'A major Japanese publishing company that produces manga and light novels.', 'Japan', 'https://www.kadokawa.co.jp', '2025-03-14 21:55:46', '2025-03-14 21:55:46');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `reviews`
 --
 
@@ -410,9 +513,9 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `slug`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Administrator', 'admin', 'Full access to all system features', '2025-03-14 17:09:42', '2025-03-14 17:09:42'),
-(2, 'Staff', 'staff', 'Access to manage content and orders', '2025-03-14 17:09:42', '2025-03-14 17:09:42'),
-(3, 'Customer', 'customer', 'Regular customer access', '2025-03-14 17:09:42', '2025-03-14 17:09:42');
+(1, 'Administrator', 'admin', 'Full access to all system features', '2025-03-14 21:55:43', '2025-03-14 21:55:43'),
+(2, 'Staff', 'staff', 'Access to manage content and orders', '2025-03-14 21:55:43', '2025-03-14 21:55:43'),
+(3, 'Customer', 'customer', 'Regular customer access', '2025-03-14 21:55:43', '2025-03-14 21:55:43');
 
 -- --------------------------------------------------------
 
@@ -448,11 +551,12 @@ CREATE TABLE `statuses` (
 --
 
 INSERT INTO `statuses` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Pending', 'Order has been placed but not processed', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(2, 'Processing', 'Order is being processed', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(3, 'Shipped', 'Order has been shipped', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(4, 'Delivered', 'Order has been delivered', '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(5, 'Cancelled', 'Order has been cancelled', '2025-03-14 16:37:57', '2025-03-14 16:37:57');
+(1, 'Pending', 'Order has been placed but not processed yet', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(2, 'Processing', 'Order is being processed', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(3, 'Shipped', 'Order has been shipped to the customer', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(4, 'Delivered', 'Order has been delivered to the customer', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(5, 'Cancelled', 'Order has been cancelled', '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(6, 'Returned', 'Order has been returned by the customer', '2025-03-14 21:55:46', '2025-03-14 21:55:46');
 
 -- --------------------------------------------------------
 
@@ -472,37 +576,36 @@ CREATE TABLE `stocks` (
 --
 
 INSERT INTO `stocks` (`item_id`, `quantity`, `created_at`, `updated_at`) VALUES
-(1, 45, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(2, 97, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(3, 59, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(4, 42, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(5, 74, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(6, 58, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(7, 4, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(8, 100, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(9, 89, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(10, 20, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(11, 64, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(12, 14, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(13, 23, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(14, 73, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(15, 63, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(16, 12, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(17, 76, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(18, 59, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(19, 82, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(20, 66, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(21, 9, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(22, 78, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(23, 69, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(24, 92, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(25, 85, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(26, 12, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(27, 58, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(28, 38, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(29, 56, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(30, 11, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(31, 40, '2025-03-14 17:53:03', '2025-03-14 17:53:52');
+(1, 65, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(2, 56, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(3, 98, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(4, 10, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(5, 22, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(6, 96, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(7, 20, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(8, 1, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(9, 93, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(10, 82, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(11, 80, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(12, 28, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(13, 72, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(14, 66, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(15, 82, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(16, 49, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(17, 81, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(18, 19, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(19, 42, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(20, 78, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(21, 43, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(22, 7, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(23, 24, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(24, 12, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(25, 6, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(26, 38, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(27, 51, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(28, 23, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(29, 79, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(30, 81, '2025-03-14 21:55:46', '2025-03-14 21:55:46');
 
 -- --------------------------------------------------------
 
@@ -529,18 +632,32 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `role_id`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin User', 'admin@example.com', NULL, '$2y$12$LRtHNrJpUDlqhELOuWcSTepilwrOO8elwX9asi8C7rFHDlhK0QZRu', 'admin', 1, 'activated', NULL, '2025-03-14 16:37:57', '2025-03-14 16:37:57'),
-(23, 'Staff User', 'staff@example.com', NULL, '$2y$12$OIx7xOaphu8ObojSW42akefqRXn/qEkXAQJFWG8ce54p1Rc5c.kvy', 'staff', 2, 'activated', NULL, '2025-03-14 17:23:58', '2025-03-14 17:23:58'),
-(24, 'Staff Manager', 'manager@example.com', NULL, '$2y$12$x/l93.i6kM28o8Csq/FIceRvJWNLuHF8W.j7k.LXlZ3hwfXZvxR.m', 'staff', 2, 'activated', NULL, '2025-03-14 17:23:58', '2025-03-14 17:23:58'),
-(25, 'John Doe', 'john@example.com', NULL, '$2y$12$ZSALiR9WWuLuveYF4fMyOuRCBOxmPNl8oTy6babouudDgtnfK9VAi', 'customer', 3, 'activated', NULL, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(26, 'Jane Smith', 'jane@example.com', NULL, '$2y$12$z7RgzLJwbjEALsc6NC/bZ.exgpiOfDcwAII2hG1nGtjKnewpwcZ4.', 'customer', 3, 'activated', NULL, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(27, 'Bob Johnson', 'bob@example.com', NULL, '$2y$12$.iXT.EOEpH9XiL2pT64ZR.MHPqsH0.5jkb7mZIuz6TL2/OqyGvpSy', 'customer', 3, 'activated', NULL, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(28, 'Alice Brown', 'alice@example.com', NULL, '$2y$12$bR812l2qvjK/ua7Dz3uD9usSnx1g.kI8kCTp1PRRrrE/j1AZXzlKm', 'customer', 3, 'activated', NULL, '2025-03-14 17:23:59', '2025-03-14 17:23:59'),
-(29, 'Inactive User', 'inactive@example.com', NULL, '$2y$12$cFrrM7jehZ9/bL46ZnmzX./tb8jk2DvxkrxN5cJgR8hoSf4hUZEW.', 'customer', 3, 'deactivated', NULL, '2025-03-14 17:23:59', '2025-03-14 17:23:59');
+(1, 'Admin User', 'admin@example.com', NULL, '$2y$12$uTHJV7pbDfzPyUDiL/GJoO0bAOp9lH2Gaej4gzti9B1.knlr.fg0K', 'admin', 1, 'activated', NULL, '2025-03-14 21:55:43', '2025-03-14 21:55:43'),
+(2, 'Staff User', 'staff@example.com', NULL, '$2y$12$yKIsOE2kPlcHCN3nblpDA.vqUnT812GmCfJgSuyfLSZBav4VPDi.C', 'staff', 2, 'activated', NULL, '2025-03-14 21:55:44', '2025-03-14 21:55:44'),
+(3, 'Staff Manager', 'manager@example.com', NULL, '$2y$12$1jMjQjBgernVz3edB7Er/eG8DYFkWW5Ce6TGb1cjwCgpNrvpbUV8i', 'staff', 2, 'activated', NULL, '2025-03-14 21:55:44', '2025-03-14 21:55:44'),
+(4, 'John Doe', 'john@example.com', NULL, '$2y$12$votDNLSL8ix71TVw69bHn.biPpYjvPgY55xdtVF8Emi/OtYyFma/2', 'customer', 3, 'activated', NULL, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(5, 'Jane Smith', 'jane@example.com', NULL, '$2y$12$7jH6N7uYaMBOKm8Ke95uj.DsgkpPb45eMRsT6oewZ1U8fL36iqnIu', 'customer', 3, 'activated', NULL, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(6, 'Bob Johnson', 'bob@example.com', NULL, '$2y$12$.3p9.CMYs5prHDYlCM071ODGbDTNnF9aKWalt2iBCd1SK1vow6B2S', 'customer', 3, 'activated', NULL, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(7, 'Alice Brown', 'alice@example.com', NULL, '$2y$12$umgeeI2FUvWLq0YjR/8wV.zRGg3Qmxf9S.QTg3H53dH4Er0.uueXS', 'customer', 3, 'activated', NULL, '2025-03-14 21:55:46', '2025-03-14 21:55:46'),
+(8, 'Inactive User', 'inactive@example.com', NULL, '$2y$12$dckWDtgpyKwlJszOSk.Y1u5ekU8FF9AZTli1wtZFBQeWbFR96VyTq', 'customer', 3, 'deactivated', NULL, '2025-03-14 21:55:46', '2025-03-14 21:55:46');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `authors`
+--
+ALTER TABLE `authors`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `author_item`
+--
+ALTER TABLE `author_item`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `author_item_author_id_item_id_role_unique` (`author_id`,`item_id`,`role`),
+  ADD KEY `author_item_item_id_foreign` (`item_id`);
 
 --
 -- Indexes for table `bad_words`
@@ -580,7 +697,8 @@ ALTER TABLE `genre_item`
 -- Indexes for table `items`
 --
 ALTER TABLE `items`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `items_publisher_id_foreign` (`publisher_id`);
 
 --
 -- Indexes for table `item_images`
@@ -631,6 +749,12 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
 
 --
+-- Indexes for table `publishers`
+--
+ALTER TABLE `publishers`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -678,16 +802,28 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `authors`
+--
+ALTER TABLE `authors`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT for table `author_item`
+--
+ALTER TABLE `author_item`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `bad_words`
 --
 ALTER TABLE `bad_words`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -699,19 +835,19 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `genres`
 --
 ALTER TABLE `genres`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `genre_item`
 --
 ALTER TABLE `genre_item`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `item_images`
@@ -723,7 +859,7 @@ ALTER TABLE `item_images`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `orderinfos`
@@ -736,6 +872,12 @@ ALTER TABLE `orderinfos`
 --
 ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `publishers`
+--
+ALTER TABLE `publishers`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -753,17 +895,24 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `statuses`
 --
 ALTER TABLE `statuses`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `author_item`
+--
+ALTER TABLE `author_item`
+  ADD CONSTRAINT `author_item_author_id_foreign` FOREIGN KEY (`author_id`) REFERENCES `authors` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `author_item_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `customers`
@@ -777,6 +926,12 @@ ALTER TABLE `customers`
 ALTER TABLE `genre_item`
   ADD CONSTRAINT `genre_item_genre_id_foreign` FOREIGN KEY (`genre_id`) REFERENCES `genres` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `genre_item_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `items` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `items`
+--
+ALTER TABLE `items`
+  ADD CONSTRAINT `items_publisher_id_foreign` FOREIGN KEY (`publisher_id`) REFERENCES `publishers` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `item_images`

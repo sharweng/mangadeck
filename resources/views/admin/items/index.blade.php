@@ -18,7 +18,8 @@
                         <th>ID</th>
                         <th>Title</th>
                         <th>Genres</th>
-                        <th>Author</th>
+                        <th>Authors</th>
+                        <th>Publisher</th>
                         <th>Price</th>
                         <th>Stock</th>
                         <th>Actions</th>
@@ -44,7 +45,8 @@
                 { data: 'id', name: 'id' },
                 { data: 'title', name: 'title' },
                 { data: 'genres_list', name: 'genres_list' },
-                { data: 'author', name: 'author' },
+                { data: 'authors_list', name: 'authors_list' },
+                { data: 'publisher_name', name: 'publisher_name' },
                 { 
                     data: 'price', 
                     name: 'price',

@@ -18,9 +18,33 @@
     <div class="card mb-4">
         <div class="card-body">
             <div class="row">
-                <!-- Manga Image -->
+                <!-- Manga Image Gallery -->
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <img src="{{ $item->img_path ? asset('storage/'.$item->img_path) : asset('images/no-image.jpg') }}" class="img-fluid rounded" alt="{{ $item->title }}">
+                    <div class="manga-image-container mb-3 d-flex justify-content-center">
+                        @if($item->primaryImage)
+                            <img id="product-main-image" src="/storage/{{ $item->primaryImage->image_path }}" 
+                                 alt="{{ $item->title }}" class="img-fluid rounded shadow manga-cover">
+                        @else
+                            <img id="product-main-image" src="{{ asset('images/no-image.jpg') }}" 
+                                 alt="{{ $item->title }}" class="img-fluid rounded shadow manga-cover">
+                        @endif
+                    </div>
+                    
+                    <!-- Thumbnails Gallery -->
+                    @if($item->images->count() > 1)
+                        <div class="thumbnails-scroll-container">
+                            <div class="manga-thumbnails d-flex">
+                                @foreach($item->images as $image)
+                                    <div class="thumbnail-item {{ $image->is_primary ? 'active' : '' }}">
+                                        <img src="/storage/{{ $image->image_path }}" 
+                                             class="thumbnail-image"
+                                             data-path="/storage/{{ $image->image_path }}"
+                                             alt="Image {{ $loop->iteration }}">
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </div>
                 
                 <!-- Manga Details -->
@@ -66,8 +90,8 @@
                         <div class="col-md-6">
                             <h5>Details</h5>
                             <ul class="list-unstyled">
-                                <li><strong>Author:</strong> {{ $item->author ?? 'Unknown' }}</li>
-                                <li><strong>Publisher:</strong> {{ $item->publisher ?? 'Unknown' }}</li>
+                                <li><strong>Author:</strong> {{ $item->getAuthorNamesAttribute() }}</li>
+                                <li><strong>Publisher:</strong> {{ $item->publisher ? $item->publisher->name : 'Unknown' }}</li>
                                 <li><strong>Publication Date:</strong> {{ $item->publication_date ? $item->publication_date->format('M d, Y') : 'Unknown' }}</li>
                             </ul>
                         </div>
@@ -189,7 +213,11 @@
                     @foreach($relatedItems as $relatedItem)
                         <div class="col-md-3 mb-4">
                             <div class="card h-100">
-                                <img src="{{ $relatedItem->img_path ? asset('storage/'.$relatedItem->img_path) : asset('images/no-image.jpg') }}" class="card-img-top" alt="{{ $relatedItem->title }}">
+                                @if($relatedItem->primaryImage)
+                                    <img src="/storage/{{ $relatedItem->primaryImage->image_path }}" class="card-img-top" alt="{{ $relatedItem->title }}">
+                                @else
+                                    <img src="{{ asset('images/no-image.jpg') }}" class="card-img-top" alt="{{ $relatedItem->title }}">
+                                @endif
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $relatedItem->title }}</h5>
                                     <div class="mb-2">
@@ -219,4 +247,107 @@
         </div>
     @endif
 </div>
+@endsection
+
+@section('styles')
+<style>
+    /* Main product image */
+    .manga-cover {
+        height: auto;
+        max-height: 350px;
+        object-fit: contain;
+        border: 1px solid #ddd;
+        transition: transform 0.3s ease;
+    }
+    
+    .manga-cover:hover {
+        transform: scale(1.02);
+    }
+    
+    /* Scrollable thumbnails container */
+    .thumbnails-scroll-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-top: 15px;
+        padding-bottom: 10px; /* Add padding to show scrollbar */
+    }
+    
+    .manga-thumbnails {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        min-width: min-content;
+    }
+    
+    .thumbnail-item {
+        position: relative;
+        flex: 0 0 auto;
+        width: 70px;
+        height: 70px;
+        border-radius: 0.25rem;
+        overflow: hidden;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .thumbnail-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .thumbnail-item.active {
+        border-color: #0d6efd;
+    }
+    
+    .thumbnail-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* Custom scrollbar for thumbnails */
+    .thumbnails-scroll-container::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .thumbnails-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    .thumbnails-scroll-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+    }
+    
+    .thumbnails-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #a1a1a1;
+    }
+</style>
+@endsection
+
+@section('scripts')
+<script>
+    // Image gallery functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const thumbnails = document.querySelectorAll('.thumbnail-image');
+        const mainImage = document.getElementById('product-main-image');
+        
+        if (thumbnails.length > 0 && mainImage) {
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    // Update main image
+                    mainImage.src = this.getAttribute('data-path');
+                    
+                    // Update active thumbnail
+                    document.querySelectorAll('.thumbnail-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.parentElement.classList.add('active');
+                });
+            });
+        }
+    });
+</script>
 @endsection

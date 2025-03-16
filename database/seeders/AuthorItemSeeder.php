@@ -5,18 +5,18 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Item;
-use App\Models\Publisher;
 use App\Models\Author;
+use App\Models\Publisher;
 
-class ItemSeeder extends Seeder
+class AuthorItemSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Skip if items already exist
-        if (DB::table('items')->count() > 0) {
+        // Skip if author_item already has entries
+        if (DB::table('author_item')->count() > 0) {
             return;
         }
 
@@ -179,113 +179,42 @@ class ItemSeeder extends Seeder
             ],
         ];
 
-        $genreIds = DB::table('genres')->pluck('id')->toArray();
-        $publishers = Publisher::all()->keyBy('name');
         $authors = Author::all()->keyBy('name');
-
-        foreach ($mangaData as $manga) {
-            $title = $manga['title'];
-            $authorName = $manga['author'];
-            $publisherName = $manga['publisher'];
-            
-            $publicationDate = fake()->dateTimeBetween('-10 years', 'now')->format('Y-m-d');
-            $price = fake()->randomFloat(2, 9.99, 29.99);
-            
-            // Get publisher ID
-            $publisherId = $publishers[$publisherName]->id ?? null;
-            
-            // Insert the item
-            $item = Item::create([
-                'title' => $title,
-                'description' => fake()->paragraphs(3, true),
-                'price' => $price,
-                'publisher_id' => $publisherId,
-                'publication_date' => $publicationDate,
-            ]);
-            
-            // Attach the main author
-            if (isset($authors[$authorName])) {
-                $item->authors()->attach($authors[$authorName]->id, [
-                    'role' => 'Author',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-            
-            // Attach co-authors if any
-            if (isset($manga['coauthors'])) {
-                foreach ($manga['coauthors'] as $coauthor) {
-                    if (isset($authors[$coauthor['name']])) {
-                        $item->authors()->attach($authors[$coauthor['name']]->id, [
-                            'role' => $coauthor['role'],
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ]);
-                    }
-                }
-            }
-            
-            // Assign 1-3 random genres to each item
-            $genreCount = rand(1, 3);
-            $selectedGenres = array_rand(array_flip($genreIds), $genreCount);
-            
-            if (!is_array($selectedGenres)) {
-                $selectedGenres = [$selectedGenres];
-            }
-            
-            foreach ($selectedGenres as $genreId) {
-                DB::table('genre_item')->insert([
-                    'genre_id' => $genreId,
-                    'item_id' => $item->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-            
-            // Create stock for the item
-            DB::table('stocks')->insert([
-                'item_id' => $item->id,
-                'quantity' => rand(1, 100),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
-
-        // Populate the author_item table for existing items
+        $publishers = Publisher::all()->keyBy('name');
         $items = Item::all();
+
+        // Update publisher_id for all items
         foreach ($items as $item) {
-            // Find the author by name from the original data
             foreach ($mangaData as $mangaItem) {
                 if ($mangaItem['title'] === $item->title) {
-                    // Set publisher_id
                     $publisherName = $mangaItem['publisher'];
                     if (isset($publishers[$publisherName])) {
                         $item->publisher_id = $publishers[$publisherName]->id;
                         $item->save();
                     }
                     
-                    // Attach main author
+                    // Add author relationships
                     $authorName = $mangaItem['author'];
                     if (isset($authors[$authorName])) {
-                        $item->authors()->syncWithoutDetaching([
-                            $authors[$authorName]->id => [
-                                'role' => 'Author',
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ]
+                        DB::table('author_item')->insert([
+                            'author_id' => $authors[$authorName]->id,
+                            'item_id' => $item->id,
+                            'role' => 'Author',
+                            'created_at' => now(),
+                            'updated_at' => now(),
                         ]);
                     }
                     
-                    // Attach co-authors if any
+                    // Add co-authors if any
                     if (isset($mangaItem['coauthors'])) {
                         foreach ($mangaItem['coauthors'] as $coauthor) {
                             if (isset($authors[$coauthor['name']])) {
-                                $item->authors()->syncWithoutDetaching([
-                                    $authors[$coauthor['name']]->id => [
-                                        'role' => $coauthor['role'],
-                                        'created_at' => now(),
-                                        'updated_at' => now(),
-                                    ]
+                                DB::table('author_item')->insert([
+                                    'author_id' => $authors[$coauthor['name']]->id,
+                                    'item_id' => $item->id,
+                                    'role' => $coauthor['role'],
+                                    'created_at' => now(),
+                                    'updated_at' => now(),
                                 ]);
                             }
                         }

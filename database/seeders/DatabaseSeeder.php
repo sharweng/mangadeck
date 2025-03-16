@@ -20,6 +20,12 @@ class DatabaseSeeder extends Seeder
             ItemSeeder::class,
             ItemImageSeeder::class,
             StockSeeder::class,
+
+            PublisherSeeder::class,
+            AuthorSeeder::class,
+
+            UpdateItemsSeeder::class,
+            AuthorItemSeeder::class,
         ]);
     }
 }

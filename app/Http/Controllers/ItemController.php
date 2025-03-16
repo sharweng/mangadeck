@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\Genre;
+use App\Models\Author;
+use App\Models\Publisher;
 use App\Models\Review;
 use App\Models\Stock;
 use App\Models\ItemImage;
@@ -11,6 +13,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
@@ -23,7 +26,7 @@ class ItemController extends Controller
         $selectedGenre = $request->input('genre');
         $search = $request->input('search');
         
-        $query = Item::with(['genres', 'stock', 'reviews', 'images']);
+        $query = Item::with(['genres', 'stock', 'reviews', 'images', 'publisher', 'authors']);
         
         if ($selectedGenre) {
             $query->whereHas('genres', function($q) use ($selectedGenre) {
@@ -35,7 +38,12 @@ class ItemController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%")
-                ->orWhere('author', 'like', "%{$search}%");
+                ->orWhereHas('authors', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })
+                ->orWhereHas('publisher', function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
             });
         }
         
@@ -51,6 +59,40 @@ class ItemController extends Controller
     }
 
     /**
+     * Get items data for DataTables.
+     */
+    public function getData()
+    {
+        $items = Item::with(['genres', 'stock', 'images', 'publisher', 'authors']);
+        
+        return DataTables::of($items)
+            ->addColumn('stock_quantity', function($item) {
+                return $item->stock ? $item->stock->quantity : 0;
+            })
+            ->addColumn('genres_list', function($item) {
+                return $item->genres->pluck('name')->implode(', ');
+            })
+            ->addColumn('authors_list', function($item) {
+                return $item->authors->pluck('name')->implode(', ');
+            })
+            ->addColumn('publisher_name', function($item) {
+                return $item->publisher ? $item->publisher->name : 'N/A';
+            })
+            ->addColumn('image', function($item) {
+                $primaryImage = $item->primaryImage;
+                if ($primaryImage) {
+                    return '<img src="' . asset('storage/'.$primaryImage->image_path) . '" alt="' . $item->title . '" class="img-thumbnail" width="50">';
+                }
+                return '<span class="text-muted">No image</span>';
+            })
+            ->addColumn('actions', function($item) {
+                return view('admin.items.actions', compact('item'))->render();
+            })
+            ->rawColumns(['actions', 'image'])
+            ->make(true);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -58,8 +100,10 @@ class ItemController extends Controller
         $this->authorize('create', Item::class);
         
         $genres = Genre::all();
+        $publishers = Publisher::orderBy('name')->get();
+        $authors = Author::orderBy('name')->get();
         
-        return view('admin.items.create', compact('genres'));
+        return view('admin.items.create', compact('genres', 'publishers', 'authors'));
     }
 
     /**
@@ -75,8 +119,11 @@ class ItemController extends Controller
             'price' => 'required|numeric|min:0',
             'genre_ids' => 'required|array',
             'genre_ids.*' => 'exists:genres,id',
-            'author' => 'nullable|string|max:255',
-            'publisher' => 'nullable|string|max:255',
+            'publisher_id' => 'nullable|exists:publishers,id',
+            'author_ids' => 'required|array',
+            'author_ids.*' => 'exists:authors,id',
+            'author_roles' => 'nullable|array',
+            'author_roles.*' => 'string|max:100',
             'publication_date' => 'nullable|date',
             'images' => 'nullable|array',
             'images.*' => 'image|max:2048',
@@ -84,20 +131,25 @@ class ItemController extends Controller
         ]);
         
         // Start a database transaction
-        \DB::beginTransaction();
+        DB::beginTransaction();
         
         try {
             $item = Item::create([
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'price' => $validated['price'],
-                'author' => $validated['author'],
-                'publisher' => $validated['publisher'],
+                'publisher_id' => $validated['publisher_id'],
                 'publication_date' => $validated['publication_date'],
             ]);
             
             // Attach genres
             $item->genres()->attach($validated['genre_ids']);
+            
+            // Attach authors with roles
+            foreach ($validated['author_ids'] as $index => $authorId) {
+                $role = isset($validated['author_roles'][$index]) ? $validated['author_roles'][$index] : 'Author';
+                $item->authors()->attach($authorId, ['role' => $role]);
+            }
             
             // Create stock
             $item->stock()->create([
@@ -123,12 +175,12 @@ class ItemController extends Controller
                 }
             }
             
-            \DB::commit();
+            DB::commit();
             
             return redirect()->route('admin.items.index')
                 ->with('success', 'Manga created successfully.');
         } catch (\Exception $e) {
-            \DB::rollBack();
+            DB::rollBack();
             
             // Log the error
             \Log::error('Error creating manga: ' . $e->getMessage());
@@ -139,14 +191,67 @@ class ItemController extends Controller
         }
     }
 
+    // /**
+    //  * Display the specified resource.
+    //  */
+    // public function show(Request $request, Item $item)
+    // {
+    //     // Explicitly load the primaryImage relationship
+    //     $item->load([
+    //         'genres', 
+    //         'stock', 
+    //         'images', 
+    //         'publisher',
+    //         'authors',
+    //         'primaryImage', // Add this line to explicitly load the primaryImage
+    //         'reviews' => function($query) {
+    //             $query->where('is_approved', true)->with('user');
+    //         }
+    //     ]);
+        
+    //     // Get related items that share at least one genre with this item
+    //     $relatedItems = Item::whereHas('genres', function($query) use ($item) {
+    //         $query->whereIn('genres.id', $item->genres->pluck('id'));
+    //     })
+    //     ->where('id', '!=', $item->id)
+    //     ->take(4)
+    //     ->get();
+        
+    //     $routeName = $request->route()->getName();
+    //     if ($routeName === 'admin.items.show') {
+    //         return view('admin.items.show', compact('item'));
+    //     } else {
+    //         return view('items.show', compact('item', 'relatedItems'));
+    //     }
+    // }
+
     /**
      * Display the specified resource.
      */
     public function show(Request $request, Item $item)
     {
-        $item->load(['genres', 'stock', 'images', 'reviews' => function($query) {
-            $query->where('is_approved', true)->with('user');
-        }]);
+        // Explicitly load the primaryImage relationship
+        $item->load([
+            'genres', 
+            'stock', 
+            'images', 
+            'publisher',
+            'authors',
+            'primaryImage', // This is already here, which is good
+            'reviews' => function($query) {
+                $query->where('is_approved', true)->with('user');
+            }
+        ]);
+        
+        // Check if there's a primary image, if not, set one
+        if (!$item->primaryImage && $item->images->isNotEmpty()) {
+            $firstImage = $item->images->first();
+            $firstImage->is_primary = true;
+            $firstImage->save();
+            
+            // Reload the primaryImage relationship
+            $item->load('primaryImage');
+        }
         
         // Get related items that share at least one genre with this item
         $relatedItems = Item::whereHas('genres', function($query) use ($item) {
@@ -172,9 +277,12 @@ class ItemController extends Controller
         $this->authorize('update', $item);
         
         $genres = Genre::all();
-        $item->load(['genres', 'stock', 'images']);
+        $publishers = Publisher::orderBy('name')->get();
+        $authors = Author::orderBy('name')->get();
         
-        return view('admin.items.edit', compact('item', 'genres'));
+        $item->load(['genres', 'stock', 'images', 'publisher', 'authors', 'primaryImage']);
+        
+        return view('admin.items.edit', compact('item', 'genres', 'publishers', 'authors'));
     }
 
     /**
@@ -190,8 +298,11 @@ class ItemController extends Controller
             'price' => 'required|numeric|min:0',
             'genre_ids' => 'required|array',
             'genre_ids.*' => 'exists:genres,id',
-            'author' => 'nullable|string|max:255',
-            'publisher' => 'nullable|string|max:255',
+            'publisher_id' => 'nullable|exists:publishers,id',
+            'author_ids' => 'required|array',
+            'author_ids.*' => 'exists:authors,id',
+            'author_roles' => 'nullable|array',
+            'author_roles.*' => 'string|max:100',
             'publication_date' => 'nullable|date',
             'new_images' => 'nullable|array',
             'new_images.*' => 'image|max:2048',
@@ -202,20 +313,27 @@ class ItemController extends Controller
         ]);
         
         // Start a database transaction
-        \DB::beginTransaction();
+        DB::beginTransaction();
         
         try {
             $item->update([
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'price' => $validated['price'],
-                'author' => $validated['author'],
-                'publisher' => $validated['publisher'],
+                'publisher_id' => $validated['publisher_id'],
                 'publication_date' => $validated['publication_date'],
             ]);
             
             // Sync genres
             $item->genres()->sync($validated['genre_ids']);
+            
+            // Sync authors with roles
+            $authorData = [];
+            foreach ($validated['author_ids'] as $index => $authorId) {
+                $role = isset($validated['author_roles'][$index]) ? $validated['author_roles'][$index] : 'Author';
+                $authorData[$authorId] = ['role' => $role];
+            }
+            $item->authors()->sync($authorData);
             
             // Update stock - using direct DB operations to avoid model issues
             $stock = Stock::where('item_id', $item->id)->first();
@@ -284,12 +402,12 @@ class ItemController extends Controller
                 }
             }
             
-            \DB::commit();
+            DB::commit();
             
             return redirect()->route('admin.items.index')
                 ->with('success', 'Manga updated successfully.');
         } catch (\Exception $e) {
-            \DB::rollBack();
+            DB::rollBack();
             
             // Log the error
             \Log::error('Error updating manga: ' . $e->getMessage());
@@ -307,17 +425,38 @@ class ItemController extends Controller
     {
         $this->authorize('delete', $item);
         
-        // Delete all associated images from storage
-        foreach ($item->images as $image) {
-            if ($image->image_path) {
-                Storage::disk('public')->delete($image->image_path);
+        try {
+            // Start a transaction
+            DB::beginTransaction();
+            
+            // Get all images for this item
+            $images = $item->images;
+            
+            // Delete each image file from storage
+            foreach ($images as $image) {
+                if ($image->image_path && Storage::disk('public')->exists($image->image_path)) {
+                    Storage::disk('public')->delete($image->image_path);
+                }
+                $image->delete();
             }
+            
+            // Delete the item
+            $item->delete();
+            
+            DB::commit();
+            
+            return redirect()->route('admin.items.index')
+                ->with('success', 'Manga deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            // Log the error
+            \Log::error('Error deleting manga: ' . $e->getMessage());
+            
+            return back()->withErrors([
+                'error' => 'There was a problem deleting the manga. Please try again. Error: ' . $e->getMessage()
+            ]);
         }
-        
-        $item->delete();
-        
-        return redirect()->route('admin.items.index')
-            ->with('success', 'Manga deleted successfully.');
     }
 
     /**
@@ -344,34 +483,6 @@ class ItemController extends Controller
         $trashedItems = Item::onlyTrashed()->with(['genres', 'stock'])->paginate(12);
         
         return view('admin.items.trashed', compact('trashedItems'));
-    }
-
-    /**
-     * Get items data for DataTables.
-     */
-    public function getData()
-    {
-        $items = Item::with(['genres', 'stock', 'images']);
-        
-        return DataTables::of($items)
-            ->addColumn('stock_quantity', function($item) {
-                return $item->stock ? $item->stock->quantity : 0;
-            })
-            ->addColumn('genres_list', function($item) {
-                return $item->genres->pluck('name')->implode(', ');
-            })
-            ->addColumn('image', function($item) {
-                $primaryImage = $item->primaryImage;
-                if ($primaryImage) {
-                    return '<img src="' . Storage::url($primaryImage->image_path) . '" alt="' . $item->title . '" class="img-thumbnail" width="50">';
-                }
-                return '<span class="text-muted">No image</span>';
-            })
-            ->addColumn('actions', function($item) {
-                return view('admin.items.actions', compact('item'))->render();
-            })
-            ->rawColumns(['actions', 'image'])
-            ->make(true);
     }
 
     /**
@@ -452,4 +563,7 @@ class ItemController extends Controller
             ], 500);
         }
     }
+
+    
 }
+

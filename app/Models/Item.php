@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Item extends Model
 {
@@ -14,8 +15,7 @@ class Item extends Model
         'title',
         'description',
         'price',
-        'author',
-        'publisher',
+        'publisher_id',
         'publication_date',
     ];
 
@@ -39,6 +39,24 @@ class Item extends Model
     public function genre()
     {
         return $this->belongsToMany(Genre::class, 'genre_item')->limit(1);
+    }
+
+    /**
+     * Get the publisher of the item.
+     */
+    public function publisher()
+    {
+        return $this->belongsTo(Publisher::class);
+    }
+
+    /**
+     * The authors that belong to the item.
+     */
+    public function authors()
+    {
+        return $this->belongsToMany(Author::class)
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
     /**
@@ -97,4 +115,45 @@ class Item extends Model
     {
         return $this->hasMany(OrderLine::class);
     }
+
+    /**
+     * Get the main author of the item.
+     */
+    public function getMainAuthorAttribute()
+    {
+        return $this->authors()->where('role', 'Author')->first();
+    }
+
+    /**
+     * Get a comma-separated list of author names.
+     */
+    public function getAuthorNamesAttribute()
+    {
+        return $this->authors->pluck('name')->implode(', ');
+    }
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        // When an item is deleted (even soft deleted), delete its images
+        static::deleting(function($item) {
+            // Get all images for this item
+            $images = $item->images;
+            
+            foreach ($images as $image) {
+                // Delete the image file from storage
+                if ($image->image_path && Storage::disk('public')->exists($image->image_path)) {
+                    Storage::disk('public')->delete($image->image_path);
+                }
+                
+                // Delete the image record
+                $image->delete();
+            }
+        });
+    }
 }
+
