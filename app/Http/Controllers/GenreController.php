@@ -38,10 +38,12 @@ class GenreController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string', // Added validation for description
         ]);
 
         Genre::create([
             'name' => $request->name,
+            'description' => $request->description, // Added description field
         ]);
 
         return redirect()->route('admin.genres.index')->with('success', 'Genre created successfully.');
@@ -80,10 +82,12 @@ class GenreController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string', // Added validation for description
         ]);
 
         $genre->update([
             'name' => $request->name,
+            'description' => $request->description, // Added description field
         ]);
 
         return redirect()->route('admin.genres.index')->with('success', 'Genre updated successfully.');
@@ -117,4 +121,3 @@ class GenreController extends Controller
             ->make(true);
     }
 }
-
