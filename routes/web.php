@@ -12,6 +12,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Admin\ItemController as AdminItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,17 +75,29 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', [AdminController::class, 'index'])->name('dashboard');
                 
                 // DataTables data routes
-                Route::get('/items/data', [ItemController::class, 'getData'])->name('items.data');
+                Route::get('/items/data', [AdminItemController::class, 'getData'])->name('items.data');
                 Route::get('/customers/data', [CustomerController::class, 'getData'])->name('customers.data');
                 Route::get('/orders/data', [OrderController::class, 'getData'])->name('orders.data');
                 Route::get('/genres/data', [GenreController::class, 'getData'])->name('genres.data');
                 Route::get('/reviews/data', [ReviewController::class, 'getData'])->name('reviews.data');
                 
                 // Admin resource routes
-                Route::resource('items', ItemController::class);
+                Route::resource('items', AdminItemController::class);
                 Route::resource('customers', CustomerController::class);
                 Route::resource('orders', OrderController::class);
                 Route::resource('genres', GenreController::class);
+                
+                // Trashed items
+                Route::get('/items/trashed/list', [AdminItemController::class, 'trashed'])->name('items.trashed');
+                Route::get('/items/trashed/data', [AdminItemController::class, 'getTrashedData'])->name('items.trashed.data');
+                Route::get('/items/trashed/{id}/restore', [AdminItemController::class, 'restore'])->name('items.restore');
+                Route::delete('/items/trashed/{id}', [AdminItemController::class, 'forceDelete'])->name('items.force-delete');
+                
+                // Import/Export
+                Route::get('/items/export/excel', [AdminItemController::class, 'export'])->name('items.export');
+                Route::get('/items/export/template', [AdminItemController::class, 'exportTemplate'])->name('items.export.template');
+                Route::get('/items/import/form', [AdminItemController::class, 'importForm'])->name('items.import.form');
+                Route::post('/items/import', [AdminItemController::class, 'import'])->name('items.import');
                 
                 // Reviews management
                 Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
@@ -111,4 +124,3 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
-

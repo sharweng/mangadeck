@@ -19,11 +19,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete <strong>{{ $item->title }}</strong>? This action cannot be undone.
+                Are you sure you want to delete <strong>{{ $item->title }}</strong>? This item will be moved to trash.
                 
                 @if($item->reviews()->count() > 0)
                     <div class="alert alert-warning mt-3">
-                        <i class="fas fa-exclamation-triangle"></i> This manga has {{ $item->reviews()->count() }} reviews associated with it. Deleting it will also remove these reviews.
+                        <i class="fas fa-exclamation-triangle"></i> This manga has {{ $item->reviews()->count() }} reviews associated with it.
                     </div>
                 @endif
             </div>
@@ -32,7 +32,7 @@
                 <form action="{{ route('admin.items.destroy', $item) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger">Move to Trash</button>
                 </form>
             </div>
         </div>
