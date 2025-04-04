@@ -29,11 +29,36 @@ class AdminController extends Controller
         $totalCustomers = Customer::count();
         $totalOrders = OrderInfo::count();
         $totalItems = Item::count();
+        
+        // Debug order info
+        \Log::info('Dashboard loaded with:', [
+            'totalCustomers' => $totalCustomers,
+            'totalOrders' => $totalOrders,
+            'totalItems' => $totalItems
+        ]);
+        
+        // Check if there are any orders
+        if ($totalOrders > 0) {
+            \Log::info('Orders exist in the database');
+            
+            // Get a sample order to debug
+            $sampleOrder = OrderInfo::first();
+            \Log::info('Sample order:', $sampleOrder->toArray());
+            
+            // Check if the order has order lines
+            $orderLines = DB::table('orderlines')->where('orderinfo_id', $sampleOrder->id)->get();
+            \Log::info('Order lines for sample order:', $orderLines->toArray());
+        } else {
+            \Log::warning('No orders found in the database');
+        }
+        
         $totalRevenue = OrderInfo::sum(DB::raw('
-            (SELECT SUM(orderlines.price * orderlines.quantity) 
+            COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) 
              FROM orderlines 
-             WHERE orderlines.orderinfo_id = orderinfos.id) + shipping
+             WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping
         '));
+        
+        \Log::info('Total revenue calculated: ' . $totalRevenue);
         
         // Recent orders
         $recentOrders = OrderInfo::with(['customer', 'status'])
@@ -56,13 +81,15 @@ class AdminController extends Controller
         $monthlySales = OrderInfo::select(
                 DB::raw('MONTH(date_placed) as month'),
                 DB::raw('YEAR(date_placed) as year'),
-                DB::raw('SUM((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id) + shipping) as total')
+                DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total')
             )
             ->whereYear('date_placed', Carbon::now()->year)
             ->groupBy('year', 'month')
             ->orderBy('year')
             ->orderBy('month')
             ->get();
+        
+        \Log::info('Monthly sales data:', $monthlySales->toArray());
         
         $monthlyData = [];
         for ($i = 1; $i <= 12; $i++) {
@@ -83,6 +110,264 @@ class AdminController extends Controller
             'recentReviews',
             'monthlyData'
         ));
+    }
+
+    /**
+     * Get sales data for chart.
+     */
+    public function getSalesData(Request $request)
+    {
+        $this->authorize('accessAdmin');
+        
+        // Set timezone to Asia/Manila
+        date_default_timezone_set('Asia/Manila');
+        
+        try {
+            // Debug the request parameters
+            \Log::info('Date range request:', [
+                'start_date' => $request->input('start_date'),
+                'end_date' => $request->input('end_date')
+            ]);
+            
+            $startDate = $request->input('start_date') 
+                ? Carbon::createFromFormat('m/d/Y', $request->input('start_date'))->startOfDay() 
+                : Carbon::now()->subDays(30)->startOfDay();
+                
+            $endDate = $request->input('end_date') 
+                ? Carbon::createFromFormat('m/d/Y', $request->input('end_date'))->endOfDay() 
+                : Carbon::now()->endOfDay();
+            
+            // Debug the parsed dates
+            \Log::info('Parsed date range:', [
+                'startDate' => $startDate->toDateTimeString(),
+                'endDate' => $endDate->toDateTimeString()
+            ]);
+            
+            // Check if there are any orders in the database
+            $totalOrders = OrderInfo::count();
+            \Log::info('Total orders in database: ' . $totalOrders);
+            
+            // Check if there are any orders in this date range
+            $orderCount = OrderInfo::whereBetween('date_placed', [$startDate, $endDate])->count();
+            \Log::info('Order count in date range: ' . $orderCount);
+            
+            // If no orders in this date range, return empty data
+            if ($orderCount === 0) {
+                \Log::info('No orders found in the selected date range');
+                return response()->json([
+                    'salesData' => [
+                        'labels' => [],
+                        'values' => []
+                    ]
+                ]);
+            }
+            
+            // Determine the grouping based on date range
+            $diffInDays = $startDate->diffInDays($endDate);
+            \Log::info('Difference in days: ' . $diffInDays);
+            
+            if ($diffInDays <= 31) {
+                // Group by day for ranges up to 31 days
+                $salesData = OrderInfo::whereBetween('date_placed', [$startDate, $endDate])
+                    ->select(
+                        DB::raw('DATE(date_placed) as date'),
+                        DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
+                    )
+                    ->groupBy('date')
+                    ->orderBy('date')
+                    ->get();
+                
+                // Debug the query results
+                \Log::info('Daily sales data:', $salesData->toArray());
+                
+                $labels = [];
+                $values = [];
+                
+                // Create a period of days to ensure all days are included
+                $period = new \DatePeriod(
+                    $startDate,
+                    new \DateInterval('P1D'),
+                    $endDate->addDay() // Add a day to include the end date
+                );
+                
+                // Initialize with zeros
+                foreach ($period as $date) {
+                    $dateString = $date->format('Y-m-d');
+                    $labels[] = $date->format('M d');
+                    $values[] = 0;
+                }
+                
+                // Fill in actual values
+                foreach ($salesData as $data) {
+                    $date = Carbon::parse($data->date);
+                    $index = $date->diffInDays($startDate);
+                    if ($index >= 0 && $index < count($values)) {
+                        $values[$index] = (float) $data->total_sales;
+                    }
+                }
+            } else if ($diffInDays <= 92) {
+                // Group by week for ranges up to 3 months
+                $salesData = OrderInfo::whereBetween('date_placed', [$startDate, $endDate])
+                    ->select(
+                        DB::raw('YEARWEEK(date_placed) as yearweek'),
+                        DB::raw('MIN(DATE(date_placed)) as week_start'),
+                        DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
+                    )
+                    ->groupBy('yearweek')
+                    ->orderBy('yearweek')
+                    ->get();
+                
+                // Debug the query results
+                \Log::info('Weekly sales data:', $salesData->toArray());
+                
+                $labels = $salesData->map(function ($item) {
+                    $weekStart = Carbon::parse($item->week_start);
+                    return $weekStart->format('M d') . ' - ' . $weekStart->addDays(6)->format('M d');
+                });
+                
+                $values = $salesData->pluck('total_sales')->map(function ($value) {
+                    return (float) $value;
+                });
+            } else {
+                // Group by month for longer ranges
+                $salesData = OrderInfo::whereBetween('date_placed', [$startDate, $endDate])
+                    ->select(
+                        DB::raw('YEAR(date_placed) as year'),
+                        DB::raw('MONTH(date_placed) as month'),
+                        DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
+                    )
+                    ->groupBy('year', 'month')
+                    ->orderBy('year')
+                    ->orderBy('month')
+                    ->get();
+                
+                // Debug the query results
+                \Log::info('Monthly sales data:', $salesData->toArray());
+                
+                $labels = $salesData->map(function ($item) {
+                    return Carbon::createFromDate($item->year, $item->month, 1)->format('M Y');
+                });
+                
+                $values = $salesData->pluck('total_sales')->map(function ($value) {
+                    return (float) $value;
+                });
+            }
+            
+            // Debug the final data being sent to the chart
+            \Log::info('Final chart data:', [
+                'labels' => $labels,
+                'values' => $values
+            ]);
+            
+            return response()->json([
+                'salesData' => [
+                    'labels' => $labels,
+                    'values' => $values
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error in getSalesData: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'error' => $e->getMessage(),
+                'salesData' => [
+                    'labels' => [],
+                    'values' => []
+                ]
+            ], 500);
+        }
+    }
+    
+    /**
+     * Get product sales data for chart.
+     */
+    public function getProductSalesData()
+    {
+        $this->authorize('accessAdmin');
+        
+        try {
+            // Check if there are any orders
+            $orderCount = OrderInfo::count();
+            \Log::info('Total orders in database: ' . $orderCount);
+            
+            // Check if there are any orderlines
+            $orderlineCount = DB::table('orderlines')->count();
+            \Log::info('Total orderlines in database: ' . $orderlineCount);
+            
+            // Get total sales amount
+            $totalSales = DB::table('orderlines')
+                ->sum(DB::raw('price * quantity'));
+            
+            // Debug total sales
+            \Log::info('Total sales amount: ' . $totalSales);
+            
+            if ($totalSales == 0) {
+                \Log::info('No sales data found, returning empty chart');
+                return response()->json([
+                    'productSalesData' => [
+                        'labels' => [],
+                        'values' => []
+                    ]
+                ]);
+            }
+            
+            // Get product sales data
+            $productSalesData = DB::table('items')
+                ->join('orderlines', 'items.id', '=', 'orderlines.item_id')
+                ->select(
+                    'items.title',
+                    DB::raw('SUM(orderlines.price * orderlines.quantity) as revenue')
+                )
+                ->groupBy('items.id', 'items.title')
+                ->orderBy('revenue', 'desc')
+                ->take(10) // Limit to top 10 products
+                ->get();
+            
+            // Debug product sales data
+            \Log::info('Product sales data:', $productSalesData->toArray());
+            
+            // Calculate percentages
+            $labels = $productSalesData->pluck('title');
+            $values = $productSalesData->pluck('revenue')->map(function ($value) use ($totalSales) {
+                return round(($value / $totalSales) * 100, 1);
+            });
+            
+            // Add "Others" category if there are more than 10 products
+            $otherProductsRevenue = DB::table('orderlines')
+                ->join('items', 'orderlines.item_id', '=', 'items.id')
+                ->whereNotIn('items.title', $labels)
+                ->sum(DB::raw('orderlines.price * orderlines.quantity'));
+            
+            if ($otherProductsRevenue > 0) {
+                $labels->push('Others');
+                $values->push(round(($otherProductsRevenue / $totalSales) * 100, 1));
+            }
+            
+            // Debug final chart data
+            \Log::info('Final product chart data:', [
+                'labels' => $labels->toArray(),
+                'values' => $values->toArray()
+            ]);
+            
+            return response()->json([
+                'productSalesData' => [
+                    'labels' => $labels,
+                    'values' => $values
+                ]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error in getProductSalesData: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return response()->json([
+                'error' => $e->getMessage(),
+                'productSalesData' => [
+                    'labels' => [],
+                    'values' => []
+                ]
+            ], 500);
+        }
     }
 
     /**

@@ -76,6 +76,10 @@ Route::middleware('auth')->group(function () {
             // Restrict access to admin and staff only
             Route::middleware(\App\Http\Middleware\AdminStaffMiddleware::class)->group(function () {
                 Route::get('/', [AdminController::class, 'index'])->name('dashboard');
+
+                 // API routes for charts
+                Route::get('/api/sales-data', [App\Http\Controllers\AdminController::class, 'getSalesData']);
+                Route::get('/api/product-sales-data', [App\Http\Controllers\AdminController::class, 'getProductSalesData']);
                 
                 // DataTables data routes
                 Route::get('/items/data', [AdminItemController::class, 'getData'])->name('items.data');
@@ -129,4 +133,19 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
+
+// Add this route to debug your API endpoints
+Route::get('/debug-routes', function () {
+    $routes = collect(Route::getRoutes())->map(function ($route) {
+        return [
+            'uri' => $route->uri(),
+            'methods' => $route->methods(),
+            'name' => $route->getName(),
+            'action' => $route->getActionName(),
+        ];
+    });
+    
+    return response()->json($routes);
+});
+
 
