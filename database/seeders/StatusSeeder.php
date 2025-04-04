@@ -27,10 +27,6 @@ class StatusSeeder extends Seeder
                 'description' => 'Order is being processed',
             ],
             [
-                'name' => 'Shipped',
-                'description' => 'Order has been shipped to the customer',
-            ],
-            [
                 'name' => 'Delivered',
                 'description' => 'Order has been delivered to the customer',
             ],

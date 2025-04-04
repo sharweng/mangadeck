@@ -58,13 +58,16 @@ Route::middleware('auth')->group(function () {
         Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
         Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
         Route::post('/checkout', [CartController::class, 'processCheckout'])->name('cart.process');
+
+        // Review routes
+        Route::post('/reviews/{item}', [ReviewController::class, 'store'])->name('reviews.store');
+        Route::get('/reviews/{item}/{review}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+        Route::put('/reviews/{item}/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+        Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
         
         // Order routes
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-        
-        // Review routes
-        Route::post('/reviews/{item}', [ReviewController::class, 'store'])->name('reviews.store');
     });
 
     // Admin routes

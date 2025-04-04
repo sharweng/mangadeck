@@ -55,4 +55,3 @@ class Review extends Model
         return false;
     }
 }
-

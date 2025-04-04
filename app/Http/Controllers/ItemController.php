@@ -4,10 +4,56 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\Genre;
+use App\Models\OrderInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
+    /**
+     * Check if the authenticated user has purchased and received the item.
+     */
+    private function userHasPurchased($itemId)
+    {
+        if (!Auth::check() || !Auth::user()->customer) {
+            return false;
+        }
+        
+        $customer = Auth::user()->customer;
+        
+        // Check if the customer has any delivered orders containing this item
+        return OrderInfo::where('customer_id', $customer->id)
+            ->whereHas('status', function($query) {
+                $query->where('name', 'Delivered');
+            })
+            ->whereHas('orderlines', function($query) use ($itemId) {
+                $query->where('item_id', $itemId);
+            })
+            ->exists();
+    }
+    
+    /**
+     * Check if the authenticated user has ordered but not yet received the item.
+     */
+    private function userHasOrderedButNotReceived($itemId)
+    {
+        if (!Auth::check() || !Auth::user()->customer) {
+            return false;
+        }
+        
+        $customer = Auth::user()->customer;
+        
+        // Check if the customer has any non-delivered orders containing this item
+        return OrderInfo::where('customer_id', $customer->id)
+            ->whereHas('status', function($query) {
+                $query->where('name', '!=', 'Delivered');
+            })
+            ->whereHas('orderlines', function($query) use ($itemId) {
+                $query->where('item_id', $itemId);
+            })
+            ->exists();
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -33,29 +79,13 @@ class ItemController extends Controller
             });
         }
         
-        // Get paginated results - this is the key change
+        // Get paginated results
         $items = $query->orderBy('title')->paginate(12);
         
         // Get all genres for the filter dropdown
         $genres = Genre::orderBy('name')->get();
         
         return view('items.index', compact('items', 'genres', 'selectedGenre', 'search'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -85,7 +115,30 @@ class ItemController extends Controller
             $relatedItem->average_rating = $relatedItem->reviews->avg('rating') ?: 0;
         }
         
-        return view('items.show', compact('item', 'relatedItems'));
+        // Check if user has purchased and received this item
+        $userHasPurchased = $this->userHasPurchased($item->id);
+        
+        // Check if user has ordered but not yet received this item
+        $userHasOrderedButNotReceived = $this->userHasOrderedButNotReceived($item->id);
+        
+        return view('items.show', compact('item', 'relatedItems', 'userHasPurchased', 'userHasOrderedButNotReceived'));
+    }
+
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
     }
 
     /**

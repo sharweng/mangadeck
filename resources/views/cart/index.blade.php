@@ -67,15 +67,7 @@
         
         <div class="row">
             <div class="col-md-6">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Have a Coupon?</h5>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Enter coupon code">
-                            <button class="btn btn-outline-secondary" type="button">Apply</button>
-                        </div>
-                    </div>
-                </div>
+
                 
                 <div class="d-flex gap-2">
                     <a href="{{ route('items.index') }}" class="btn btn-outline-primary">

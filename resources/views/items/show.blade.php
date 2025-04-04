@@ -117,53 +117,57 @@
 
     <!-- Reviews Section -->
     <div class="card mb-4">
-        <div class="card-header">
-            <h3>Customer Reviews</h3>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Customer Reviews</h5>
+            <span class="text-muted">{{ $item->reviews->count() }} {{ Str::plural('review', $item->reviews->count()) }}</span>
         </div>
         <div class="card-body">
-            @if($item->reviews->count() > 0)
-                <div class="mb-4">
-                    <h4>{{ number_format($item->average_rating, 1) }} out of 5</h4>
-                    <div class="text-warning mb-2">
-                        @for($i = 1; $i <= 5; $i++)
-                            @if($i <= round($item->average_rating))
-                                <i class="fas fa-star"></i>
-                            @else
-                                <i class="far fa-star"></i>
-                            @endif
-                        @endfor
-                    </div>
-                    <p>Based on {{ $item->reviews->count() }} reviews</p>
-                </div>
-                
-                <div class="mb-4">
-                    @foreach($item->reviews as $review)
-                        <div class="border-bottom pb-3 mb-3">
-                            <div class="d-flex justify-content-between mb-2">
+            @if($item->reviews->where('is_approved', true)->count() > 0)
+                <div class="reviews-list mb-4">
+                    @foreach($item->reviews->where('is_approved', true) as $review)
+                        <div class="review-item border-bottom pb-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div>
-                                    <strong>{{ $review->user->name }}</strong>
-                                    <div class="text-warning">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            @if($i <= $review->rating)
-                                                <i class="fas fa-star"></i>
-                                            @else
-                                                <i class="far fa-star"></i>
-                                            @endif
-                                        @endfor
-                                    </div>
+                                    <span class="fw-bold">{{ $review->user->name }}</span>
+                                    <span class="text-muted ms-2">{{ $review->created_at->format('M d, Y') }}</span>
                                 </div>
-                                <small class="text-muted">{{ $review->created_at->format('M d, Y') }}</small>
+                                @auth
+                                    @if($review->user_id === Auth::id())
+                                        <a href="{{ route('reviews.edit', [$item, $review]) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit me-1"></i> Edit My Review
+                                        </a>
+                                    @endif
+                                @endauth
+                            </div>
+                            <div class="text-warning mb-2">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $review->rating)
+                                        <i class="fas fa-star"></i>
+                                    @else
+                                        <i class="far fa-star"></i>
+                                    @endif
+                                @endfor
                             </div>
                             <p class="mb-0">{{ $review->comment }}</p>
                         </div>
                     @endforeach
                 </div>
             @else
-                <p>No reviews yet. Be the first to review this manga!</p>
+                <div class="alert alert-info">
+                    No reviews yet. Be the first to review this product!
+                </div>
             @endif
-            
-            <!-- Review Form -->
-            @auth
+        </div>
+    </div>
+
+    <!-- Review Form -->
+    @auth
+        @php
+            $userReview = $item->reviews->where('user_id', Auth::id())->first();
+        @endphp
+        
+        @if(!$userReview)
+            @if(isset($userHasPurchased) && $userHasPurchased)
                 <div class="card">
                     <div class="card-header">
                         <h5>Write a Review</h5>
@@ -173,7 +177,7 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="rating" class="form-label">Rating</label>
-                                <select class="form-select" id="rating" name="rating" required>
+                                <select class="form-select @error('rating') is-invalid @enderror" id="rating" name="rating" required>
                                     <option value="">Select rating</option>
                                     <option value="5">5 - Excellent</option>
                                     <option value="4">4 - Very Good</option>
@@ -181,23 +185,49 @@
                                     <option value="2">2 - Fair</option>
                                     <option value="1">1 - Poor</option>
                                 </select>
+                                @error('rating')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="comment" class="form-label">Comment</label>
-                                <textarea class="form-control" id="comment" name="comment" rows="3" required minlength="5" maxlength="1000"></textarea>
+                                <textarea class="form-control @error('comment') is-invalid @enderror" id="comment" name="comment" rows="3" required minlength="5" maxlength="1000"></textarea>
                                 <div class="form-text">Your review must be at least 5 characters long. Please note that reviews containing inappropriate language will require approval before being published.</div>
+                                @error('comment')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <button type="submit" class="btn btn-primary">Submit Review</button>
                         </form>
                     </div>
                 </div>
+            @elseif(isset($userHasOrderedButNotReceived) && $userHasOrderedButNotReceived)
+                <div class="alert alert-warning">
+                    <p>You've ordered this product, but you can only review it after it has been delivered.</p>
+                    <p>Please check back once your order status changes to "Delivered".</p>
+                </div>
             @else
                 <div class="alert alert-info">
-                    Please <a href="{{ route('login') }}">login</a> to write a review.
+                    <p>You need to purchase and receive this product before you can review it.</p>
+                    <form action="{{ route('cart.add', $item) }}" method="POST" class="d-inline">
+                        @csrf
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-sm btn-primary" {{ $item->isInStock() ? '' : 'disabled' }}>
+                            {{ $item->isInStock() ? 'Add to Cart' : 'Out of Stock' }}
+                        </button>
+                    </form>
                 </div>
-            @endauth
+            @endif
+        @else
+            <div class="alert alert-info">
+                You have already reviewed this product. <a href="{{ route('reviews.edit', [$item, $userReview]) }}">Edit your review</a>
+            </div>
+        @endif
+    @else
+        <div class="alert alert-info">
+            Please <a href="{{ route('login') }}">login</a> to write a review.
         </div>
-    </div>
+    @endauth
 
     <!-- Related Manga -->
     @if($relatedItems->count() > 0)
@@ -347,4 +377,4 @@
         }
     });
 </script>
-@endsection
+@endsection 

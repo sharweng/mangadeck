@@ -1,6 +1,17 @@
 <div class="btn-group" role="group">
-    @if(!$review->approved)
-        <form action="{{ route('admin.reviews.approve', $review) }}" method="POST">
+    <button type="button" class="btn btn-sm btn-info view-review" 
+            data-toggle="modal" 
+            data-target="#reviewModal" 
+            data-id="{{ $review->id }}" 
+            data-comment="{{ htmlspecialchars($review->comment) }}" 
+            data-rating="{{ $review->rating }}" 
+            data-user="{{ $review->user->name }}" 
+            data-item="{{ $review->item->title }}" 
+            title="View">
+        <i class="fas fa-eye"></i>
+    </button>
+    @if(!$review->is_approved)
+        <form action="{{ route('admin.reviews.approve', $review) }}" method="POST" class="d-inline">
             @csrf
             @method('PATCH')
             <button type="submit" class="btn btn-sm btn-success" title="Approve">
@@ -8,7 +19,7 @@
             </button>
         </form>
     @endif
-    <form action="{{ route('admin.reviews.destroy', $review) }}" method="POST">
+    <form action="{{ route('admin.reviews.destroy', $review) }}" method="POST" class="d-inline">
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-sm btn-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this review?')">
@@ -16,4 +27,3 @@
         </button>
     </form>
 </div>
-

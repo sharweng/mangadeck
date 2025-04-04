@@ -160,7 +160,7 @@ class CustomerController extends Controller
      */
     public function getData()
     {
-        $customers = Customer::with('user');
+        $customers = Customer::with(['user', 'orders']);
         
         return DataTables::of($customers)
             ->addColumn('name', function($customer) {
@@ -169,14 +169,21 @@ class CustomerController extends Controller
             ->addColumn('email', function($customer) {
                 return $customer->user->email;
             })
+            ->addColumn('created_at', function($customer) {
+                return $customer->created_at->format('M d, Y');
+            })
+            ->addColumn('orders_count', function($customer) {
+                return $customer->orders->count();
+            })
             ->addColumn('status', function($customer) {
-                return $customer->user->status;
+                $status = $customer->user->status;
+                return '<span class="badge ' . ($status == 'activated' ? 'bg-success' : 'bg-danger') . '">' 
+                    . ucfirst($status) . '</span>';
             })
             ->addColumn('actions', function($customer) {
                 return view('admin.customers.actions', compact('customer'))->render();
             })
-            ->rawColumns(['actions'])
+            ->rawColumns(['status', 'actions'])
             ->make(true);
     }
 }
-
