@@ -38,6 +38,19 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
+        // Check if user's email is verified
+        if (!$user->hasVerifiedEmail()) {
+            // Log the user out
+            $this->guard()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            
+            // Throw validation exception with message
+            throw ValidationException::withMessages([
+                $this->username() => ['Please verify your email address before logging in. Check your inbox for a verification link.'],
+            ]);
+        }
+        
         // Check if user is deactivated
         if ($user->status === 'deactivated') {
             // Log the user out

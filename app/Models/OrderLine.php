@@ -10,6 +10,13 @@ class OrderLine extends Model
     use HasFactory;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'orderlines'; // Specify the actual table name in your database
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -54,4 +61,3 @@ class OrderLine extends Model
         return $this->price * $this->quantity;
     }
 }
-

@@ -8,6 +8,8 @@ use App\Models\OrderLine;
 use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmation;
 use Carbon\Carbon;
 
 class CartController extends Controller
@@ -18,21 +20,13 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
-        $items = [];
         $total = 0;
         
-        if (!empty($cart)) {
-            $itemIds = array_keys($cart);
-            $items = Item::whereIn('id', $itemIds)->get();
-            
-            foreach ($items as $item) {
-                $item->cart_quantity = $cart[$item->id];
-                $item->subtotal = $item->price * $cart[$item->id];
-                $total += $item->subtotal;
-            }
+        foreach ($cart as $details) {
+            $total += $details['price'] * $details['quantity'];
         }
         
-        return view('cart.index', compact('items', 'total'));
+        return view('cart.index', compact('total'));
     }
 
     /**
@@ -48,9 +42,16 @@ class CartController extends Controller
         $cart = session()->get('cart', []);
         
         if (isset($cart[$item->id])) {
-            $cart[$item->id] += $quantity;
+            $cart[$item->id]['quantity'] += $quantity;
         } else {
-            $cart[$item->id] = $quantity;
+            $cart[$item->id] = [
+                'quantity' => $quantity,
+                'price' => $item->price,
+                'title' => $item->title,
+                'image' => $item->primaryImage ? '/storage/' . $item->primaryImage->image_path : null,
+                'genres' => $item->genres->pluck('name')->toArray(),
+                'max_qty' => $item->stock ? $item->stock->quantity : 99
+            ];
         }
         
         session()->put('cart', $cart);
@@ -65,23 +66,21 @@ class CartController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'quantities' => 'required|array',
-            'quantities.*' => 'required|integer|min:1',
+            'id' => 'required|integer',
+            'quantity' => 'required|integer|min:1',
         ]);
         
         $cart = session()->get('cart', []);
-        $quantities = $request->input('quantities');
+        $id = $request->input('id');
+        $quantity = $request->input('quantity');
         
-        foreach ($quantities as $id => $quantity) {
-            if (isset($cart[$id])) {
-                $cart[$id] = $quantity;
-            }
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity'] = $quantity;
+            session()->put('cart', $cart);
+            return response()->json(['success' => true]);
         }
         
-        session()->put('cart', $cart);
-        
-        return redirect()->route('cart.index')
-            ->with('success', 'Cart updated successfully.');
+        return response()->json(['success' => false]);
     }
 
     /**
@@ -128,8 +127,8 @@ class CartController extends Controller
         $subtotal = 0;
         
         foreach ($items as $item) {
-            $item->cart_quantity = $cart[$item->id];
-            $item->subtotal = $item->price * $cart[$item->id];
+            $item->cart_quantity = $cart[$item->id]['quantity'];
+            $item->subtotal = $item->price * $cart[$item->id]['quantity'];
             $subtotal += $item->subtotal;
         }
         
@@ -192,7 +191,7 @@ class CartController extends Controller
         $items = Item::whereIn('id', $itemIds)->with('stock')->get();
         
         foreach ($items as $item) {
-            $quantity = $cart[$item->id];
+            $quantity = $cart[$item->id]['quantity'];
             
             OrderLine::create([
                 'orderinfo_id' => $order->id,
@@ -208,6 +207,10 @@ class CartController extends Controller
                 ]);
             }
         }
+        
+        // Send order confirmation email
+        $order->load(['customer.user', 'status', 'orderLines.item']);
+        Mail::to($order->customer->user->email)->send(new OrderConfirmation($order));
         
         // Clear cart after successful order
         session()->forget('cart');

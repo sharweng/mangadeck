@@ -1,3 +1,7 @@
+@php
+    $statuses = \App\Models\Status::all();
+@endphp
+
 <div class="btn-group" role="group">
     <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-info">
         <i class="fas fa-eye"></i>

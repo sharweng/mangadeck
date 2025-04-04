@@ -40,8 +40,8 @@ Route::get('/manga/{item}', [ItemController::class, 'show'])->name('items.show')
 // Genre routes
 Route::get('/genres/{genre}', [GenreController::class, 'show'])->name('genres.show');
 
-// Authentication routes (provided by Laravel UI)
-Auth::routes();
+// Authentication routes with email verification enabled
+Auth::routes(['verify' => true]);
 
 // User authenticated routes
 Route::middleware('auth')->group(function () {
@@ -126,3 +126,4 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
+
