@@ -49,13 +49,29 @@ class GenreController extends Controller
         return redirect()->route('admin.genres.index')->with('success', 'Genre created successfully.');
     }
 
-    /**
-     * Display the specified resource.
+       /**
+     * Display the specified resource for public view.
      *
      * @param  \App\Models\Genre  $genre
      * @return \Illuminate\Http\Response
      */
     public function show(Genre $genre)
+    {
+        // Load the genre with its related items
+        $genre->load(['items' => function($query) {
+            $query->with(['primaryImage', 'stock', 'reviews']);
+        }]);
+        
+        return view('genres.show', compact('genre'));
+    }
+
+    /**
+     * Display the specified resource for admin view.
+     *
+     * @param  \App\Models\Genre  $genre
+     * @return \Illuminate\Http\Response
+     */
+    public function adminShow(Genre $genre)
     {
         return view('admin.genres.show', compact('genre'));
     }

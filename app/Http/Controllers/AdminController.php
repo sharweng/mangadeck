@@ -13,6 +13,7 @@ use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -118,15 +119,23 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,staff,customer',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
-        User::create([
+        $userData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'role' => $validated['role'],
             'status' => 'activated',
-        ]);
+        ];
+        
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            $userData['photo'] = $request->file('photo')->store('user-photos', 'public');
+        }
+        
+        User::create($userData);
         
         return redirect()->route('admin.users')
             ->with('success', 'User created successfully.');
@@ -155,6 +164,7 @@ class AdminController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|in:admin,staff,customer',
             'status' => 'required|in:activated,deactivated',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
         $updateData = [
@@ -166,6 +176,16 @@ class AdminController extends Controller
         
         if ($validated['password']) {
             $updateData['password'] = bcrypt($validated['password']);
+        }
+        
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            
+            $updateData['photo'] = $request->file('photo')->store('user-photos', 'public');
         }
         
         $user->update($updateData);
@@ -181,10 +201,14 @@ class AdminController extends Controller
     {
         $this->authorize('manageUsers');
         
+        // Delete user's photo if exists
+        if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+            Storage::disk('public')->delete($user->photo);
+        }
+        
         $user->delete();
         
         return redirect()->route('admin.users')
             ->with('success', 'User deleted successfully.');
     }
 }
-

@@ -8,7 +8,7 @@
         <h6 class="m-0 font-weight-bold text-primary">Add New User</h6>
     </div>
     <div class="card-body">
-        <form action="{{ route('admin.users.store') }}" method="POST">
+        <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="mb-3">
@@ -45,6 +45,16 @@
             </div>
 
             <div class="mb-3">
+                <label for="photo" class="form-label">Profile Photo</label>
+                <input type="file" name="photo" id="photo" 
+                       class="form-control @error('photo') is-invalid @enderror">
+                <small class="form-text text-muted">Upload a profile photo (optional)</small>
+                @error('photo')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
                 <label for="role" class="form-label">Role</label>
                 <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" required>
                     <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
@@ -64,4 +74,3 @@
     </div>
 </div>
 @endsection
-

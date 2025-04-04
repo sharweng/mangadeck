@@ -6,6 +6,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -36,7 +37,8 @@ class ProfileController extends Controller
             'fname' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
             'lname' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/',
             'addressline' => 'required|string|max:255',
-            'phone' => 'required|string|max:20|regex:/^[0-9\+\-$$$$\s]+$/',
+            'phone' => 'required|string|max:20|regex:/^[0-9\+\-\s]+$/',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         
         // Verify current password if provided
@@ -54,6 +56,16 @@ class ProfileController extends Controller
         
         if ($request->filled('password')) {
             $user->password = Hash::make($validated['password']);
+        }
+        
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            
+            $user->photo = $request->file('photo')->store('user-photos', 'public');
         }
         
         $user->save();
@@ -84,4 +96,3 @@ class ProfileController extends Controller
             ->with('success', 'Profile updated successfully.');
     }
 }
-

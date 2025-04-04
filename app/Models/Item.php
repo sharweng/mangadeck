@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Scout\Searchable;
 
 class Item extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Searchable;
 
     protected $fillable = [
         'title',
@@ -23,6 +24,35 @@ class Item extends Model
         'publication_date' => 'date',
         'price' => 'decimal:2',
     ];
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        $array = $this->toArray();
+
+        // Customize the data array...
+        $array = [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+        ];
+
+        // Add author names if available
+        if ($this->authors->count() > 0) {
+            $array['author_names'] = $this->getAuthorNamesAttribute();
+        }
+
+        // Add genres if available
+        if ($this->genres->count() > 0) {
+            $array['genres'] = $this->genres->pluck('name')->join(' ');
+        }
+
+        return $array;
+    }
 
     /**
      * The genres that belong to the item.

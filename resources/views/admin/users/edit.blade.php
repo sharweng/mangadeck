@@ -8,7 +8,17 @@
         <h6 class="m-0 font-weight-bold text-primary">Edit User: {{ $user->name }}</h6>
     </div>
     <div class="card-body">
-        <form action="{{ route('admin.users.update', $user) }}" method="POST">
+        <div class="text-center mb-4">
+            @if($user->photo)
+                <img src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+            @else
+                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 150px; height: 150px; font-size: 3rem;">
+                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                </div>
+            @endif
+        </div>
+
+        <form action="{{ route('admin.users.update', $user) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -47,6 +57,16 @@
             </div>
 
             <div class="mb-3">
+                <label for="photo" class="form-label">Profile Photo</label>
+                <input type="file" name="photo" id="photo" 
+                       class="form-control @error('photo') is-invalid @enderror">
+                <small class="form-text text-muted">Upload a new profile photo (optional)</small>
+                @error('photo')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
                 <label for="role" class="form-label">Role</label>
                 <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" required>
                     <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
@@ -77,4 +97,3 @@
     </div>
 </div>
 @endsection
-

@@ -8,9 +8,6 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
             <li class="breadcrumb-item"><a href="{{ route('items.index') }}">Manga</a></li>
-            @if($item->genres->isNotEmpty())
-                <li class="breadcrumb-item"><a href="{{ route('genres.show', $item->genres->first()) }}">{{ $item->genres->first()->name }}</a></li>
-            @endif
             <li class="breadcrumb-item active" aria-current="page">{{ $item->title }}</li>
         </ol>
     </nav>

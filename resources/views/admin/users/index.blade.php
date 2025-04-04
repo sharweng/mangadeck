@@ -16,6 +16,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Photo</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
@@ -28,6 +29,15 @@
                     @foreach($users as $user)
                         <tr>
                             <td>{{ $user->id }}</td>
+                            <td class="text-center">
+                                @if($user->photo)
+                                    <img src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}" class="img-thumbnail rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                @else
+                                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 50px; height: 50px; font-size: 1.2rem;">
+                                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                                    </div>
+                                @endif
+                            </td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>
@@ -36,7 +46,7 @@
                                 </span>
                             </td>
                             <td>
-                                <span class="badge bg-{{ $user->status === 'active' ? 'success' : 'danger' }}">
+                                <span class="badge bg-{{ $user->status === 'activated' ? 'success' : 'danger' }}">
                                     {{ ucfirst($user->status) }}
                                 </span>
                             </td>
@@ -83,6 +93,10 @@
                 </tbody>
             </table>
         </div>
+        
+        <div class="mt-3">
+            {{ $users->links() }}
+        </div>
     </div>
 </div>
 @endsection
@@ -90,8 +104,10 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-        $('#usersTable').DataTable();
+        $('#usersTable').DataTable({
+            "paging": false,
+            "info": false,
+        });
     });
 </script>
 @endsection
-

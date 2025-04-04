@@ -9,67 +9,106 @@ use Illuminate\Http\Request;
 class ItemController extends Controller
 {
     /**
-     * Display a listing of the items.
+     * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = Item::with(['genres', 'authors', 'publisher', 'stock', 'primaryImage']);
+        $search = $request->search ?? '';
+        $selectedGenre = $request->genre ?? null;
         
-        // Apply search if provided
-        if ($request->has('search') && $request->search) {
-            $search = $request->search;
-            $query->where('title', 'like', "%{$search}%")
+        $query = Item::with(['genres', 'stock', 'reviews', 'primaryImage']);
+        
+        // Apply genre filter if selected
+        if ($selectedGenre) {
+            $query->whereHas('genres', function($q) use ($selectedGenre) {
+                $q->where('genres.id', $selectedGenre);
+            });
+        }
+        
+        // Apply search filter if provided
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
-        }
-        
-        // Apply genre filter if provided
-        if ($request->has('genre') && $request->genre) {
-            $query->whereHas('genres', function($q) use ($request) {
-                $q->where('genres.id', $request->genre);
             });
         }
         
-        // Apply author filter if provided
-        if ($request->has('author') && $request->author) {
-            $query->whereHas('authors', function($q) use ($request) {
-                $q->where('authors.id', $request->author);
-            });
-        }
+        // Get paginated results - this is the key change
+        $items = $query->orderBy('title')->paginate(12);
         
-        // Apply publisher filter if provided
-        if ($request->has('publisher') && $request->publisher) {
-            $query->where('publisher_id', $request->publisher);
-        }
-        
-        // Apply sorting
-        $sortField = $request->get('sort', 'created_at');
-        $sortDirection = $request->get('direction', 'desc');
-        $query->orderBy($sortField, $sortDirection);
-        
-        $items = $query->paginate(12);
+        // Get all genres for the filter dropdown
         $genres = Genre::orderBy('name')->get();
         
-        return view('items.index', compact('items', 'genres'));
+        return view('items.index', compact('items', 'genres', 'selectedGenre', 'search'));
     }
 
     /**
-     * Display the specified item.
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
      */
     public function show(Item $item)
     {
-        $item->load(['genres', 'authors', 'publisher', 'stock', 'images', 'reviews' => function($query) {
-            $query->where('is_approved', true)->latest();
-        }]);
+        // Load relationships
+        $item->load(['genres', 'stock', 'reviews', 'images', 'authors', 'publisher']);
+        
+        // Calculate average rating
+        $item->average_rating = $item->reviews->avg('rating') ?: 0;
         
         // Get related items based on genres
-        $relatedItems = Item::whereHas('genres', function($query) use ($item) {
-            $query->whereIn('genres.id', $item->genres->pluck('id'));
-        })
-        ->where('id', '!=', $item->id)
-        ->with('primaryImage')
-        ->take(4)
-        ->get();
+        $genreIds = $item->genres->pluck('id');
+        
+        $relatedItems = Item::with(['genres', 'stock', 'reviews', 'primaryImage'])
+            ->whereHas('genres', function($query) use ($genreIds) {
+                $query->whereIn('genres.id', $genreIds);
+            })
+            ->where('id', '!=', $item->id)
+            ->take(4)
+            ->get();
+            
+        // Calculate average rating for related items
+        foreach ($relatedItems as $relatedItem) {
+            $relatedItem->average_rating = $relatedItem->reviews->avg('rating') ?: 0;
+        }
         
         return view('items.show', compact('item', 'relatedItems'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Item $item)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Item $item)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Item $item)
+    {
+        //
     }
 }

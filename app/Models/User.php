@@ -23,6 +23,7 @@ class User extends Authenticatable
         'role',
         'role_id',
         'status',
+        'photo', // Added photo field
     ];
 
     /**

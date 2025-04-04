@@ -80,6 +80,8 @@ Route::middleware('auth')->group(function () {
                 Route::get('/orders/data', [OrderController::class, 'getData'])->name('orders.data');
                 Route::get('/genres/data', [GenreController::class, 'getData'])->name('genres.data');
                 Route::get('/reviews/data', [ReviewController::class, 'getData'])->name('reviews.data');
+
+                Route::get('/genres/{genre}', [GenreController::class, 'adminShow'])->name('genres.show');
                 
                 // Admin resource routes
                 Route::resource('items', AdminItemController::class);
