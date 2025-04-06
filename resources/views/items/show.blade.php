@@ -19,35 +19,42 @@
             <div class="row g-0">
                 <!-- Manga Image Gallery - Left Side -->
                 <div class="col-md-5 position-relative">
-                    <div class="manga-detail-gradient-overlay"></div>
-                    <div class="p-4">
-                        <div class="manga-image-container mb-3 d-flex justify-content-center">
-                            @if($item->primaryImage)
-                                <img id="product-main-image" src="/storage/{{ $item->primaryImage->image_path }}" 
-                                     alt="{{ $item->title }}" class="img-fluid rounded shadow manga-cover">
-                            @else
-                                <img id="product-main-image" src="{{ asset('images/no-image.jpg') }}" 
-                                     alt="{{ $item->title }}" class="img-fluid rounded shadow manga-cover">
-                            @endif
+    <div class="p-4">
+        <!-- Main image container with overlay -->
+        <div class="manga-image-container mb-3 d-flex justify-content-center position-relative">
+            <div class="manga-detail-gradient-overlay"></div>
+            @if($item->primaryImage)
+                <img id="product-main-image" src="/storage/{{ $item->primaryImage->image_path }}" 
+                     alt="{{ $item->title }}" class="img-fluid rounded shadow manga-cover cursor-zoom"
+                     data-bs-toggle="modal" data-bs-target="#imageModal"
+                     data-image="/storage/{{ $item->primaryImage->image_path }}">
+            @else
+                <img id="product-main-image" src="{{ asset('images/no-image.jpg') }}" 
+                     alt="{{ $item->title }}" class="img-fluid rounded shadow manga-cover cursor-zoom"
+                     data-bs-toggle="modal" data-bs-target="#imageModal"
+                     data-image="{{ asset('images/no-image.jpg') }}">
+            @endif
+        </div>
+        
+        <!-- Thumbnails Gallery (outside the overlay) -->
+        @if($item->images->count() > 0)
+            <div class="thumbnails-scroll-container">
+                <div class="manga-thumbnails d-flex">
+                    @foreach($item->images as $image)
+                        <div class="thumbnail-item {{ $image->is_primary ? 'active' : '' }}">
+                            <img src="/storage/{{ $image->image_path }}" 
+                                 class="thumbnail-image cursor-zoom"
+                                 data-path="/storage/{{ $image->image_path }}"
+                                 data-bs-toggle="modal" data-bs-target="#imageModal"
+                                 data-image="/storage/{{ $image->image_path }}"
+                                 alt="Image {{ $loop->iteration }}">
                         </div>
-                        
-                        <!-- Thumbnails Gallery -->
-                        @if($item->images->count() > 1)
-                            <div class="thumbnails-scroll-container">
-                                <div class="manga-thumbnails d-flex">
-                                    @foreach($item->images as $image)
-                                        <div class="thumbnail-item {{ $image->is_primary ? 'active' : '' }}">
-                                            <img src="/storage/{{ $image->image_path }}" 
-                                                 class="thumbnail-image"
-                                                 data-path="/storage/{{ $image->image_path }}"
-                                                 alt="Image {{ $loop->iteration }}">
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-                    </div>
+                    @endforeach
                 </div>
+            </div>
+        @endif
+    </div>
+</div>
                 
                 <!-- Manga Details - Right Side -->
                 <div class="col-md-7 bg-light">
@@ -257,28 +264,36 @@
 
     <!-- Related Manga - Manga-style shelf -->
     @if($relatedItems->count() > 0)
-        <div class="card border-0 mb-4">
-            <div class="card-header bg-dark text-white rounded-top">
-                <h3 class="mb-0"><i class="fas fa-book-open me-2"></i>Related Manga</h3>
-            </div>
-            <div class="card-body bg-light rounded-bottom">
-                <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
-                    @foreach($relatedItems as $relatedItem)
-                        <div class="col">
-                            <div class="card h-100 border-0 shadow-sm manga-card">
+    <div class="card border-0 mb-4">
+        <div class="card-header bg-dark text-white rounded-top">
+            <h3 class="mb-0"><i class="fas fa-book-open me-2"></i>Related Manga</h3>
+        </div>
+        <div class="card-body bg-light rounded-bottom">
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
+                @foreach($relatedItems as $relatedItem)
+                    <div class="col">
+                        <div class="card h-100 manga-card">
+                            <div class="manga-card-image">
                                 @if($relatedItem->primaryImage)
                                     <img src="/storage/{{ $relatedItem->primaryImage->image_path }}" class="card-img-top" alt="{{ $relatedItem->title }}">
                                 @else
                                     <img src="{{ asset('images/no-image.jpg') }}" class="card-img-top" alt="{{ $relatedItem->title }}">
                                 @endif
-                                <div class="card-body">
-                                    <h5 class="card-title manga-title">{{ $relatedItem->title }}</h5>
-                                    <div class="mb-2">
-                                        @foreach($relatedItem->genres->take(2) as $genre)
+                                <div class="manga-card-badge">
+                                    <span class="badge bg-dark">₱{{ number_format($relatedItem->price, 2) }}</span>
+                                </div>
+                            </div>
+                            <div class="card-body p-3">
+                                <h5 class="card-title manga-title mb-2">{{ $relatedItem->title }}</h5>
+                                <div class="mb-2">
+                                    <div class="d-flex flex-wrap">
+                                        @foreach($relatedItem->genres->take(3) as $genre)
                                             <span class="badge bg-secondary me-1 mb-1">{{ $genre->name }}</span>
                                         @endforeach
                                     </div>
-                                    <div class="text-dark mb-1">
+                                </div>
+                                @if($relatedItem->average_rating > 0)
+                                    <div class="manga-rating">
                                         @for($i = 1; $i <= 5; $i++)
                                             @if($i <= round($relatedItem->average_rating))
                                                 <i class="fas fa-star"></i>
@@ -287,56 +302,140 @@
                                             @endif
                                         @endfor
                                     </div>
-                                    <div class="fw-bold text-dark">₱{{ number_format($relatedItem->price, 2) }}</div>
-                                </div>
-                                <div class="card-footer bg-white border-0">
-                                    <a href="{{ route('items.show', $relatedItem) }}" class="btn btn-outline-dark w-100">View Details</a>
-                                </div>
+                                @endif
+                            </div>
+                            <div class="card-footer bg-white border-top-0 p-2">
+                                <a href="{{ route('items.show', $relatedItem) }}" class="btn btn-sm btn-outline-dark w-100">Details</a>
                             </div>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
             </div>
         </div>
+    </div>
     @endif
 </div>
 @endsection
 
 @section('styles')
 <style>
+
+    /* Manga Card - Tall and Skinny */
+    .manga-card {
+        border: none;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .manga-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .manga-card-image {
+        position: relative;
+        overflow: hidden;
+        flex-grow: 1;
+    }
+
+    .manga-card-image img {
+        transition: transform 0.5s ease;
+        height: 350px;
+        width: 100%;
+        object-fit: cover;
+        object-position: top;
+    }
+
+    .manga-card:hover .manga-card-image img {
+        transform: scale(1.03);
+    }
+
+    .manga-card-badge {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+    }
+
+    .manga-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #333;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.8em;
+        margin-bottom: 0.5rem;
+    }
+
+    .manga-rating {
+        color: #ffc107;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .manga-card-image img {
+            height: 300px;
+        }
+        
+        .manga-title {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .manga-card-image img {
+            height: 250px;
+        }
+    }
+
     /* Base manga-inspired styles */
     body {
         background-color: #f5f5f5;
     }
     
     /* Gradient overlay for manga details */
-    .manga-detail-gradient-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-            to bottom,
-            rgba(0,0,0,0.8) 0%,
-            rgba(0,0,0,0.6) 50%,
-            rgba(0,0,0,0.4) 100%
-        );
-        z-index: 1;
-    }
-    
-    /* Manga cover styling */
-    .manga-cover {
-        height: auto;
-        max-height: 400px;
-        object-fit: contain;
-        border: 1px solid rgba(0,0,0,0.1);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        transition: transform 0.3s ease;
-        position: relative;
-        z-index: 2;
-        background-color: white;
-    }
+   /* Gradient overlay for main image only */
+.manga-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+
+.manga-detail-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.8) 0%,
+        rgba(0,0,0,0.6) 50%,
+        rgba(0,0,0,0.4) 100%
+    );
+    z-index: 1;
+    pointer-events: none; /* Allows clicks to pass through to the image */
+}
+
+/* Ensure the main image stays above the overlay */
+.manga-cover {
+    position: relative;
+    z-index: 2;
+}
+
+/* Thumbnail container positioning */
+.thumbnails-scroll-container {
+    position: relative;
+    z-index: 3; /* Above any other elements */
+    margin-top: 1rem;
+}
     
     .manga-cover:hover {
         transform: scale(1.02) rotate(1deg);

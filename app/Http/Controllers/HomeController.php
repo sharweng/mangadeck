@@ -18,7 +18,7 @@ class HomeController extends Controller
         // Get latest items for the carousel/featured section
         $latestItems = Item::with(['genres', 'stock', 'reviews'])
             ->orderBy('created_at', 'desc')
-            ->take(8)
+            ->take(10)
             ->get();
 
         $genres = Genre::all();

@@ -52,13 +52,23 @@ class AdminController extends Controller
             \Log::warning('No orders found in the database');
         }
         
+        // Total revenue from all orders
         $totalRevenue = OrderInfo::sum(DB::raw('
             COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) 
              FROM orderlines 
              WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping
         '));
         
+        // Total revenue from delivered orders only
+        $totalRevenueDelivered = OrderInfo::where('status_id', 3) // Status 3 is "Delivered"
+            ->sum(DB::raw('
+                COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) 
+                FROM orderlines 
+                WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping
+            '));
+        
         \Log::info('Total revenue calculated: ' . $totalRevenue);
+        \Log::info('Total revenue from delivered orders: ' . $totalRevenueDelivered);
         
         // Recent orders
         $recentOrders = OrderInfo::with(['customer', 'status'])
@@ -105,6 +115,7 @@ class AdminController extends Controller
             'totalOrders',
             'totalItems',
             'totalRevenue',
+            'totalRevenueDelivered', // Added new variable for delivered orders revenue
             'recentOrders',
             'lowStockItems',
             'recentReviews',
@@ -126,7 +137,8 @@ class AdminController extends Controller
             // Debug the request parameters
             \Log::info('Date range request:', [
                 'start_date' => $request->input('start_date'),
-                'end_date' => $request->input('end_date')
+                'end_date' => $request->input('end_date'),
+                'status' => $request->input('status')
             ]);
             
             $startDate = $request->input('start_date') 
@@ -143,17 +155,22 @@ class AdminController extends Controller
                 'endDate' => $endDate->toDateTimeString()
             ]);
             
-            // Check if there are any orders in the database
-            $totalOrders = OrderInfo::count();
-            \Log::info('Total orders in database: ' . $totalOrders);
+            // Base query with date range filter
+            $query = OrderInfo::whereBetween('date_placed', [$startDate, $endDate]);
             
-            // Check if there are any orders in this date range
-            $orderCount = OrderInfo::whereBetween('date_placed', [$startDate, $endDate])->count();
-            \Log::info('Order count in date range: ' . $orderCount);
+            // Filter by status if provided
+            if ($request->input('status') === 'delivered') {
+                $query->where('status_id', 3); // Status 3 is "Delivered"
+                \Log::info('Filtering sales data by delivered status');
+            }
             
-            // If no orders in this date range, return empty data
+            // Check if there are any orders in this filtered query
+            $orderCount = $query->count();
+            \Log::info('Order count in filtered query: ' . $orderCount);
+            
+            // If no orders in this filtered query, return empty data
             if ($orderCount === 0) {
-                \Log::info('No orders found in the selected date range');
+                \Log::info('No orders found in the filtered query');
                 return response()->json([
                     'salesData' => [
                         'labels' => [],
@@ -168,14 +185,14 @@ class AdminController extends Controller
             
             if ($diffInDays <= 31) {
                 // Group by day for ranges up to 31 days
-                $salesData = OrderInfo::whereBetween('date_placed', [$startDate, $endDate])
-                    ->select(
-                        DB::raw('DATE(date_placed) as date'),
-                        DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
-                    )
-                    ->groupBy('date')
-                    ->orderBy('date')
-                    ->get();
+                $baseQuery = $query->select(
+                    DB::raw('DATE(date_placed) as date'),
+                    DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
+                )
+                ->groupBy('date')
+                ->orderBy('date');
+                
+                $salesData = $baseQuery->get();
                 
                 // Debug the query results
                 \Log::info('Daily sales data:', $salesData->toArray());
@@ -207,15 +224,15 @@ class AdminController extends Controller
                 }
             } else if ($diffInDays <= 92) {
                 // Group by week for ranges up to 3 months
-                $salesData = OrderInfo::whereBetween('date_placed', [$startDate, $endDate])
-                    ->select(
-                        DB::raw('YEARWEEK(date_placed) as yearweek'),
-                        DB::raw('MIN(DATE(date_placed)) as week_start'),
-                        DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
-                    )
-                    ->groupBy('yearweek')
-                    ->orderBy('yearweek')
-                    ->get();
+                $baseQuery = $query->select(
+                    DB::raw('YEARWEEK(date_placed) as yearweek'),
+                    DB::raw('MIN(DATE(date_placed)) as week_start'),
+                    DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
+                )
+                ->groupBy('yearweek')
+                ->orderBy('yearweek');
+                
+                $salesData = $baseQuery->get();
                 
                 // Debug the query results
                 \Log::info('Weekly sales data:', $salesData->toArray());
@@ -230,16 +247,16 @@ class AdminController extends Controller
                 });
             } else {
                 // Group by month for longer ranges
-                $salesData = OrderInfo::whereBetween('date_placed', [$startDate, $endDate])
-                    ->select(
-                        DB::raw('YEAR(date_placed) as year'),
-                        DB::raw('MONTH(date_placed) as month'),
-                        DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
-                    )
-                    ->groupBy('year', 'month')
-                    ->orderBy('year')
-                    ->orderBy('month')
-                    ->get();
+                $baseQuery = $query->select(
+                    DB::raw('YEAR(date_placed) as year'),
+                    DB::raw('MONTH(date_placed) as month'),
+                    DB::raw('SUM(COALESCE((SELECT SUM(orderlines.price * orderlines.quantity) FROM orderlines WHERE orderlines.orderinfo_id = orderinfos.id), 0) + shipping) as total_sales')
+                )
+                ->groupBy('year', 'month')
+                ->orderBy('year')
+                ->orderBy('month');
+                
+                $salesData = $baseQuery->get();
                 
                 // Debug the query results
                 \Log::info('Monthly sales data:', $salesData->toArray());
@@ -282,25 +299,29 @@ class AdminController extends Controller
     /**
      * Get product sales data for chart.
      */
-    public function getProductSalesData()
+    public function getProductSalesData(Request $request)
     {
         $this->authorize('accessAdmin');
         
         try {
-            // Check if there are any orders
-            $orderCount = OrderInfo::count();
-            \Log::info('Total orders in database: ' . $orderCount);
+            // Check if status filter is provided
+            $statusFilter = $request->input('status') === 'delivered';
+            \Log::info('Product sales data status filter: ' . ($statusFilter ? 'delivered' : 'all'));
             
-            // Check if there are any orderlines
-            $orderlineCount = DB::table('orderlines')->count();
-            \Log::info('Total orderlines in database: ' . $orderlineCount);
+            // Base query for orderlines
+            $orderlineQuery = DB::table('orderlines');
             
-            // Get total sales amount
-            $totalSales = DB::table('orderlines')
-                ->sum(DB::raw('price * quantity'));
+            // Apply status filter if requested
+            if ($statusFilter) {
+                $orderlineQuery->join('orderinfos', 'orderlines.orderinfo_id', '=', 'orderinfos.id')
+                              ->where('orderinfos.status_id', 3); // Status 3 is "Delivered"
+            }
+            
+            // Get total sales amount with filter applied
+            $totalSales = $orderlineQuery->sum(DB::raw('orderlines.price * orderlines.quantity'));
             
             // Debug total sales
-            \Log::info('Total sales amount: ' . $totalSales);
+            \Log::info('Total sales amount with filter: ' . $totalSales);
             
             if ($totalSales == 0) {
                 \Log::info('No sales data found, returning empty chart');
@@ -312,9 +333,17 @@ class AdminController extends Controller
                 ]);
             }
             
-            // Get product sales data
-            $productSalesData = DB::table('items')
-                ->join('orderlines', 'items.id', '=', 'orderlines.item_id')
+            // Get product sales data with filter applied
+            $productQuery = DB::table('items')
+                ->join('orderlines', 'items.id', '=', 'orderlines.item_id');
+            
+            // Apply status filter if requested
+            if ($statusFilter) {
+                $productQuery->join('orderinfos', 'orderlines.orderinfo_id', '=', 'orderinfos.id')
+                            ->where('orderinfos.status_id', 3); // Status 3 is "Delivered"
+            }
+            
+            $productSalesData = $productQuery
                 ->select(
                     'items.title',
                     DB::raw('SUM(orderlines.price * orderlines.quantity) as revenue')
@@ -334,10 +363,17 @@ class AdminController extends Controller
             });
             
             // Add "Others" category if there are more than 10 products
-            $otherProductsRevenue = DB::table('orderlines')
+            $otherProductsQuery = DB::table('orderlines')
                 ->join('items', 'orderlines.item_id', '=', 'items.id')
-                ->whereNotIn('items.title', $labels)
-                ->sum(DB::raw('orderlines.price * orderlines.quantity'));
+                ->whereNotIn('items.title', $labels);
+            
+            // Apply status filter if requested
+            if ($statusFilter) {
+                $otherProductsQuery->join('orderinfos', 'orderlines.orderinfo_id', '=', 'orderinfos.id')
+                                  ->where('orderinfos.status_id', 3); // Status 3 is "Delivered"
+            }
+            
+            $otherProductsRevenue = $otherProductsQuery->sum(DB::raw('orderlines.price * orderlines.quantity'));
             
             if ($otherProductsRevenue > 0) {
                 $labels->push('Others');

@@ -72,11 +72,11 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Total Revenue</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($totalRevenue, 2) }}</div>
+                                Total Revenue (Delivered)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">₱{{ number_format($totalRevenueDelivered, 2) }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            <i class="fas fa-peso-sign fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -153,7 +153,7 @@
                                     <td><a href="{{ route('admin.orders.show', $order) }}">#{{ $order->id }}</a></td>
                                     <td>{{ $order->customer->fname }} {{ $order->customer->lname }}</td>
                                     <td>{{ \Carbon\Carbon::parse($order->date_placed)->format('M d, Y') }}</td>
-                                    <td>${{ number_format((DB::table('orderlines')
+                                    <td>₱{{ number_format((DB::table('orderlines')
                                         ->where('orderinfo_id', $order->id)
                                         ->sum(DB::raw('price * quantity'))) + $order->shipping, 2) }}</td>
                                     <td>
@@ -206,7 +206,7 @@
                                             {{ $item->stock->quantity }}
                                         </span>
                                     </td>
-                                    <td>${{ number_format($item->price, 2) }}</td>
+                                    <td>₱{{ number_format($item->price, 2) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -294,7 +294,8 @@
             
             console.log('Fetching sales data for date range:', startDate, 'to', endDate);
             
-            fetch(`/admin/api/sales-data?start_date=${startDate}&end_date=${endDate}`)
+            // Modified to include status filter for delivered orders only
+            fetch(`/admin/api/sales-data?start_date=${startDate}&end_date=${endDate}&status=delivered`)
                 .then(response => {
                     console.log('Response status:', response.status);
                     if (!response.ok) {
@@ -303,6 +304,7 @@
                     return response.json();
                 })
                 .then(data => {
+                    // Rest of the code remains the same
                     console.log('Received sales data:', data);
                     
                     // Check if we have data
@@ -322,7 +324,7 @@
                         data: {
                             labels: data.salesData.labels,
                             datasets: [{
-                                label: 'Sales ($)',
+                                label: 'Sales (₱)',
                                 backgroundColor: 'rgba(78, 115, 223, 0.5)',
                                 borderColor: 'rgba(78, 115, 223, 1)',
                                 borderWidth: 1,
@@ -336,7 +338,7 @@
                                     beginAtZero: true,
                                     ticks: {
                                         callback: function(value) {
-                                            return '$' + value;
+                                            return '₱' + value;
                                         }
                                     }
                                 }
@@ -345,7 +347,7 @@
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
-                                            return '$' + context.parsed.y.toFixed(2);
+                                            return '₱' + context.parsed.y.toFixed(2);
                                         }
                                     }
                                 }
@@ -367,7 +369,8 @@
             
             console.log('Fetching product sales data');
             
-            fetch('/admin/api/product-sales-data')
+            // Modified to include status filter for delivered orders only
+            fetch('/admin/api/product-sales-data?status=delivered')
                 .then(response => {
                     console.log('Response status:', response.status);
                     if (!response.ok) {
@@ -376,6 +379,7 @@
                     return response.json();
                 })
                 .then(data => {
+                    // Rest of the code remains the same
                     console.log('Received product sales data:', data);
                     
                     // Check if we have data

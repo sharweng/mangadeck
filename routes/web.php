@@ -45,6 +45,10 @@ Route::post('/email/resend-verification', [App\Http\Controllers\Auth\Verificatio
     ->name('verification.resend.guest')
     ->middleware('guest');
 
+// API routes for dashboard charts
+Route::get('/admin/api/sales-data', [App\Http\Controllers\OrderController::class, 'getSalesData'])->name('admin.api.sales-data');
+Route::get('/admin/api/product-sales-data', [App\Http\Controllers\OrderController::class, 'getProductSalesData'])->name('admin.api.product-sales-data');
+
 
 // Authentication routes with email verification enabled
 Auth::routes(['verify' => true]);

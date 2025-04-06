@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Customer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class OrderSeeder extends Seeder
 {
@@ -23,15 +24,16 @@ class OrderSeeder extends Seeder
         foreach ($customers as $customer) {
             // Create two orders for each customer
             for ($i = 0; $i < 2; $i++) {
+                $datePlaced = Carbon::now()->subDays(rand(0,30));
                 // Create an order for each customer
                 $order = OrderInfo::create([
                     'customer_id' => $customer->id,
-                    'date_placed' => now(),
+                    'date_placed' => $datePlaced,
                     'shipping' => 5.00, // Example shipping cost
                     'status_id' => $i == 0 ? 1 : rand(1, 5), // Randomize status for second order
                     'notes' => 'Order placed by ' . $customer->name,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'created_at' => $datePlaced,
+                    'updated_at' => $datePlaced,
                 ]);
 
                 // Each customer orders 2 items
@@ -41,8 +43,8 @@ class OrderSeeder extends Seeder
                         'item_id' => $itemId,
                         'quantity' => 1, // Assuming each order is for 1 item
                         'price' => DB::table('items')->where('id', $itemId)->value('price'), // Get the price of the item
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'created_at' => $datePlaced,
+                        'updated_at' => $datePlaced,
                     ]);
                 }
             }

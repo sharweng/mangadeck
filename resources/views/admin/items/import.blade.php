@@ -45,19 +45,8 @@
                     <div class="card-body">
                         <p>Please follow these guidelines for importing manga data:</p>
                         <ol>
-                            <li>Use the template format with the following columns:
-                                <ul class="mt-2">
-                                    <li><strong>title</strong> (required): The manga title</li>
-                                    <li><strong>description</strong>: A description of the manga</li>
-                                    <li><strong>price</strong>: The price in decimal format (e.g., 12.99)</li>
-                                    <li><strong>stock</strong>: The quantity in stock</li>
-                                    <li><strong>genres</strong>: Comma-separated list of genres</li>
-                                    <li><strong>authors</strong>: Comma-separated list of authors</li>
-                                    <li><strong>publisher</strong>: The publisher name</li>
-                                    <li><strong>publication_date</strong>: The publication date (YYYY-MM-DD)</li>
-                                </ul>
-                            </li>
-                            <li class="mt-2">Ensure all required fields are filled in</li>
+                            <li>Use the template format.</li>
+                            <li>Ensure all required fields are filled in</li>
                             <li>Maximum file size is 2MB</li>
                         </ol>
                         <div class="mt-3">

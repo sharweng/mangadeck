@@ -15,11 +15,11 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Clear existing users except the admin user
-        User::where('email', '!=', 'admin@example.com')->delete();
+        User::where('email', '!=', 'admin@gmail.com')->delete();
 
         // Admin user
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'admin@gmail.com'],
             [
                 'name' => 'Admin User',
                 'password' => Hash::make('password'),
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
         $staffUsers = [
             [
                 'name' => 'Staff User',
-                'email' => 'staff@example.com',
+                'email' => 'staff@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'staff',
                 'role_id' => 2,
@@ -45,7 +45,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Staff Manager',
-                'email' => 'manager@example.com',
+                'email' => 'manager@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'staff',
                 'role_id' => 2,
@@ -65,7 +65,7 @@ class UserSeeder extends Seeder
         $customers = [
             [
                 'name' => 'John Doe',
-                'email' => 'john@example.com',
+                'email' => 'john@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
                 'role_id' => 3,
@@ -74,7 +74,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Jane Smith',
-                'email' => 'jane@example.com',
+                'email' => 'jane@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
                 'role_id' => 3,
@@ -83,7 +83,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Bob Johnson',
-                'email' => 'bob@example.com',
+                'email' => 'bob@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
                 'role_id' => 3,
@@ -92,7 +92,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Alice Brown',
-                'email' => 'alice@example.com',
+                'email' => 'alice@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
                 'role_id' => 3,
@@ -101,7 +101,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Charlie Black',
-                'email' => 'charlie@example.com',
+                'email' => 'charlie@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
                 'role_id' => 3,

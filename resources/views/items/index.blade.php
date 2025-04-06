@@ -23,39 +23,103 @@
 
     <div class="container" id="collection">
         <!-- Search and Filter Section -->
-        <div class="card mb-4 border-0 shadow-sm" id="search">
-            <div class="card-body p-3">
-                <h2 class="mb-3 text-center fw-bold">
-                    <i class="fas fa-filter me-2"></i>Search & Filter
-                </h2>
-                <form action="{{ route('items.index') }}" method="GET" class="row g-2">
+    <div class="card mb-3 border-0 shadow-sm" id="search">
+        <div class="card-body p-2">
+            <form action="{{ route('items.index') }}" method="GET" id="filter-form">
+                <!-- Search Bar -->
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="search" name="search" 
+                        value="{{ $search ?? '' }}" 
+                        placeholder="Search by title">
+                </div>
+                
+                <!-- Author and Publisher Row -->
+                <div class="row mb-2 g-1">
                     <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-dark"></i></span>
-                            <input type="text" class="form-control border-start-0 border-end-0 py-2" id="search" name="search" 
-                                   value="{{ $search ?? '' }}" 
-                                   placeholder="Search by title, author, or description">
-                        </div>
+                        <input type="text" class="form-control form-control-sm" id="author" name="author" 
+                            value="{{ $author ?? '' }}" placeholder="Author">
                     </div>
-                    <div class="col-md-4">
-                        <select class="form-select" id="genre" name="genre">
-                            <option value="">All Genres</option>
-                            @foreach($genres as $genre)
-                                <option value="{{ $genre->id }}" {{ $selectedGenre == $genre->id ? 'selected' : '' }}>
-                                    {{ $genre->name }} ({{ $genre->items_count }})
+                    <div class="col-md-6">
+                        <select class="form-select form-select-sm" id="publisher" name="publisher">
+                            <option value="">Publisher</option>
+                            @foreach($publishers as $publisher)
+                                <option value="{{ $publisher->id }}" {{ $selectedPublisher == $publisher->id ? 'selected' : '' }}>
+                                    {{ $publisher->name }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
+                </div>
+                
+                <!-- Combined Filter Controls Row -->
+                <div class="row align-items-center g-1 mb-2">
+                    <!-- Genre Filter Button -->
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-dark w-100 fw-bold py-2">
-                            <i class="fas fa-filter me-1"></i> Apply
+                        <button class="btn btn-outline-secondary btn-sm w-100" type="button" 
+                            data-bs-toggle="collapse" data-bs-target="#genreCollapse" 
+                            aria-expanded="false" aria-controls="genreCollapse">
+                            <i class="fas fa-filter"></i> Genres
                         </button>
                     </div>
-                </form>
-            </div>
+                    
+                    <!-- Price Range -->
+                    <div class="col-md-4">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0 p-1">₱</span>
+                            <input type="number" class="form-control" id="min_price" name="min_price" 
+                                value="{{ $minPrice ?? '' }}" placeholder="Min" min="0">
+                            <span class="input-group-text bg-white border-start-0 border-end-0 p-1">to</span>
+                            <input type="number" class="form-control" id="max_price" name="max_price" 
+                                value="{{ $maxPrice ?? '' }}" placeholder="Max" min="0">
+                        </div>
+                    </div>
+                    
+                    <!-- Sort Dropdown -->
+                    <div class="col-md-2">
+                        <select class="form-select form-select-sm" id="sort" name="sort">
+                            <option value="">Sort</option>
+                            <option value="price_asc" {{ $selectedSort == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price_desc" {{ $selectedSort == 'price_desc' ? 'selected' : '' }}>Price: High to Low</option>
+                            <option value="newest" {{ $selectedSort == 'newest' ? 'selected' : '' }}>Newest</option>
+                            <option value="top_rated" {{ $selectedSort == 'top_rated' ? 'selected' : '' }}>Top Rated</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Apply Button -->
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-dark btn-sm w-100">
+                            Apply
+                        </button>
+                    </div>
+                    
+                    <!-- Clear Button -->
+                    <div class="col-md-2">
+                        <button type="button" id="clear-filters" class="btn btn-outline-secondary btn-sm w-100">
+                            Clear
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Genre Checkboxes - Collapsible Section -->
+                <div class="collapse mb-2" id="genreCollapse">
+                    <div class="card card-body p-1">
+                        <div class="d-flex flex-wrap gap-1">
+                            @foreach($genres as $genre)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="genres[]" 
+                                        value="{{ $genre->id }}" id="genre-{{ $genre->id }}"
+                                        {{ in_array($genre->id, $selectedGenres ?? []) ? 'checked' : '' }}>
+                                    <label class="form-check-label small" for="genre-{{ $genre->id }}">
+                                        {{ $genre->name }} ({{ $genre->items_count }})
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
-
+    </div>
         <!-- Collection Stats -->
         <div class="row mb-4">
             <div class="col-12">
@@ -73,7 +137,7 @@
         </div>
 
         <!-- Items Display -->
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
             @forelse($items as $item)
                 <div class="col">
                     <div class="card h-100 manga-card">
@@ -90,43 +154,47 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="card-body p-2">
-                            <h5 class="card-title manga-title mb-1">{{ $item->title }}</h5>
+                        <div class="card-body p-3">
+                            <h5 class="card-title manga-title mb-2">{{ $item->title }}</h5>
+                            
                             <div class="mb-2">
-        <div class="d-flex flex-wrap">
-            @foreach($item->genres->take(3) as $genre)
-                <span class="badge bg-secondary me-1 mb-1">{{ $genre->name }}</span>
-            @endforeach
-            
-            @if($item->genres->count() > 3)
-                <div class="dropdown d-inline-block">
-                    <button class="btn badge bg-secondary dropdown-toggle py-1 px-2" 
-                            type="button" 
-                            data-bs-toggle="dropdown" 
-                            aria-expanded="false">
-                        +{{ $item->genres->count() - 3 }}
-                    </button>
-                    <ul class="dropdown-menu">
-                        @foreach($item->genres->slice(3) as $genre)
-                            <li><span class="dropdown-item-text small">{{ $genre->name }}</span></li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-        </div>
-    </div>
-                            @if($item->average_rating > 0)
-                                <div class="manga-rating mb-2">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        @if($i <= round($item->average_rating))
-                                            <i class="fas fa-star"></i>
-                                        @else
-                                            <i class="far fa-star"></i>
-                                        @endif
-                                    @endfor
-                                    <small class="text-muted ms-1">({{ $item->reviews->count() }})</small>
+                                <div class="d-flex flex-wrap">
+                                    @foreach($item->genres->take(3) as $genre)
+                                        <span class="badge bg-secondary me-1 mb-1">{{ $genre->name }}</span>
+                                    @endforeach
+                                    
+                                    @if($item->genres->count() > 3)
+                                        <div class="dropdown d-inline-block">
+                                            <button class="btn badge bg-secondary dropdown-toggle py-1 px-2" 
+                                                    type="button" 
+                                                    data-bs-toggle="dropdown" 
+                                                    aria-expanded="false">
+                                                +{{ $item->genres->count() - 3 }}
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                @foreach($item->genres->slice(3) as $genre)
+                                                    <li><span class="dropdown-item-text small">{{ $genre->name }}</span></li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
                                 </div>
-                            @endif
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold">₱{{ number_format($item->price, 2) }}</span>
+                                @if($item->average_rating > 0)
+                                    <div class="manga-rating">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= round($item->average_rating))
+                                                <i class="fas fa-star"></i>
+                                            @else
+                                                <i class="far fa-star"></i>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         <div class="card-footer bg-white border-top-0 p-2">
                             <div class="d-flex justify-content-between">
@@ -154,44 +222,44 @@
         </div>
 
         <!-- Pagination -->
-@if($items->hasPages())
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        <div class="text-muted">
-            Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }} results
-        </div>
-        
-        <nav aria-label="Page navigation">
-            <ul class="pagination mb-0">
-                {{-- Previous Page Link --}}
-                <li class="page-item {{ $items->onFirstPage() ? 'disabled' : '' }}">
-                    <a class="page-link" href="{{ $items->previousPageUrl() }}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo; Previous</span>
-                    </a>
-                </li>
-
-                {{-- Pagination Elements --}}
-                @foreach ($items->getUrlRange(1, $items->lastPage()) as $page => $url)
-                    @if($page == $items->currentPage())
-                        <li class="page-item active" aria-current="page">
-                            <span class="page-link">{{ $page }}</span>
+        @if($items->hasPages())
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted">
+                    Showing {{ $items->firstItem() }} to {{ $items->lastItem() }} of {{ $items->total() }} results
+                </div>
+                
+                <nav aria-label="Page navigation">
+                    <ul class="pagination mb-0">
+                        {{-- Previous Page Link --}}
+                        <li class="page-item {{ $items->onFirstPage() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $items->previousPageUrl() }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo; Previous</span>
+                            </a>
                         </li>
-                    @else
-                        <li class="page-item">
-                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                        </li>
-                    @endif
-                @endforeach
 
-                {{-- Next Page Link --}}
-                <li class="page-item {{ !$items->hasMorePages() ? 'disabled' : '' }}">
-                    <a class="page-link" href="{{ $items->nextPageUrl() }}" aria-label="Next">
-                        <span aria-hidden="true">Next &raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-@endif
+                        {{-- Pagination Elements --}}
+                        @foreach ($items->getUrlRange(1, $items->lastPage()) as $page => $url)
+                            @if($page == $items->currentPage())
+                                <li class="page-item active" aria-current="page">
+                                    <span class="page-link">{{ $page }}</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+
+                        {{-- Next Page Link --}}
+                        <li class="page-item {{ !$items->hasMorePages() ? 'disabled' : '' }}">
+                            <a class="page-link" href="{{ $items->nextPageUrl() }}" aria-label="Next">
+                                <span aria-hidden="true">Next &raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        @endif
     </div>
 </div>
 @endsection
@@ -391,6 +459,60 @@
             height: 250px;
         }
     }
+
+/* Manga Card - Tall and Skinny */
+.manga-card {
+        border: none;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .manga-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    .manga-card-image {
+        position: relative;
+        overflow: hidden;
+        flex-grow: 1;
+    }
+    
+    .manga-card-image img {
+        transition: transform 0.5s ease;
+        height: 350px;
+        width: 100%;
+        object-fit: cover;
+        object-position: top;
+    }
+    
+    .manga-card:hover .manga-card-image img {
+        transform: scale(1.03);
+    }
+    
+    .manga-card-badge {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+    }
+    
+    .manga-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #333;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.8em;
+        margin-bottom: 0.5rem;
+    }
+    
 </style>
 @endsection
 
@@ -419,6 +541,37 @@
                 });
             });
         });
+
+        document.getElementById('clear-filters').addEventListener('click', function() {
+        const form = document.getElementById('filter-form');
+        
+        // Clear text inputs
+        form.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+            input.value = '';
+        });
+        
+        // Clear checkboxes
+        form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        // Clear select inputs
+        form.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+        });
+        
+        form.submit();
+    });
+
+        // Initialize Select2 if available
+        if (typeof $.fn.select2 !== 'undefined') {
+            $('#genre, #genre2').select2({
+                placeholder: "Select genres...",
+                closeOnSelect: false,
+                width: '100%'
+            });
+        }
     });
 </script>
 @endsection
+

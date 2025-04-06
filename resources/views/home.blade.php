@@ -33,7 +33,7 @@
                             class="form-control border-start-0 border-end-0 py-2" 
                             id="searchInput" 
                             name="search" 
-                            placeholder="Search for manga titles, authors, or genres..." 
+                            placeholder="Search for manga titles" 
                             value="{{ $search ?? '' }}"
                             autocomplete="off"
                         >

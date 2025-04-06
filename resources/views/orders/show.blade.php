@@ -107,10 +107,11 @@
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
                                         <div class="position-relative me-3" style="width: 60px; height: 80px;">
-                                            <img src="{{ $line->item->img_path ? asset('storage/'.$line->item->img_path) : asset('images/no-image.jpg') }}" 
-                                                 alt="{{ $line->item->title }}" 
-                                                 class="img-fluid h-100 w-100 object-fit-cover rounded-1 shadow-sm">
-                                            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);"></div>
+                                            @if($line->item->primaryImage)
+                                                <img src="/storage/{{ $line->item->primaryImage->image_path }}" alt="{{ $line->item->title }}" class="img-fluid h-100 w-100 object-fit-cover rounded-1 shadow-sm" style="width: 50px;">
+                                            @else
+                                                <img src="{{ asset('images/no-image.jpg') }}" alt="{{ $line->item->title }}" class="img-fluid h-100 w-100 object-fit-cover rounded-1 shadow-sm" style="width: 50px;">
+                                            @endif
                                         </div>
                                         <div>
                                             <a href="{{ route('items.show', $line->item) }}" class="fw-bold text-dark text-decoration-none">{{ $line->item->title }}</a>

@@ -16,7 +16,7 @@ class ItemsTemplateExport implements FromArray, WithHeadings, ShouldAutoSize, Wi
     public function array(): array
     {
         return [
-            ['Example Manga', 'Description here', '19.99', '10', 'Shonen,Action', 'Author Name', 'Publisher Name', date('Y-m-d')]
+            ['Example Manga', 'Description here', '19.99', '10', 'Shonen,Action', 'Author Name', 'Publisher Name', date('Y-m-d'), 'http://example.com/image.jpg'] // Added image URL
         ];
     }
 
@@ -26,8 +26,15 @@ class ItemsTemplateExport implements FromArray, WithHeadings, ShouldAutoSize, Wi
     public function headings(): array
     {
         return [
-            'title', 'description', 'price', 'stock', 'genres', 
-            'authors', 'publisher', 'publication_date'
+            'title', 
+            'description', 
+            'price', 
+            'stock', 
+            'genres', 
+            'authors', 
+            'publisher', 
+            'publication_date', 
+            'image_path' // Added image path heading
         ];
     }
 

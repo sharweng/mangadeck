@@ -66,11 +66,6 @@
                         <i class="fas fa-user-shield"></i> Users
                     </a>
                 </li>
-                <li class="border-top mt-3 pt-3">
-                    <a href="{{ route('home') }}" target="_blank">
-                        <i class="fas fa-home"></i> Back to Website
-                    </a>
-                </li>
             </ul>
         </nav>
 
@@ -84,11 +79,6 @@
                     
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="nav navbar-nav ms-auto">
-                            <li class="nav-item me-3">
-                                <a href="{{ route('home') }}" class="btn btn-outline-primary" target="_blank">
-                                    <i class="fas fa-home"></i> View Website
-                                </a>
-                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-user"></i> {{ Auth::user()->name }}
