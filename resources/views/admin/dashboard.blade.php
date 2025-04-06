@@ -191,7 +191,16 @@
                                 @foreach($lowStockItems as $item)
                                 <tr>
                                     <td><a href="{{ route('admin.items.show', $item) }}">{{ $item->title }}</a></td>
-                                    <td>{{ $item->genre->name ?? 'N/A' }}</td>
+                                    <td>
+                                        @if($item->genres && $item->genres->count() > 0)
+                                            {{ $item->genres->first()->name }}
+                                            @if($item->genres->count() > 1)
+                                                <span class="text-muted">+{{ $item->genres->count() - 1 }} more</span>
+                                            @endif
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td>
                                         <span class="badge bg-{{ $item->stock->quantity <= 5 ? 'danger' : ($item->stock->quantity <= 10 ? 'warning' : 'success') }}">
                                             {{ $item->stock->quantity }}

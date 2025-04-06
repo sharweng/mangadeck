@@ -112,7 +112,7 @@
                     data: 'price', 
                     name: 'price',
                     render: function(data) {
-                        return '$' + parseFloat(data).toFixed(2);
+                        return '₱' + parseFloat(data).toFixed(2);
                     }
                 },
                 { 

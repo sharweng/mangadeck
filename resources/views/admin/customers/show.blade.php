@@ -1,16 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Customer: ' . $customer->name)
+@section('title', 'Customer: ' . $customer->fname . ' ' . $customer->lname)
 
 @section('content')
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">Customer Details</h6>
         <div>
-            <button type="button" class="btn btn-{{ $customer->status === 'active' ? 'warning' : 'success' }}" data-bs-toggle="modal" data-bs-target="#statusModal">
-                <i class="fas fa-{{ $customer->status === 'active' ? 'ban' : 'check' }}"></i> 
-                {{ $customer->status === 'active' ? 'Deactivate' : 'Activate' }} Customer
-            </button>
             <a href="{{ route('admin.customers.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Back to List
             </a>
@@ -27,19 +23,19 @@
                     </tr>
                     <tr>
                         <th>Name</th>
-                        <td>{{ $customer->name }}</td>
+                        <td>{{ $customer->title ? $customer->title . ' ' : '' }}{{ $customer->fname }} {{ $customer->lname }}</td>
                     </tr>
                     <tr>
                         <th>Email</th>
-                        <td>{{ $customer->email }}</td>
+                        <td>{{ $customer->user->email }}</td>
                     </tr>
                     <tr>
-                        <th>Status</th>
-                        <td>
-                            <span class="badge bg-{{ $customer->status === 'active' ? 'success' : 'danger' }}">
-                                {{ ucfirst($customer->status) }}
-                            </span>
-                        </td>
+                        <th>Phone</th>
+                        <td>{{ $customer->phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>{{ $customer->addressline }}</td>
                     </tr>
                     <tr>
                         <th>Registered On</th>
@@ -94,9 +90,38 @@
                             <td>#{{ $order->id }}</td>
                             <td>{{ $order->created_at->format('M d, Y') }}</td>
                             <td>
-                                <span class="badge bg-{{ $order->status === 'Pending' ? 'warning' : ($order->status === 'Processing' ? 'info' : ($order->status === 'Shipped' ? 'primary' : ($order->status === 'Delivered' ? 'success' : 'danger'))) }}">
-                                    {{ $order->status }}
-                                </span>
+                                @if(is_object($order->status))
+                                    <span class="badge bg-{{ 
+                                        $order->status->name === 'Pending' ? 'warning' : 
+                                        ($order->status->name === 'Processing' ? 'info' : 
+                                        ($order->status->name === 'Shipped' ? 'primary' : 
+                                        ($order->status->name === 'Delivered' ? 'success' : 'danger'))) 
+                                    }}">
+                                        {{ $order->status->name }}
+                                    </span>
+                                @else
+                                    @php
+                                        // Fallback for when status is not an object (might be a JSON string)
+                                        $statusName = $order->status;
+                                        $badgeClass = 'bg-secondary';
+                                        
+                                        if (is_string($statusName) && strpos($statusName, '{"id":') === 0) {
+                                            $statusData = json_decode($statusName, true);
+                                            $statusName = $statusData['name'] ?? 'Unknown';
+                                        }
+                                        
+                                        // Determine badge color based on status name
+                                        if (stripos($statusName, 'Pending') !== false) $badgeClass = 'bg-warning';
+                                        if (stripos($statusName, 'Processing') !== false) $badgeClass = 'bg-info';
+                                        if (stripos($statusName, 'Shipped') !== false) $badgeClass = 'bg-primary';
+                                        if (stripos($statusName, 'Delivered') !== false) $badgeClass = 'bg-success';
+                                        if (stripos($statusName, 'Cancelled') !== false) $badgeClass = 'bg-danger';
+                                    @endphp
+                                    
+                                    <span class="badge {{ $badgeClass }}">
+                                        {{ $statusName }}
+                                    </span>
+                                @endif
                             </td>
                             <td>${{ number_format($order->total, 2) }}</td>
                             <td>
@@ -115,38 +140,4 @@
         </div>
     </div>
 </div>
-
-<!-- Status Modal -->
-<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="statusModalLabel">
-                    {{ $customer->status === 'active' ? 'Deactivate' : 'Activate' }} Customer
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to {{ $customer->status === 'active' ? 'deactivate' : 'activate' }} <strong>{{ $customer->name }}</strong>?
-                @if($customer->status === 'active')
-                    <div class="alert alert-warning mt-3">
-                        <i class="fas fa-exclamation-triangle"></i> This will prevent the customer from logging in.
-                    </div>
-                @endif
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{{ route('admin.customers.update', $customer) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="status" value="{{ $customer->status === 'active' ? 'deactivated' : 'active' }}">
-                    <button type="submit" class="btn btn-{{ $customer->status === 'active' ? 'warning' : 'success' }}">
-                        {{ $customer->status === 'active' ? 'Deactivate' : 'Activate' }} Customer
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
-

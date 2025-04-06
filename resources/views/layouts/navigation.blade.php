@@ -27,24 +27,6 @@
                         <i class="fas fa-book-open me-1"></i>{{ __('Manga Collection') }}
                     </a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->routeIs('genres.*') ? 'active' : '' }}" 
-                       href="#" id="navbarGenresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-tags me-1"></i>{{ __('Genres') }}
-                    </a>
-                    <ul class="dropdown-menu manga-dropdown" aria-labelledby="navbarGenresDropdown">
-                        @foreach($genres ?? [] as $genre)
-                            <li>
-                                <a class="dropdown-item" href="{{ route('genres.show', $genre) }}">
-                                    <i class="fas fa-{{ $genre->icon ?? 'book' }} me-2"></i>{{ $genre->name }}
-                                </a>
-                            </li>
-                            @if($loop->iteration % 5 == 0 && !$loop->last)
-                                <li><hr class="dropdown-divider"></li>
-                            @endif
-                        @endforeach
-                    </ul>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">
                         <i class="fas fa-info-circle me-1"></i>{{ __('About') }}
@@ -75,7 +57,7 @@
                             $cartCount = session()->has('cart') ? count(session('cart')) : 0;
                         @endphp
                         @if($cartCount > 0)
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
                                 {{ $cartCount }}
                                 <span class="visually-hidden">items in cart</span>
                             </span>
@@ -157,7 +139,7 @@
                     <div class="input-group input-group-lg">
                         <input type="text" class="form-control manga-search-input" name="search" 
                                placeholder="Search titles, authors, or genres..." autocomplete="off">
-                        <button class="btn btn-danger" type="submit">Search</button>
+                        <button class="btn btn-dark" type="submit">Search</button>
                     </div>
                 </form>
             </div>
@@ -169,8 +151,8 @@
 <style>
     /* Navbar Container */
     .manga-navbar {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
-        border-bottom: 3px solid #d32f2f !important;
+        background: linear-gradient(135deg, #000 0%, #333 100%) !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
     }
     
     /* Brand Logo */
@@ -183,17 +165,17 @@
     .manga-logo-text {
         color: white;
         font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
     }
     
     .manga-logo-accent {
-        color: #d32f2f;
+        color: #aaa;
         font-weight: 800;
     }
     
     /* Nav Links */
     .navbar-nav .nav-link {
-        color: rgba(255, 255, 255, 0.85);
+        color: rgba(255, 255, 255, 0.8);
         font-weight: 500;
         padding: 0.5rem 1rem;
         margin: 0 0.1rem;
@@ -201,31 +183,33 @@
         transition: all 0.3s ease;
     }
     
-    .navbar-nav .nav-link:hover,
-    .navbar-nav .nav-link.active {
+    .navbar-nav .nav-link:hover {
         color: white;
-        background-color: rgba(211, 47, 47, 0.2);
+        background-color: rgba(255,255,255,0.1);
     }
     
     .navbar-nav .nav-link.active {
+        color: white;
         font-weight: 600;
-        border-bottom: 2px solid #d32f2f;
+        background-color: rgba(255,255,255,0.2);
+        border-bottom: 2px solid #888;
     }
     
     /* Dropdown Menu */
     .manga-dropdown {
-        background-color: #1a1a2e;
-        border: 1px solid #d32f2f;
+        background-color: #333;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     
     .manga-dropdown .dropdown-item {
-        color: rgba(255, 255, 255, 0.85);
+        color: rgba(255, 255, 255, 0.8);
         padding: 0.5rem 1rem;
         transition: all 0.2s ease;
     }
     
     .manga-dropdown .dropdown-item:hover {
-        background-color: #d32f2f;
+        background-color: rgba(255,255,255,0.1);
         color: white;
     }
     
@@ -248,10 +232,12 @@
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
+        background-color: rgba(255,255,255,0.1);
+        border-color: rgba(255,255,255,0.2);
     }
     
     .manga-search-btn:hover {
-        background-color: #d32f2f;
+        background-color: rgba(255,255,255,0.2);
         transform: scale(1.1);
     }
     
@@ -263,9 +249,9 @@
     
     /* Search Modal */
     .manga-search-modal {
-        background-color: #1a1a2e;
+        background-color: #333;
         color: white;
-        border: 1px solid #d32f2f;
+        border: 1px solid rgba(255,255,255,0.1);
     }
     
     .manga-search-input {
@@ -277,8 +263,8 @@
     .manga-search-input:focus {
         background-color: rgba(255, 255, 255, 0.2);
         color: white;
-        border-color: #d32f2f;
-        box-shadow: 0 0 0 0.25rem rgba(211, 47, 47, 0.25);
+        border-color: #888;
+        box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.1);
     }
     
     /* Mobile Menu Toggle */
@@ -301,7 +287,7 @@
         }
         
         .manga-dropdown {
-            background-color: transparent;
+            background-color: #222;
             border: none;
         }
         

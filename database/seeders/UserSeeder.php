@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -14,29 +15,25 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Clear existing users except the admin user
-        DB::table('users')->where('email', '!=', 'admin@example.com')->delete();
+        User::where('email', '!=', 'admin@example.com')->delete();
 
-        // Admin user (if it doesn't exist)
-        if (DB::table('users')->where('email', 'admin@example.com')->count() === 0) {
-            DB::table('users')->insert([
+        // Admin user
+        User::updateOrCreate(
+            ['email' => 'admin@example.com'],
+            [
                 'name' => 'Admin User',
-                'email' => 'admin@example.com',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'role_id' => 1,
                 'status' => 'activated',
+                'email_verified_at' => Carbon::now(),
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]);
-        } else {
-            // Update existing admin user with role_id if needed
-            DB::table('users')
-                ->where('email', 'admin@example.com')
-                ->update(['role_id' => 1]);
-        }
+            ]
+        );
 
         // Staff users
-        DB::table('users')->insert([
+        $staffUsers = [
             [
                 'name' => 'Staff User',
                 'email' => 'staff@example.com',
@@ -44,8 +41,7 @@ class UserSeeder extends Seeder
                 'role' => 'staff',
                 'role_id' => 2,
                 'status' => 'activated',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'email_verified_at' => Carbon::now(),
             ],
             [
                 'name' => 'Staff Manager',
@@ -54,10 +50,16 @@ class UserSeeder extends Seeder
                 'role' => 'staff',
                 'role_id' => 2,
                 'status' => 'activated',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'email_verified_at' => Carbon::now(),
             ],
-        ]);
+        ];
+
+        foreach ($staffUsers as $staffUser ) {
+            User::updateOrCreate(
+                ['email' => $staffUser ['email']],
+                $staffUser 
+            );
+        }
 
         // Customer users
         $customers = [
@@ -68,6 +70,7 @@ class UserSeeder extends Seeder
                 'role' => 'customer',
                 'role_id' => 3,
                 'status' => 'activated',
+                'email_verified_at' => Carbon::now(),
             ],
             [
                 'name' => 'Jane Smith',
@@ -76,6 +79,7 @@ class UserSeeder extends Seeder
                 'role' => 'customer',
                 'role_id' => 3,
                 'status' => 'activated',
+                'email_verified_at' => Carbon::now(),
             ],
             [
                 'name' => 'Bob Johnson',
@@ -84,6 +88,7 @@ class UserSeeder extends Seeder
                 'role' => 'customer',
                 'role_id' => 3,
                 'status' => 'activated',
+                'email_verified_at' => Carbon::now(),
             ],
             [
                 'name' => 'Alice Brown',
@@ -92,21 +97,26 @@ class UserSeeder extends Seeder
                 'role' => 'customer',
                 'role_id' => 3,
                 'status' => 'activated',
+                'email_verified_at' => Carbon::now(),
             ],
             [
-                'name' => 'Inactive User',
-                'email' => 'inactive@example.com',
+                'name' => 'Charlie Black',
+                'email' => 'charlie@example.com',
                 'password' => Hash::make('password'),
                 'role' => 'customer',
                 'role_id' => 3,
-                'status' => 'deactivated',
+                'status' => 'activated',
+                'email_verified_at' => Carbon::now(),
             ],
         ];
 
         foreach ($customers as $customer) {
             $customer['created_at'] = now();
             $customer['updated_at'] = now();
-            DB::table('users')->insert($customer);
+            User::updateOrCreate(
+                ['email' => $customer['email']],
+                $customer
+            );
         }
     }
 }

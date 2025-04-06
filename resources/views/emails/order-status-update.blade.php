@@ -87,17 +87,17 @@
                 <tr>
                     <td>{{ $line->item->title }}</td>
                     <td>{{ $line->quantity }}</td>
-                    <td>${{ number_format($line->price, 2) }}</td>
-                    <td>${{ number_format($line->price * $line->quantity, 2) }}</td>
+                    <td>₱{{ number_format($line->price, 2) }}</td>
+                    <td>₱{{ number_format($line->price * $line->quantity, 2) }}</td>
                 </tr>
                 @endforeach
                 <tr>
                     <td colspan="3" style="text-align: right;"><strong>Shipping:</strong></td>
-                    <td>${{ number_format($order->shipping, 2) }}</td>
+                    <td>₱{{ number_format($order->shipping, 2) }}</td>
                 </tr>
                 <tr class="total-row">
                     <td colspan="3" style="text-align: right;"><strong>Total:</strong></td>
-                    <td>${{ number_format($order->total, 2) }}</td>
+                    <td>₱{{ number_format($order->total, 2) }}</td>
                 </tr>
             </tbody>
         </table>

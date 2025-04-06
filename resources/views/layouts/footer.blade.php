@@ -1,43 +1,43 @@
-<footer class="bg-dark text-white py-3 mt-5 manga-footer">
+<footer class="bg-dark text-white-90 py-2 mt-4 manga-footer">
     <div class="container">
-        <div class="row g-4">
+        <div class="row g-3">
             <!-- Brand Column -->
             <div class="col-md-4">
-                <div class="d-flex align-items-center mb-2">
-                    <h5 class="mb-0 manga-footer-brand">{{ config('app.name', 'MangaDeck') }}</h5>
-                    <span class="badge bg-danger ms-2">NEW</span>
+                <div class="d-flex align-items-center mb-1">
+                    <h5 class="mb-0 manga-footer-brand fs-6">{{ config('app.name', 'MangaDeck') }}</h5>
+                    <span class="badge bg-white-700 ms-2 fs-3">NEW</span>
                 </div>
-                <p class="small text-muted">Your ultimate destination for authentic Japanese manga collections.</p>
+                <p  class="text-white">Your ultimate destination for authentic Japanese manga collections.</p>
                 <div class="social-icons mt-2">
-                    <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-white me-2"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-white"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="text-white me-1"><i class="fab fa-twitter fa-sm"></i></a>
+                    <a href="#" class="text-white me-1"><i class="fab fa-facebook fa-sm"></i></a>
+                    <a href="#" class="text-white me-1"><i class="fab fa-instagram fa-sm"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-discord fa-sm"></i></a>
                 </div>
             </div>
 
             <!-- Quick Links Column -->
             <div class="col-md-4">
-                <h5 class="footer-heading mb-3">Quick Links</h5>
-                <ul class="list-unstyled footer-links">
-                    <li class="mb-2">
-                        <a href="{{ route('home') }}" class="text-white d-flex align-items-center">
-                            <i class="fas fa-chevron-right me-2 small"></i> Home
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="{{ route('items.index') }}" class="text-white d-flex align-items-center">
-                            <i class="fas fa-chevron-right me-2 small"></i> Manga Collection
-                        </a>
-                    </li>
-                    <li class="mb-2">
-                        <a href="{{ route('about') }}" class="text-white d-flex align-items-center">
-                            <i class="fas fa-chevron-right me-2 small"></i> About Us
+                <h5 class="footer-heading mb-1 fs-6">Quick Links</h5>
+                <ul class="list-unstyled footer-links mb-0">
+                    <li>
+                        <a href="{{ route('home') }}" class="text-white d-flex align-items-center py-1">
+                            <i class="fas fa-chevron-right me-1 small"></i> Home
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('contact') }}" class="text-white d-flex align-items-center">
-                            <i class="fas fa-chevron-right me-2 small"></i> Contact
+                        <a href="{{ route('items.index') }}" class="text-white d-flex align-items-center py-1">
+                            <i class="fas fa-chevron-right me-1 small"></i> Manga Collection
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('about') }}" class="text-white d-flex align-items-center py-1">
+                            <i class="fas fa-chevron-right me-1 small"></i> About Us
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('contact') }}" class="text-white d-flex align-items-center py-1">
+                            <i class="fas fa-chevron-right me-1 small"></i> Contact
                         </a>
                     </li>
                 </ul>
@@ -45,18 +45,18 @@
 
             <!-- Contact Column -->
             <div class="col-md-4">
-                <h5 class="footer-heading mb-3">Get In Touch</h5>
-                <ul class="list-unstyled contact-info">
-                    <li class="mb-2 d-flex align-items-start">
-                        <i class="fas fa-map-marker-alt mt-1 me-2 text-danger"></i>
-                        <span>123 Otaku Lane<br>Manga City, MC 10101</span>
+                <h5 class="footer-heading mb-1 fs-6">Get In Touch</h5>
+                <ul class="list-unstyled contact-info mb-0">
+                    <li class="d-flex align-items-start py-1">
+                        <i class="fas fa-map-marker-alt mt-1 me-1 text-white-300"></i>
+                        <span class="text-white">123 Otaku Lane<br>Manga City, MC 10101</span>
                     </li>
-                    <li class="mb-2 d-flex align-items-center">
-                        <i class="fas fa-phone me-2 text-danger"></i>
-                        <span>(123) 456-7890</span>
+                    <li class="d-flex align-items-center py-1">
+                        <i class="fas fa-phone me-1 text-white-300"></i>
+                        <span class="text-white">(123) 456-7890</span>
                     </li>
-                    <li class="d-flex align-items-center">
-                        <i class="fas fa-envelope me-2 text-danger"></i>
+                    <li class="d-flex align-items-center py-1">
+                        <i class="fas fa-envelope me-1 text-white-300"></i>
                         <a href="mailto:info@mangadeck.com" class="text-white">info@mangadeck.com</a>
                     </li>
                 </ul>
@@ -64,13 +64,11 @@
         </div>
 
         <!-- Copyright -->
-        <div class="text-center mt-4 pt-3 border-top border-secondary">
-            <p class="small text-muted mb-0">
-                &copy; {{ date('Y') }} {{ config('app.name', 'MangaDeck') }}. All rights reserved.
-                <span class="d-block d-sm-inline-block mt-1 mt-sm-0">
-                    <a href="#" class="text-muted ms-sm-3 small">Terms</a>
-                    <a href="#" class="text-muted ms-3 small">Privacy</a>
-                </span>
+        <div class="text-center mt-3 pt-2 border-top border-gray-700">
+            <p class="text-white">
+                &copy; {{ date(format: 'Y') }} {{ config('app.name', 'MangaDeck' ) }}. All rights reserved.
+                <a href="#" class="text-white">Terms</a>
+                <a href="#" class="text-white">Privacy</a>
             </p>
         </div>
     </div>
@@ -78,9 +76,9 @@
 
 <style>
     .manga-footer {
-        background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
-        border-top: 3px solid #d32f2f;
-        font-size: 0.9rem;
+        background: linear-gradient(135deg, #000000 0%, #222222 100%);
+        border-top: 1px solid #444;
+        font-size: 0.7rem;
     }
     
     .manga-footer-brand {
@@ -95,17 +93,16 @@
     .manga-footer-brand:after {
         content: '';
         position: absolute;
-        bottom: -5px;
+        bottom: -3px;
         left: 0;
-        width: 40px;
-        height: 2px;
-        background-color: #d32f2f;
+        width: 30px;
+        height: 1px;
+        background: linear-gradient(90deg, #fff 0%, #aaa 100%);
     }
     
     .footer-heading {
-        font-size: 1.1rem;
         position: relative;
-        padding-bottom: 8px;
+        padding-bottom: 5px;
         color: #fff;
     }
     
@@ -114,53 +111,49 @@
         position: absolute;
         bottom: 0;
         left: 0;
-        width: 30px;
-        height: 2px;
-        background-color: #d32f2f;
+        width: 25px;
+        height: 1px;
+        background: linear-gradient(90deg, #fff 0%, #aaa 100%);
     }
     
     .footer-links a {
-        transition: all 0.3s ease;
-        color: #adb5bd !important;
+        transition: all 0.2s ease;
+        color: #aaa !important;
     }
     
     .footer-links a:hover {
         color: #fff !important;
-        transform: translateX(3px);
-        text-decoration: none;
+        transform: translateX(2px);
     }
     
     .footer-links i {
-        transition: all 0.3s ease;
-    }
-    
-    .footer-links a:hover i {
-        color: #d32f2f !important;
-    }
-    
-    .contact-info i {
-        width: 20px;
-        text-align: center;
+        transition: all 0.2s ease;
+        color: #777;
     }
     
     .social-icons a {
         display: inline-block;
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
+        width: 26px;
+        height: 26px;
+        line-height: 26px;
         text-align: center;
-        background: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.08);
         border-radius: 50%;
-        margin-right: 8px;
-        transition: all 0.3s ease;
+        margin-right: 6px;
+        transition: all 0.2s ease;
     }
     
     .social-icons a:hover {
-        background: #d32f2f;
-        transform: translateY(-3px);
+        background: rgba(255,255,255,0.2);
+        transform: translateY(-2px);
     }
     
-    .text-muted {
-        color: #6c757d !important;
+    .fs-6 {
+        font-size: 0.8rem !important;
+    }
+    
+    .py-1 {
+        padding-top: 0.25rem !important;
+        padding-bottom: 0.25rem !important;
     }
 </style>

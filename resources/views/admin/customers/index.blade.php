@@ -17,7 +17,7 @@
                         <th>Email</th>
                         <th>Registered</th>
                         <th>Orders</th>
-                        <th>Status</th>
+                        <!-- Remove this line: <th>Status</th> -->
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -43,7 +43,6 @@
                 { data: 'email', name: 'email' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'orders_count', name: 'orders_count' },
-                { data: 'status', name: 'status' },
                 { data: 'actions', name: 'actions', orderable: false, searchable: false }
             ]
         });

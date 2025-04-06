@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
             PublisherSeeder::class,
             AuthorSeeder::class,
 
-            UpdateItemsSeeder::class,
             AuthorItemSeeder::class,
+            OrderSeeder::class,
         ]);
     }
 }

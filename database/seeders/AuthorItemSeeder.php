@@ -21,209 +21,460 @@ class AuthorItemSeeder extends Seeder
         }
 
         $mangaData = [
+            // Shounen
             [
-                'title' => 'One Piece Volume 1: Romance Dawn',
-                'author' => 'Eiichiro Oda',
-                'publisher' => 'Viz Media',
+                'title' => 'Kagurabachi',
+                'author' => 'Takeru Hokazono',
+                'publisher' => 'Shueisha',
             ],
             [
-                'title' => 'Naruto Volume 1: Uzumaki Naruto',
-                'author' => 'Masashi Kishimoto',
+                'title' => 'Ranking of Kings',
+                'author' => 'Sousuke Tooka',
                 'publisher' => 'Kodansha Comics',
             ],
             [
-                'title' => 'Bleach Volume 1: The Death and the Strawberry',
-                'author' => 'Tite Kubo',
-                'publisher' => 'Yen Press',
+                'title' => 'Seraph of the End: Vampire Reign',
+                'author' => 'Takaya Kagami',
+                'publisher' => 'Viz Media',
+                'coauthors' => [
+                    ['name' => 'Yamato Yamamoto', 'role' => 'Illustrator'],
+                    ['name' => 'Daisuke Furuya', 'role' => 'Collaborator']
+                ]
             ],
             [
-                'title' => 'Dragon Ball Volume 1: The Monkey King',
-                'author' => 'Akira Toriyama',
-                'publisher' => 'Seven Seas Entertainment',
-            ],
-            [
-                'title' => 'Attack on Titan Volume 1',
+                'title' => 'Attack on Titan',
                 'author' => 'Hajime Isayama',
-                'publisher' => 'Dark Horse Comics',
+                'publisher' => 'Kodansha Comics',
             ],
             [
-                'title' => 'My Hero Academia Volume 1: Izuku Midoriya: Origin',
-                'author' => 'Kohei Horikoshi',
-                'publisher' => 'Vertical Comics',
+                'title' => 'One Piece',
+                'author' => 'Eiichiro Oda',
+                'publisher' => 'Shueisha',
             ],
             [
-                'title' => 'Demon Slayer Volume 1: Cruelty',
+                'title' => 'Naruto',
+                'author' => 'Masashi Kishimoto',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Bleach',
+                'author' => 'Tite Kubo',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Dragon Ball',
+                'author' => 'Akira Toriyama',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'My Hero Academia',
+                'author' => 'Kōhei Horikoshi',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Demon Slayer',
                 'author' => 'Koyoharu Gotouge',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Jujutsu Kaisen',
+                'author' => 'Gege Akutami',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Black Clover',
+                'author' => 'Yuuki Tabata',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Blue Lock',
+                'author' => 'Muneyuki Kaneshiro',
+                'publisher' => 'Kodansha Comics',
+                'coauthors' => [
+                    ['name' => 'Yuusuke Nomura', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'Record of Ragnarok',
+                'author' => 'Takumi Fukui',
+                'publisher' => 'Kodansha Comics',
+                'coauthors' => [
+                    ['name' => 'Shinya Umemura', 'role' => 'Writer'],
+                    ['name' => 'Ajichika', 'role' => 'Illustrator']
+                ]
+            ],
+            
+            // Romance
+            [
+                'title' => 'Blue Box',
+                'author' => 'Kouji Miura',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'The Fragrant Flower Blooms With Dignity',
+                'author' => 'Saka Mikami',
+                'publisher' => 'Kodansha Comics',
+            ],
+            [
+                'title' => 'The Angel Next Door Spoils Me Rotten',
+                'author' => 'Saeki-san',
+                'publisher' => 'Kadokawa',
+                'coauthors' => [
+                    ['name' => 'Wan Shibata', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'My Dress-Up Darling',
+                'author' => 'Shinichi Fukuda',
                 'publisher' => 'Square Enix Manga',
             ],
             [
-                'title' => 'Jujutsu Kaisen Volume 1',
-                'author' => 'Gege Akutami',
-                'publisher' => 'Tokyopop',
+                'title' => 'My Girlfriend is the best!',
+                'author' => 'Iori',
+                'publisher' => 'Shogakukan',
+                'coauthors' => [
+                    ['name' => 'Takami Takada', 'role' => 'Illustrator']
+                ]
+            ],
+            
+            // Shojo
+            [
+                'title' => 'A Sign of Affection',
+                'author' => 'Suu Morishita',
+                'publisher' => 'Hakusensha',
             ],
             [
-                'title' => 'Tokyo Ghoul Volume 1',
+                'title' => 'Kimi ni Todoke: From Me to You',
+                'author' => 'Karuho Shiina',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Ao Haru Ride',
+                'author' => 'Io Sakisaka',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'My Happy Marriage',
+                'author' => 'Akumi Agitogi',
+                'publisher' => 'Kadokawa',
+                'coauthors' => [
+                    ['name' => 'Rito Kousaka', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'Fruits Basket',
+                'author' => 'Natsuki Takaya',
+                'publisher' => 'Hakusensha',
+            ],
+            [
+                'title' => 'Sailor Moon',
+                'author' => 'Naoko Takeuchi',
+                'publisher' => 'Kodansha Comics',
+            ],
+            
+            // Seinen
+            [
+                'title' => 'Berserk',
+                'author' => 'Kentaro Miura',
+                'publisher' => 'Hakusensha',
+                'coauthors' => [
+                    ['name' => 'Studio Gaga', 'role' => 'Studio']
+                ]
+            ],
+            [
+                'title' => 'Vinland Saga',
+                'author' => 'Makoto Yukimura',
+                'publisher' => 'Kodansha Comics',
+            ],
+            [
+                'title' => 'Goodnight Punpun',
+                'author' => 'Inio Asano',
+                'publisher' => 'Shogakukan',
+            ],
+            [
+                'title' => 'Classroom of the Elite',
+                'author' => 'Shougo Kinugasa',
+                'publisher' => 'Kadokawa',
+                'coauthors' => [
+                    ['name' => 'Yuyu Ichino', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'Tokyo Ghoul',
                 'author' => 'Sui Ishida',
                 'publisher' => 'Shueisha',
             ],
             [
-                'title' => 'Death Note Volume 1: Boredom',
+                'title' => 'Death Note',
                 'author' => 'Tsugumi Ohba',
-                'publisher' => 'Kadokawa',
+                'publisher' => 'Shueisha',
                 'coauthors' => [
                     ['name' => 'Takeshi Obata', 'role' => 'Illustrator']
                 ]
             ],
             [
-                'title' => 'Fullmetal Alchemist Volume 1',
-                'author' => 'Hiromu Arakawa',
-                'publisher' => 'Viz Media',
+                'title' => 'Monster',
+                'author' => 'Naoki Urasawa',
+                'publisher' => 'Shogakukan',
             ],
             [
-                'title' => 'Hunter x Hunter Volume 1',
-                'author' => 'Yoshihiro Togashi',
+                'title' => 'Vagabond',
+                'author' => 'Takehiko Inoue',
+                'publisher' => 'Kodansha Comics',
+            ],
+            
+            // Josei
+            [
+                'title' => 'Loving Yamada at LV999!',
+                'author' => 'Mashiro',
+                'publisher' => 'Hakusensha',
+            ],
+            [
+                'title' => 'I Think I Turned My Childhood Friend Into a Girl',
+                'author' => 'Azusa Banjou',
+                'publisher' => 'Futabasha',
+            ],
+            [
+                'title' => 'Wotakoi: Love is Hard for Otaku',
+                'author' => 'Fujita',
                 'publisher' => 'Kodansha Comics',
             ],
             [
-                'title' => 'Sailor Moon Volume 1',
-                'author' => 'Naoko Takeuchi',
-                'publisher' => 'Yen Press',
+                'title' => 'Given',
+                'author' => 'Natsuki Kizu',
+                'publisher' => 'Shinshokan',
             ],
             [
-                'title' => 'Fruits Basket Volume 1',
-                'author' => 'Natsuki Takaya',
-                'publisher' => 'Seven Seas Entertainment',
-            ],
-            [
-                'title' => 'Nana Volume 1',
+                'title' => 'Nana',
                 'author' => 'Ai Yazawa',
-                'publisher' => 'Dark Horse Comics',
-            ],
-            [
-                'title' => 'Ouran High School Host Club Volume 1',
-                'author' => 'Bisco Hatori',
-                'publisher' => 'Vertical Comics',
-            ],
-            [
-                'title' => 'Berserk Volume 1: The Black Swordsman',
-                'author' => 'Kentaro Miura',
-                'publisher' => 'Square Enix Manga',
-            ],
-            [
-                'title' => 'Vagabond Volume 1',
-                'author' => 'Takehiko Inoue',
-                'publisher' => 'Tokyopop',
-            ],
-            [
-                'title' => 'Vinland Saga Volume 1',
-                'author' => 'Makoto Yukimura',
                 'publisher' => 'Shueisha',
             ],
+            
+            // Isekai
             [
-                'title' => 'Monster Volume 1',
-                'author' => 'Naoki Urasawa',
+                'title' => 'That Time I Got Reincarnated as a Slime',
+                'author' => 'Fuse',
+                'publisher' => 'Kodansha Comics',
+                'coauthors' => [
+                    ['name' => 'Taiki Kawakami', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'The Eminence in Shadow',
+                'author' => 'Daisuke Aizawa',
+                'publisher' => 'Kadokawa',
+                'coauthors' => [
+                    ['name' => 'Anri Sakano', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'Tsukimichi: Moonlit Fantasy',
+                'author' => 'Kei Azumi',
+                'publisher' => 'Kodansha Comics',
+                'coauthors' => [
+                    ['name' => 'Kotora Kino', 'role' => 'Writer']
+                ]
+            ],
+            [
+                'title' => 'Overlord',
+                'author' => 'Kugane Maruyama',
+                'publisher' => 'Kadokawa',
+                'coauthors' => [
+                    ['name' => 'Fugin Miyama', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'Re:Zero',
+                'author' => 'Tappei Nagatsuki',
                 'publisher' => 'Kadokawa',
             ],
             [
-                'title' => 'Spy x Family Volume 1',
-                'author' => 'Tatsuya Endo',
-                'publisher' => 'Viz Media',
+                'title' => 'Sword Art Online',
+                'author' => 'Reki Kawahara',
+                'publisher' => 'Kadokawa',
+            ],
+            
+            // Mecha
+            [
+                'title' => 'Neon Genesis Evangelion',
+                'author' => 'Yoshiyuki Sadamoto',
+                'publisher' => 'Kadokawa',
             ],
             [
-                'title' => 'Chainsaw Man Volume 1',
-                'author' => 'Tatsuki Fujimoto',
+                'title' => 'DARLING in the FRANXX',
+                'author' => 'Code:000',
+                'publisher' => 'Shueisha',
+                'coauthors' => [
+                    ['name' => 'Kentarou Yabuki', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'Mobile Suit Gundam: The Origin',
+                'author' => 'Yoshiyuki Tomino',
+                'publisher' => 'Kodansha Comics',
+                'coauthors' => [
+                    ['name' => 'Yoshikazu Yasuhiko', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'Tengen Toppa Gurren Lagann',
+                'author' => 'Kazuki Nakashima',
+                'publisher' => 'Kadokawa',
+                'coauthors' => [
+                    ['name' => 'Kotarou Mori', 'role' => 'Illustrator']
+                ]
+            ],
+            
+            // Horror
+            [
+                'title' => 'Mieruko-chan',
+                'author' => 'Tomoki Izumi',
+                'publisher' => 'Kadokawa',
+            ],
+            [
+                'title' => 'Dark Gathering',
+                'author' => 'Kenichi Kondou',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'The Hundred Ghost Stories That Led to My Death',
+                'author' => 'Anji Matono',
                 'publisher' => 'Kodansha Comics',
             ],
             [
-                'title' => 'Haikyu!! Volume 1',
+                'title' => 'Ajin: Demi-Human',
+                'author' => 'Tsuina Miura',
+                'publisher' => 'Kodansha Comics',
+                'coauthors' => [
+                    ['name' => 'Gamon Sakurai', 'role' => 'Illustrator']
+                ]
+            ],
+            
+            // Sports
+            [
+                'title' => 'Haikyu!!',
                 'author' => 'Haruichi Furudate',
-                'publisher' => 'Yen Press',
+                'publisher' => 'Shueisha',
             ],
             [
-                'title' => 'Slam Dunk Volume 1',
+                'title' => 'Slam Dunk',
                 'author' => 'Takehiko Inoue',
-                'publisher' => 'Seven Seas Entertainment',
+                'publisher' => 'Shueisha',
             ],
             [
-                'title' => 'Your Lie in April Volume 1',
+                'title' => 'Hajime no Ippo',
+                'author' => 'George Morikawa',
+                'publisher' => 'Kodansha Comics',
+            ],
+            
+            // Fantasy
+            [
+                'title' => 'Wistoria: Wand and Sword',
+                'author' => 'Fujino Omori',
+                'publisher' => 'Kodansha Comics',
+                'coauthors' => [
+                    ['name' => 'Toshi Aoi', 'role' => 'Illustrator']
+                ]
+            ],
+            [
+                'title' => 'The Seven Deadly Sins',
+                'author' => 'Nakaba Suzuki',
+                'publisher' => 'Kodansha Comics',
+            ],
+            [
+                'title' => 'Fullmetal Alchemist',
+                'author' => 'Hiromu Arakawa',
+                'publisher' => 'Square Enix',
+            ],
+            
+            // Other notable titles
+            [
+                'title' => 'Hunter x Hunter',
+                'author' => 'Yoshihiro Togashi',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Ouran High School Host Club',
+                'author' => 'Bisco Hatori',
+                'publisher' => 'Hakusensha',
+            ],
+            [
+                'title' => 'Spy x Family',
+                'author' => 'Tatsuya Endo',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Chainsaw Man',
+                'author' => 'Tatsuki Fujimoto',
+                'publisher' => 'Shueisha',
+            ],
+            [
+                'title' => 'Your Lie in April',
                 'author' => 'Naoshi Arakawa',
-                'publisher' => 'Dark Horse Comics',
+                'publisher' => 'Kodansha Comics',
             ],
             [
-                'title' => 'A Silent Voice Volume 1',
+                'title' => 'A Silent Voice',
                 'author' => 'Yoshitoki Oima',
-                'publisher' => 'Vertical Comics',
+                'publisher' => 'Kodansha Comics',
             ],
             [
-                'title' => 'The Promised Neverland Volume 1',
+                'title' => 'The Promised Neverland',
                 'author' => 'Kaiu Shirai',
-                'publisher' => 'Square Enix Manga',
+                'publisher' => 'Shueisha',
                 'coauthors' => [
                     ['name' => 'Posuka Demizu', 'role' => 'Illustrator']
                 ]
             ],
             [
-                'title' => 'Made in Abyss Volume 1',
+                'title' => 'Made in Abyss',
                 'author' => 'Akihito Tsukushi',
-                'publisher' => 'Tokyopop',
-            ],
-            [
-                'title' => 'Re:Zero Volume 1',
-                'author' => 'Tappei Nagatsuki',
-                'publisher' => 'Shueisha',
-            ],
-            [
-                'title' => 'Sword Art Online Volume 1',
-                'author' => 'Reki Kawahara',
-                'publisher' => 'Kadokawa',
-            ],
+                'publisher' => 'Takeshobo',
+            ]
         ];
 
         $authors = Author::all()->keyBy('name');
         $publishers = Publisher::all()->keyBy('name');
-        $items = Item::all();
+        $items = Item::all()->keyBy('title');
 
-        // Update publisher_id for all items
-        foreach ($items as $item) {
-            foreach ($mangaData as $mangaItem) {
-                if ($mangaItem['title'] === $item->title) {
-                    $publisherName = $mangaItem['publisher'];
-                    if (isset($publishers[$publisherName])) {
-                        $item->publisher_id = $publishers[$publisherName]->id;
-                        $item->save();
-                    }
-                    
-                    // Add author relationships
-                    $authorName = $mangaItem['author'];
-                    if (isset($authors[$authorName])) {
+        foreach ($mangaData as $mangaItem) {
+            if (!isset($items[$mangaItem['title']])) {
+                continue;
+            }
+
+            $item = $items[$mangaItem['title']];
+            
+            // Update publisher
+            if (isset($publishers[$mangaItem['publisher']])) {
+                $item->publisher_id = $publishers[$mangaItem['publisher']]->id;
+                $item->save();
+            }
+            
+            // Add main author relationship
+            if (isset($authors[$mangaItem['author']])) {
+                DB::table('author_item')->insert([
+                    'author_id' => $authors[$mangaItem['author']]->id,
+                    'item_id' => $item->id,
+                    'role' => 'Author',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+            
+            // Add co-authors if any
+            if (isset($mangaItem['coauthors'])) {
+                foreach ($mangaItem['coauthors'] as $coauthor) {
+                    if (isset($authors[$coauthor['name']])) {
                         DB::table('author_item')->insert([
-                            'author_id' => $authors[$authorName]->id,
+                            'author_id' => $authors[$coauthor['name']]->id,
                             'item_id' => $item->id,
-                            'role' => 'Author',
+                            'role' => $coauthor['role'],
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
                     }
-                    
-                    // Add co-authors if any
-                    if (isset($mangaItem['coauthors'])) {
-                        foreach ($mangaItem['coauthors'] as $coauthor) {
-                            if (isset($authors[$coauthor['name']])) {
-                                DB::table('author_item')->insert([
-                                    'author_id' => $authors[$coauthor['name']]->id,
-                                    'item_id' => $item->id,
-                                    'role' => $coauthor['role'],
-                                    'created_at' => now(),
-                                    'updated_at' => now(),
-                                ]);
-                            }
-                        }
-                    }
-                    
-                    break;
                 }
             }
         }
     }
 }
-

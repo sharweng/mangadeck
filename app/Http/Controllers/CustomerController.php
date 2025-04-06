@@ -175,15 +175,16 @@ class CustomerController extends Controller
             ->addColumn('orders_count', function($customer) {
                 return $customer->orders->count();
             })
-            ->addColumn('status', function($customer) {
-                $status = $customer->user->status;
-                return '<span class="badge ' . ($status == 'activated' ? 'bg-success' : 'bg-danger') . '">' 
-                    . ucfirst($status) . '</span>';
-            })
+            // Remove this block:
+            // ->addColumn('status', function($customer) {
+            //     $status = $customer->user->status;
+            //     return '<span class="badge ' . ($status == 'activated' ? 'bg-success' : 'bg-danger') . '">' 
+            //         . ucfirst($status) . '</span>';
+            // })
             ->addColumn('actions', function($customer) {
                 return view('admin.customers.actions', compact('customer'))->render();
             })
-            ->rawColumns(['status', 'actions'])
+            ->rawColumns(['actions']) // Remove 'status' from here
             ->make(true);
     }
 }

@@ -44,7 +44,7 @@
                     </tr>
                     <tr>
                         <th>Shipping Cost</th>
-                        <td>${{ number_format($order->shipping, 2) }}</td>
+                        <td>₱{{ number_format($order->shipping, 2) }}</td>
                     </tr>
                 </table>
             </div>
@@ -95,24 +95,24 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>${{ number_format($line->price, 2) }}</td>
+                            <td>₱{{ number_format($line->price, 2) }}</td>
                             <td>{{ $line->quantity }}</td>
-                            <td>${{ number_format($line->price * $line->quantity, 2) }}</td>
+                            <td>₱{{ number_format($line->price * $line->quantity, 2) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
                         <th colspan="3" class="text-end">Subtotal:</th>
-                        <td>${{ number_format($subtotal, 2) }}</td>
+                        <td>₱{{ number_format($subtotal, 2) }}</td>
                     </tr>
                     <tr>
                         <th colspan="3" class="text-end">Shipping:</th>
-                        <td>${{ number_format($order->shipping, 2) }}</td>
+                        <td>₱{{ number_format($order->shipping, 2) }}</td>
                     </tr>
                     <tr>
                         <th colspan="3" class="text-end">Total:</th>
-                        <td class="fw-bold">${{ number_format($subtotal + $order->shipping, 2) }}</td>
+                        <td class="fw-bold">₱{{ number_format($subtotal + $order->shipping, 2) }}</td>
                     </tr>
                 </tfoot>
             </table>

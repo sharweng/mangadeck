@@ -4,16 +4,17 @@
 
 @section('content')
 <div class="login-container">
-    <!-- Background Manga Art -->
-    <div class="login-bg-overlay"></div>
-    <div class="login-bg-image" style="background-image: url('{{ asset('images/manga-login-bg.jpg') }}');"></div>
+    <!-- Manga-style background with ink wash effect -->
+    <div class="manga-bg-overlay"></div>
+    <div class="manga-bg-texture"></div>
 
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="manga-login-card">
-                    <!-- Card Header with Manga Style -->
+                    <!-- Card Header with manga panel style -->
                     <div class="login-card-header">
+                        <div class="manga-panel-effect"></div>
                         <div class="login-title">
                             <i class="fas fa-user-ninja login-icon"></i>
                             <h2>{{ __('Manga Deck Login') }}</h2>
@@ -97,7 +98,7 @@
 
 @section('styles')
 <style>
-    /* Main Container */
+    /* Main Container with manga-style background */
     .login-container {
         min-height: 100vh;
         display: flex;
@@ -105,64 +106,66 @@
         position: relative;
         overflow: hidden;
         padding: 2rem 0;
+        background-color: #f0f0f0;
     }
 
-    /* Background Styles */
-    .login-bg-image {
+    /* Manga-style background elements */
+    .manga-bg-overlay {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-size: cover;
-        background-position: center;
-        z-index: -2;
-        opacity: 0.7;
-    }
-
-    .login-bg-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.9) 100%);
+        background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(50,50,50,0.7) 100%);
         z-index: -1;
     }
 
-    /* Card Styles */
+    .manga-bg-texture {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="black" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.1"/></svg>');
+        background-size: 100px 100px;
+        z-index: -2;
+        opacity: 0.3;
+    }
+
+    /* Manga panel style card */
     .manga-login-card {
-        background-color: rgba(255, 255, 255, 0.95);
-        border-radius: 12px;
+        background: linear-gradient(to bottom, #ffffff 0%, #f5f5f5 100%);
+        border-radius: 4px;
         overflow: hidden;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(5px);
+        border: 1px solid rgba(0, 0, 0, 0.1);
         transition: transform 0.3s ease;
+        position: relative;
     }
 
     .manga-login-card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }
 
-    /* Card Header */
+    /* Card Header with manga panel effect */
     .login-card-header {
-        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+        background: linear-gradient(135deg, #222 0%, #444 100%);
         padding: 2rem;
         text-align: center;
         color: white;
         position: relative;
+        border-bottom: 3px solid #000;
     }
 
-    .login-card-header::after {
-        content: '';
+    .manga-panel-effect {
         position: absolute;
-        bottom: -10px;
+        top: 0;
         left: 0;
         width: 100%;
-        height: 20px;
-        background: url('{{ asset('images/manga-edge.png') }}') repeat-x;
-        background-size: contain;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.1) 100%);
+        z-index: 0;
     }
 
     .login-title {
@@ -170,30 +173,37 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
     }
 
     .login-title h2 {
         margin: 0;
         font-weight: 700;
         font-size: 1.8rem;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        letter-spacing: 1px;
     }
 
     .login-icon {
         font-size: 2rem;
         margin-right: 1rem;
-        filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
+        filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.5));
     }
 
     .login-subtitle {
         margin: 0;
-        opacity: 0.9;
+        opacity: 0.8;
         font-size: 0.9rem;
+        position: relative;
+        z-index: 1;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
 
     /* Card Body */
     .login-card-body {
         padding: 2.5rem;
+        background-color: #fff;
     }
 
     /* Form Styles */
@@ -206,6 +216,7 @@
         margin-bottom: 0.5rem;
         font-weight: 600;
         color: #333;
+        letter-spacing: 0.5px;
     }
 
     .input-with-icon {
@@ -217,7 +228,7 @@
         left: 15px;
         top: 50%;
         transform: translateY(-50%);
-        color: #d32f2f;
+        color: #444;
     }
 
     .input-with-icon .password-toggle {
@@ -227,20 +238,27 @@
         transform: translateY(-50%);
         color: #666;
         cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .input-with-icon .password-toggle:hover {
+        color: #000;
     }
 
     .input-with-icon .form-control {
         padding-left: 45px;
         padding-right: 45px;
         height: 50px;
-        border-radius: 8px;
+        border-radius: 4px;
         border: 2px solid #ddd;
         transition: all 0.3s;
+        background-color: #f9f9f9;
     }
 
     .input-with-icon .form-control:focus {
-        border-color: #d32f2f;
-        box-shadow: 0 0 0 0.25rem rgba(211, 47, 47, 0.25);
+        border-color: #666;
+        box-shadow: 0 0 0 0.25rem rgba(0, 0, 0, 0.1);
+        background-color: #fff;
     }
 
     /* Login Options */
@@ -262,19 +280,19 @@
     }
 
     .remember-me .form-check-input:checked {
-        background-color: #d32f2f;
-        border-color: #d32f2f;
+        background-color: #333;
+        border-color: #333;
     }
 
     .forgot-password {
-        color: #d32f2f;
+        color: #444;
         text-decoration: none;
         font-weight: 500;
         transition: color 0.3s;
     }
 
     .forgot-password:hover {
-        color: #b71c1c;
+        color: #000;
         text-decoration: underline;
     }
 
@@ -282,19 +300,23 @@
     .btn-manga-login {
         width: 100%;
         padding: 12px;
-        background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+        background: linear-gradient(135deg, #333 0%, #000 100%);
         border: none;
-        border-radius: 8px;
+        border-radius: 4px;
         color: white;
         font-weight: 600;
         font-size: 1.1rem;
         transition: all 0.3s;
         margin-top: 1rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .btn-manga-login:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+        box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, #000 0%, #333 100%);
     }
 
     /* Register Link */
@@ -305,14 +327,14 @@
     }
 
     .register-link a {
-        color: #d32f2f;
+        color: #333;
         font-weight: 600;
         text-decoration: none;
         transition: color 0.3s;
     }
 
     .register-link a:hover {
-        color: #b71c1c;
+        color: #000;
         text-decoration: underline;
     }
 
@@ -328,6 +350,29 @@
         
         .login-title h2 {
             font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .login-container {
+            padding: 1rem;
+        }
+        
+        .login-card-header {
+            padding: 1.2rem;
+        }
+        
+        .login-card-body {
+            padding: 1.2rem;
+        }
+        
+        .login-title {
+            flex-direction: column;
+        }
+        
+        .login-icon {
+            margin-right: 0;
+            margin-bottom: 0.5rem;
         }
     }
 </style>

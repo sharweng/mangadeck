@@ -64,7 +64,7 @@
                     data: 'total', 
                     name: 'total',
                     render: function(data) {
-                        return '$' + parseFloat(data).toFixed(2);
+                        return '₱' + parseFloat(data).toFixed(2);
                     }
                 },
                 { data: 'actions', name: 'actions', orderable: false, searchable: false }

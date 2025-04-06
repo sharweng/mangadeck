@@ -115,8 +115,8 @@
                 <tr>
                     <td>{{ $line->item->title }}</td>
                     <td>{{ $line->quantity }}</td>
-                    <td>${{ number_format($line->price, 2) }}</td>
-                    <td>${{ number_format($line->price * $line->quantity, 2) }}</td>
+                    <td>₱{{ number_format($line->price, 2) }}</td>
+                    <td>₱{{ number_format($line->price * $line->quantity, 2) }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -126,15 +126,15 @@
             <table>
                 <tr>
                     <td style="text-align: right;"><strong>Subtotal:</strong></td>
-                    <td style="width: 100px;">${{ number_format($order->orderLines->sum(function($line) { return $line->price * $line->quantity; }), 2) }}</td>
+                    <td style="width: 100px;">₱{{ number_format($order->orderLines->sum(function($line) { return $line->price * $line->quantity; }), 2) }}</td>
                 </tr>
                 <tr>
                     <td style="text-align: right;"><strong>Shipping:</strong></td>
-                    <td>${{ number_format($order->shipping, 2) }}</td>
+                    <td>₱{{ number_format($order->shipping, 2) }}</td>
                 </tr>
                 <tr class="total-row">
                     <td style="text-align: right;"><strong>Total:</strong></td>
-                    <td>${{ number_format($order->total, 2) }}</td>
+                    <td>₱{{ number_format($order->total, 2) }}</td>
                 </tr>
             </table>
         </div>

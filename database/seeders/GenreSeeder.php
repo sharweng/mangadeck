@@ -19,11 +19,11 @@ class GenreSeeder extends Seeder
 
         $genres = [
             [
-                'name' => 'Shonen',
+                'name' => 'Shounen',
                 'description' => 'Manga aimed at teenage boys, typically featuring action, adventure, and coming-of-age themes.',
             ],
             [
-                'name' => 'Shojo',
+                'name' => 'Shoujo',
                 'description' => 'Manga aimed at teenage girls, often focusing on romance, relationships, and personal growth.',
             ],
             [
@@ -65,6 +65,90 @@ class GenreSeeder extends Seeder
             [
                 'name' => 'Mystery',
                 'description' => 'Stories involving the solution of a mystery, often featuring detectives, crimes, or puzzles.',
+            ],
+            [
+                'name' => 'Action',
+                'description' => 'Stories with emphasis on physical conflict, battles, and high-energy sequences.',
+            ],
+            [
+                'name' => 'Adventure',
+                'description' => 'Stories focused on journeys, exploration, and discovery of new places or experiences.',
+            ],
+            [
+                'name' => 'Comedy',
+                'description' => 'Stories designed to be humorous and make readers laugh.',
+            ],
+            [
+                'name' => 'Drama',
+                'description' => 'Stories with emotional intensity and character development through conflict.',
+            ],
+            [
+                'name' => 'Supernatural',
+                'description' => 'Stories featuring elements beyond scientific understanding, like ghosts, spirits, or paranormal abilities.',
+            ],
+            [
+                'name' => 'Psychological',
+                'description' => 'Stories that explore the mental states and processes of characters.',
+            ],
+            [
+                'name' => 'Dark Fantasy',
+                'description' => 'Fantasy stories with darker, more mature themes and often grim or disturbing elements.',
+            ],
+            [
+                'name' => 'Sci-Fi',
+                'description' => 'Stories based on scientific concepts and technological advancement, often set in the future.',
+            ],
+            [
+                'name' => 'Military',
+                'description' => 'Stories focused on armed forces, warfare, and military life.',
+            ],
+            [
+                'name' => 'Demons',
+                'description' => 'Stories featuring demonic entities or characters with demonic powers.',
+            ],
+            [
+                'name' => 'Magic',
+                'description' => 'Stories where magical powers and spells play a significant role.',
+            ],
+            [
+                'name' => 'School',
+                'description' => 'Stories set primarily in educational institutions.',
+            ],
+            [
+                'name' => 'Super Power',
+                'description' => 'Stories featuring characters with extraordinary abilities beyond normal human capabilities.',
+            ],
+            [
+                'name' => 'Vampire',
+                'description' => 'Stories featuring vampires as main characters or central to the plot.',
+            ],
+            [
+                'name' => 'Martial Arts',
+                'description' => 'Stories focused on various forms of combat and fighting techniques.',
+            ],
+            [
+                'name' => 'Music',
+                'description' => 'Stories where music plays a central role in the plot or character development.',
+            ],
+            [
+                'name' => 'Boys Love',
+                'description' => 'Stories focusing on romantic or sexual relationships between male characters.',
+            ],
+            [
+                'name' => 'Ecchi',
+                'description' => 'Stories with suggestive or mildly sexual content, but not explicit.',
+            ],
+            [
+                'name' => 'Space',
+                'description' => 'Stories set in outer space or involving space travel.',
+            ],
+            [
+                'name' => 'Iyashikei',
+                'description' => 'Healing or soothing stories designed to provide a sense of comfort and relaxation.',
+            ],
+            [
+                'name' => 'Parody',
+                'description' => 'Stories that imitate and satirize other works or genres.',
             ],
         ];
 

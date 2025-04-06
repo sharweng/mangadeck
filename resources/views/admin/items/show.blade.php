@@ -57,7 +57,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <h5 class="mb-1">Price</h5>
-                                <p class="fs-4 text-primary mb-1">${{ number_format($item->price, 2) }}</p>
+                                <p class="fs-4 text-primary mb-1">₱{{ number_format($item->price, 2) }}</p>
                             </div>
                             <div class="col-6">
                                 <h5 class="mb-1">Stock</h5>
