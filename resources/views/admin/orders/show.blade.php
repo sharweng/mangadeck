@@ -89,7 +89,11 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ $line->item->img_path ? asset('storage/'.$line->item->img_path) : asset('images/no-image.jpg') }}" alt="{{ $line->item->title }}" class="img-thumbnail me-3" style="width: 50px;">
+                                    @if($line->item->primaryImage)
+                                        <img src="/storage/{{ $line->item->primaryImage->image_path }}" alt="{{ $line->item->title }}" class="img-thumbnail me-3" style="width: 50px;">
+                                    @else
+                                        <img src="{{ asset('images/no-image.jpg') }}" alt="{{ $line->item->title }}" class="img-thumbnail me-3" style="width: 50px;">
+                                    @endif
                                     <div>
                                         <a href="{{ route('admin.items.show', $line->item) }}">{{ $line->item->title }}</a>
                                     </div>

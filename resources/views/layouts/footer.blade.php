@@ -5,7 +5,7 @@
             <div class="col-md-4">
                 <div class="d-flex align-items-center mb-1">
                     <h5 class="mb-0 manga-footer-brand fs-6">{{ config('app.name', 'MangaDeck') }}</h5>
-                    <span class="badge bg-white-700 ms-2 fs-3">NEW</span>
+                    <span class="badge bg-white-700 ms-2 fs-3">MANGADECK</span>
                 </div>
                 <p  class="text-white">Your ultimate destination for authentic Japanese manga collections.</p>
                 <div class="social-icons mt-2">

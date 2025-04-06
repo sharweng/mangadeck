@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class VerificationController extends Controller
 {
@@ -24,9 +26,9 @@ class VerificationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['verify', 'resendToGuest']);
         $this->middleware('signed')->only('verify');
-        $this->middleware('throttle:6,1')->only('verify', 'resend');
+        $this->middleware('throttle:6,1')->only('verify', 'resend', 'resendToGuest');
     }
 
     /**
@@ -37,22 +39,61 @@ class VerificationController extends Controller
      */
     public function verify(Request $request)
     {
-        if ($request->route('id') != $request->user()->getKey()) {
-            return redirect($this->redirectPath());
+        $user = User::find($request->route('id'));
+
+        if (!$user) {
+            return redirect(route('login'))->with('error', 'User not found.');
         }
 
-        if ($request->user()->hasVerifiedEmail()) {
-            return redirect($this->redirectPath());
+        if ($user->hasVerifiedEmail()) {
+            return redirect($this->redirectPath())->with('info', 'Email already verified.');
         }
 
-        if ($request->user()->markEmailAsVerified()) {
+        if ($user->markEmailAsVerified()) {
             // Update user status to activated after email verification
-            $request->user()->update(['status' => 'activated']);
+            $user->update(['status' => 'activated']);
             
-            event(new \Illuminate\Auth\Events\Verified($request->user()));
+            event(new \Illuminate\Auth\Events\Verified($user));
         }
 
-        return redirect($this->redirectPath())->with('verified', true);
+        // If the user is already logged in, redirect to home
+        if (auth()->check()) {
+            return redirect($this->redirectPath())->with('verified', true);
+        }
+
+        // If not logged in, redirect to login with success message
+        return redirect(route('login'))->with('status', 'Your email has been verified! You can now log in.');
+    }
+
+    /**
+     * Resend the email verification notification to a guest user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function resendToGuest(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->with('error', 'We could not find a user with that email address.');
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return back()->with('info', 'This email is already verified. You can log in now.');
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return back()->with('status', 'A fresh verification link has been sent to your email address.');
     }
 }
 

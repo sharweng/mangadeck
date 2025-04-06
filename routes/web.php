@@ -40,8 +40,15 @@ Route::get('/manga/{item}', [ItemController::class, 'show'])->name('items.show')
 // Genre routes
 Route::get('/genres/{genre}', [GenreController::class, 'show'])->name('genres.show');
 
+
+Route::post('/email/resend-verification', [App\Http\Controllers\Auth\VerificationController::class, 'resendToGuest'])
+    ->name('verification.resend.guest')
+    ->middleware('guest');
+
+
 // Authentication routes with email verification enabled
 Auth::routes(['verify' => true]);
+
 
 // User authenticated routes
 Route::middleware('auth')->group(function () {

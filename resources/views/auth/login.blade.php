@@ -23,7 +23,51 @@
                     </div>
 
                     <div class="login-card-body">
-                        <form method="POST" action="{{ route('login') }}">
+                        <!-- Status Messages -->
+                        @if (session('status'))
+                            <div class="manga-alert manga-alert-success">
+                                <i class="fas fa-check-circle"></i> {{ session('status') }}
+                            </div>
+                        @endif
+
+                        @if (session('error'))
+                            <div class="manga-alert manga-alert-danger">
+                                <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+                            </div>
+                        @endif
+
+                        @if (session('info'))
+                            <div class="manga-alert manga-alert-info">
+                                <i class="fas fa-info-circle"></i> {{ session('info') }}
+                            </div>
+                        @endif
+
+                        <!-- Verification Error Alert -->
+                        @error('email')
+                            @if(str_contains($message, 'verify your email'))
+                                <div class="manga-verification-alert">
+                                    <div class="verification-message">
+                                        <i class="fas fa-envelope"></i>
+                                        <p>{{ $message }}</p>
+                                    </div>
+                                    <div class="verification-action">
+                                        <form method="POST" action="{{ route('verification.resend.guest') }}" id="resendVerificationForm">
+                                            @csrf
+                                            <input type="hidden" name="email" id="verification_email" value="{{ old('email') }}">
+                                            <button type="submit" class="btn-manga-verify">
+                                                <i class="fas fa-paper-plane"></i> Send Verification Link
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="alert alert-danger" role="alert">
+                                    {{ $message }}
+                                </div>
+                            @endif
+                        @enderror
+
+                        <form method="POST" action="{{ route('login') }}" id="loginForm">
                             @csrf
 
                             <!-- Email Input -->
@@ -35,11 +79,6 @@
                                            name="email" value="{{ old('email') }}" required autocomplete="email" autofocus
                                            placeholder="your@email.com">
                                 </div>
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
 
                             <!-- Password Input -->
@@ -204,6 +243,99 @@
     .login-card-body {
         padding: 2.5rem;
         background-color: #fff;
+    }
+
+    /* Manga Alert */
+    .manga-alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .manga-alert i {
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+        margin-top: 0.1rem;
+    }
+
+    .manga-alert-success {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        border-left: 4px solid #4caf50;
+    }
+
+    .manga-alert-danger {
+        background-color: #ffebee;
+        color: #c62828;
+        border-left: 4px solid #f44336;
+    }
+
+    .manga-alert-info {
+        background-color: #e3f2fd;
+        color: #1565c0;
+        border-left: 4px solid #2196f3;
+    }
+
+    /* Verification Alert */
+    .manga-verification-alert {
+        background-color: #fff8e1;
+        border-left: 4px solid #ffc107;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .verification-message {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .verification-message i {
+        color: #ff9800;
+        font-size: 1.2rem;
+        margin-right: 0.75rem;
+        margin-top: 0.2rem;
+    }
+
+    .verification-message p {
+        margin: 0;
+        color: #5d4037;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .verification-action {
+        text-align: center;
+    }
+
+    .btn-manga-verify {
+        background: linear-gradient(to bottom, #ff9800 0%, #f57c00 100%);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-manga-verify:hover {
+        background: linear-gradient(to bottom, #f57c00 0%, #ef6c00 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .btn-manga-verify i {
+        margin-right: 0.5rem;
     }
 
     /* Form Styles */
@@ -394,5 +526,18 @@
             toggleIcon.classList.add('fa-eye');
         }
     }
+
+    // Update the hidden email field for verification when the email input changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailInput = document.getElementById('email');
+        const verificationEmail = document.getElementById('verification_email');
+        
+        if (emailInput && verificationEmail) {
+            emailInput.addEventListener('input', function() {
+                verificationEmail.value = this.value;
+            });
+        }
+    });
 </script>
 @endsection
+
