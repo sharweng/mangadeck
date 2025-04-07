@@ -116,7 +116,6 @@
                                     <h5 class="border-bottom pb-2 mb-3">Specs</h5>
                                     <ul class="list-unstyled mb-0">
                                         <li class="mb-2"><strong class="text-dark">Stock:</strong> {{ $item->stock ? $item->stock->quantity : 0 }} copies</li>
-                                        <li class="mb-2"><strong class="text-dark">Pages:</strong> {{ $item->pages ?? 'Unknown' }}</li>
                                         <li><strong class="text-dark">Language:</strong> English</li>
                                     </ul>
                                 </div>
