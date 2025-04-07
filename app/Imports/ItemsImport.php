@@ -7,7 +7,7 @@ use App\Models\Genre;
 use App\Models\Item;
 use App\Models\Publisher;
 use App\Models\Stock;
-use App\Models\ItemImage; // Make sure to include this
+use App\Models\ItemImage;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +32,7 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
         $this->client = new Client([
             'timeout' => 15,
             'headers' => [
-                'User -Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                 'Accept' => 'image/webp,image/apng,image/*,*/*;q=0.8',
                 'Accept-Language' => 'en-US,en;q=0.9',
             ],
@@ -44,6 +44,14 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
         return $this->drawings;
     }
 
+    /**
+     * Store drawings from the spreadsheet
+     */
+    public function registerDrawings($drawings)
+    {
+        $this->drawings = $drawings;
+    }
+
     public function collection(Collection $rows)
     {
         $drawingMap = $this->mapDrawingsByRow();
@@ -53,29 +61,19 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
             try {
                 $this->validateRow($row, $currentRow);
 
+                // Create or find publisher
                 $publisher = Publisher::firstOrCreate(
-                    ['name' => $row['publisher']],
+                    ['name' => $row['publisher'] ?? 'Unknown'],
                     ['description' => 'Imported publisher']
                 );
 
                 // Handle publication date
-                $publicationDate = null;
-                if (!empty($row['publication_date'])) {
-                    if (is_numeric($row['publication_date'])) {
-                        $publicationDate = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['publication_date']);
-                    } else {
-                        try {
-                            $publicationDate = Carbon::parse($row['publication_date']);
-                        } catch (\Exception $e) {
-                            $publicationDate = null;
-                        }
-                    }
-                }
+                $publicationDate = $this->parsePublicationDate($row['publication_date'] ?? null);
 
                 // Create the item
                 $item = Item::create([
                     'title' => $row['title'],
-                    'description' => $row['description'] ?? 'No description provided',
+                    'description' => $this->cleanDescription($row['description'] ?? 'No description provided'),
                     'price' => $row['price'] ?? 0,
                     'publisher_id' => $publisher->id,
                     'publication_date' => $publicationDate,
@@ -88,44 +86,10 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
                 ]);
 
                 // Handle genres
-                if (!empty($row['genres'])) {
-                    $genreNames = explode(',', $row['genres']);
-                    $genreIds = [];
-                    
-                    foreach ($genreNames as $genreName) {
-                        $genreName = trim($genreName);
-                        if (!empty($genreName)) {
-                            $genre = Genre::firstOrCreate(
-                                ['name' => $genreName],
-                                ['description' => 'Imported genre']
-                            );
-                            $genreIds[] = $genre->id;
-                        }
-                    }
-                    
-                    if (!empty($genreIds)) {
-                        $item->genres()->attach($genreIds);
-                    }
-                }
+                $this->processGenres($row['genres'] ?? '', $item);
 
                 // Handle authors
-                if (!empty($row['authors'])) {
-                    $authorNames = explode(',', $row['authors']);
-                    
-                    foreach ($authorNames as $authorName) {
-                        $authorName = trim($authorName);
-                        if (!empty($authorName)) {
-                            $author = Author::firstOrCreate(
-                                ['name' => $authorName],
-                                ['biography' => 'Imported author']
-                            );
-                            
-                            $item->authors()->attach($author->id, [
-                                'role' => 'Author'
-                            ]);
-                        }
-                    }
-                }
+                $this->processAuthors($row['authors'] ?? '', $item);
 
                 // Process embedded drawings
                 if (isset($drawingMap[$currentRow])) {
@@ -134,14 +98,88 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
                     }
                 }
 
-                // Process image URLs if provided
+                // Process image URLs - check both image_path and image_url columns
                 if (!empty($row['image_path'])) {
                     $this->processImageUrls($row['image_path'], $item->id);
+                }
+                
+                // Also check for image_url column as a fallback
+                if (empty($row['image_path']) && !empty($row['image_url'])) {
+                    $this->processImageUrls($row['image_url'], $item->id);
                 }
 
             } catch (Exception $e) {
                 Log::error("Import error on row {$currentRow}: " . $e->getMessage());
                 continue;
+            }
+        }
+    }
+
+    protected function cleanDescription($description)
+    {
+        // Remove Excel line breaks if needed
+        return str_replace(["\r", "\n"], ' ', $description);
+    }
+
+    protected function parsePublicationDate($date)
+    {
+        if (empty($date)) {
+            return null;
+        }
+
+        try {
+            if (is_numeric($date)) {
+                return \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($date);
+            }
+            return Carbon::parse($date);
+        } catch (\Exception $e) {
+            Log::warning("Failed to parse publication date: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    protected function processGenres($genresString, $item)
+    {
+        if (empty($genresString)) {
+            return;
+        }
+
+        $genreNames = array_map('trim', explode(',', $genresString));
+        $genreIds = [];
+        
+        foreach ($genreNames as $genreName) {
+            if (!empty($genreName)) {
+                $genre = Genre::firstOrCreate(
+                    ['name' => $genreName],
+                    ['description' => 'Imported genre']
+                );
+                $genreIds[] = $genre->id;
+            }
+        }
+        
+        if (!empty($genreIds)) {
+            $item->genres()->attach($genreIds);
+        }
+    }
+
+    protected function processAuthors($authorsString, $item)
+    {
+        if (empty($authorsString)) {
+            return;
+        }
+
+        $authorNames = array_map('trim', explode(',', $authorsString));
+        
+        foreach ($authorNames as $authorName) {
+            if (!empty($authorName)) {
+                $author = Author::firstOrCreate(
+                    ['name' => $authorName],
+                    ['biography' => 'Imported author']
+                );
+                
+                $item->authors()->attach($author->id, [
+                    'role' => 'Author'
+                ]);
             }
         }
     }
@@ -164,7 +202,6 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
         if (empty($row['title'])) {
             throw new Exception("Title is required on row {$currentRow}");
         }
-        
     }
 
     protected function processDrawing(Drawing $drawing, $itemId)
@@ -172,16 +209,24 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
         try {
             $extension = $drawing->getExtension() ?: 'jpg';
             $hashName = Str::random(40) . '.' . $extension;
-            $storagePath = 'public/images/' . $hashName;
+            $storagePath = 'public/items/' . $hashName;
+            $dbPath = 'items/' . $hashName;
 
+            // Store the image
             Storage::put($storagePath, file_get_contents($drawing->getPath()));
+
+            // Check if this is the first image for this item
+            $isPrimary = !ItemImage::where('item_id', $itemId)->exists();
 
             ItemImage::create([
                 'item_id'    => $itemId,
-                'image_path' => $storagePath,
+                'image_path' => $dbPath,
+                'is_primary' => $isPrimary,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
+
+            Log::info("Successfully processed drawing for item {$itemId}: {$dbPath}");
         } catch (Exception $e) {
             Log::error("Failed to process drawing for item {$itemId}: " . $e->getMessage());
         }
@@ -189,41 +234,106 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
 
     protected function processImageUrls($imagePaths, $itemId)
     {
-        $urls = str_getcsv($imagePaths);
-
-        foreach ($urls as $url) {
-            $url = trim($url);
-
-            if (!filter_var($url, FILTER_VALIDATE_URL)) {
-                continue; // Skip invalid URLs
-            }
-
-            try {
-                $response = $this->client->get($url);
-
-                if ($response->getStatusCode() === 200) {
-                    $imageContent = $response->getBody()->getContents();
-
-                    $contentType = $response->getHeaderLine('Content-Type');
-                    $extension = $this->getExtensionFromContentType($contentType) ?: 'jpg';
-
-                    $hashName = Str::random(40) . '.' . $extension;
-                    $storagePath = 'public/images/' . $hashName;
-
-                    Storage::put($storagePath, $imageContent);
-
-                    ItemImage::create([
-                        'item_id'    => $itemId,
-                        'image_path' => $storagePath,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
+        try {
+            // Clean the input - remove quotes and trim
+            $imagePaths = trim(str_replace(['"', "'"], '', $imagePaths));
+            
+            // Handle both single URL and comma-separated URLs
+            $urls = is_array($imagePaths) ? $imagePaths : explode(',', $imagePaths);
+            
+            foreach ($urls as $url) {
+                $url = trim($url);
+                
+                if (empty($url)) {
+                    continue;
                 }
-            } catch (RequestException $e) {
-                Log::error("Failed to download image from {$url}: " . $e->getMessage());
-            } catch (Exception $e) {
-                Log::error("Error processing image URL {$url}: " . $e->getMessage());
+
+                // Check if it's a local file path rather than a URL
+                if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                    // If it's a local path, handle it differently
+                    if (file_exists($url) || Storage::exists($url)) {
+                        $this->processLocalImage($url, $itemId);
+                        continue;
+                    }
+                    
+                    Log::warning("Invalid URL or file not found for item {$itemId}: {$url}");
+                    continue;
+                }
+
+                try {
+                    $response = $this->client->get($url, ['stream' => true]);
+                    
+                    if ($response->getStatusCode() === 200) {
+                        $imageContent = $response->getBody()->getContents();
+                        
+                        // Get extension from content type or URL
+                        $contentType = $response->getHeaderLine('Content-Type');
+                        $extension = $this->getExtensionFromContentType($contentType) ?: 
+                                      pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
+                        
+                        $hashName = Str::random(40) . '.' . strtolower($extension);
+                        $storagePath = 'public/items/' . $hashName;
+                        $dbPath = 'items/' . $hashName;
+
+                        // Save to storage
+                        if (Storage::put($storagePath, $imageContent)) {
+                            // Check if this is the first image for this item
+                            $isPrimary = !ItemImage::where('item_id', $itemId)->exists();
+
+                            ItemImage::create([
+                                'item_id'    => $itemId,
+                                'image_path' => $dbPath,
+                                'is_primary' => $isPrimary,
+                            ]);
+                            Log::info("Successfully downloaded and stored image for item {$itemId}: {$url}");
+                        } else {
+                            Log::error("Failed to store image for item {$itemId}: {$url}");
+                        }
+                    }
+                } catch (RequestException $e) {
+                    Log::error("Failed to download image for item {$itemId} from {$url}: " . $e->getMessage());
+                }
             }
+        } catch (Exception $e) {
+            Log::error("Error processing image URLs for item {$itemId}: " . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Process a local image file
+     */
+    protected function processLocalImage($filePath, $itemId)
+    {
+        try {
+            if (file_exists($filePath)) {
+                $imageContent = file_get_contents($filePath);
+            } elseif (Storage::exists($filePath)) {
+                $imageContent = Storage::get($filePath);
+            } else {
+                Log::error("Local file not found for item {$itemId}: {$filePath}");
+                return;
+            }
+            
+            $extension = pathinfo($filePath, PATHINFO_EXTENSION) ?: 'jpg';
+            $hashName = Str::random(40) . '.' . strtolower($extension);
+            $storagePath = 'public/items/' . $hashName;
+            $dbPath = 'items/' . $hashName;
+            
+            if (Storage::put($storagePath, $imageContent)) {
+                // Check if this is the first image for this item
+                $isPrimary = !ItemImage::where('item_id', $itemId)->exists();
+                
+                ItemImage::create([
+                    'item_id'    => $itemId,
+                    'image_path' => $dbPath,
+                    'is_primary' => $isPrimary,
+                ]);
+                Log::info("Successfully processed local image for item {$itemId}: {$filePath}");
+            } else {
+                Log::error("Failed to store local image for item {$itemId}: {$filePath}");
+            }
+        } catch (Exception $e) {
+            Log::error("Error processing local image for item {$itemId}: " . $e->getMessage());
         }
     }
 
@@ -231,17 +341,21 @@ class ItemsImport implements ToCollection, WithHeadingRow, WithDrawings
     {
         $mappings = [
             'image/jpeg' => 'jpg',
+            'image/jpg'  => 'jpg',
             'image/png'  => 'png',
             'image/gif'  => 'gif',
             'image/webp' => 'webp',
         ];
 
-        return $mappings[$contentType] ?? null;
+        foreach ($mappings as $type => $ext) {
+            if (str_contains($contentType, $type)) {
+                return $ext;
+            }
+        }
+
+        return null;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [
